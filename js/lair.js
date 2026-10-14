@@ -156,7 +156,9 @@
     ' c+=vec3(1.1,.75,.3)*smoothstep(.75,.98,r.x)*.9;',                               // gold strip right
     ' c+=vec3(.55,.35,1.2)*smoothstep(.72,.98,-r.x)*.8;return c;}',                  // violet strip left
     'vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}',
+    'uniform float uCut;uniform float uShine;',
     'void main(){',
+    ' if(uCut>.5){vec4 t=texture2D(uS,vU);float sh=smoothstep(.07,0.,abs(vU.x*.8+vU.y*.45-uShine))*.55;gl_FragColor=vec4((t.rgb+sh*t.a)*uAlpha,t.a*uAlpha);return;}',
     ' vec3 N=normalize(vN);vec3 V=normalize(uEye-vW);if(dot(N,V)<0.)N=-N;',
     ' vec3 base=uCol;',
     ' if(uTex>.5){vec4 t=texture2D(uS,vU);base=pow(t.rgb,vec3(2.2));if(uDual>.5){vec3 bk=pow(texture2D(uS2,vU).rgb,vec3(2.2));float fw=smoothstep(.05,.55,normalize(vNo).z);base=mix(bk,base,fw);}}',
@@ -184,7 +186,7 @@
     if (!gl) throw new Error('nogl');
     this.gl = gl; this.cv = canvas; this.nodes = []; this.fov = opts.fov || .62; this.eye = opts.eye || [0, .3, 7.2]; this.target = opts.target || [0, .2, 0];
     this.prog = prog(gl, VS, FS); this.pprog = prog(gl, PVS, PFS);
-    var p = this.prog, u = {}; ['uM','uVP','uNM','uCol','uEye','uRough','uMetal','uSheen','uSheenCol','uEmit','uFur','uTex','uS','uAlpha','uRim','uS2','uDual','uFlat'].forEach(function (n) { u[n] = gl.getUniformLocation(p, n); });
+    var p = this.prog, u = {}; ['uM','uVP','uNM','uCol','uEye','uRough','uMetal','uSheen','uSheenCol','uEmit','uFur','uTex','uS','uAlpha','uRim','uS2','uDual','uFlat','uCut','uShine'].forEach(function (n) { u[n] = gl.getUniformLocation(p, n); });
     this.u = u; this.a = { P: gl.getAttribLocation(p, 'aP'), N: gl.getAttribLocation(p, 'aN'), U: gl.getAttribLocation(p, 'aU') };
     this.dprMax = opts.dpr || 1.75; this.resize();
     gl.enable(gl.DEPTH_TEST);
@@ -209,9 +211,11 @@
   };
   Engine.prototype.sub = function (m, idx) { var gl = this.gl, o = { n: idx.length, p: m.p, nb: m.nb, ub: m.ub }; o.i = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, o.i); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW); return o; };
   function buf(gl, d) { var b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW); return b; }
-  Engine.prototype.texture = function (canvas2d) {
+  Engine.prototype.texture = function (canvas2d, premult) {
     var gl = this.gl, t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !!premult);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     var w = canvas2d.width || canvas2d.naturalWidth, h = canvas2d.height || canvas2d.naturalHeight, pot = !(w & (w - 1)) && !(h & (h - 1));
     if (pot) { gl.generateMipmap(gl.TEXTURE_2D); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); }
     else { gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); }
@@ -235,20 +239,30 @@
     var VP = this.cam();
     gl.useProgram(this.prog); gl.disable(gl.BLEND); gl.depthMask(true);
     gl.uniformMatrix4fv(this.u.uVP, false, VP); gl.uniform3fv(this.u.uEye, this.eye); gl.uniform1i(this.u.uS, 0); gl.uniform1i(this.u.uS2, 1);
-    var a = this.a;
-    for (var i = 0; i < this.nodes.length; i++) {
-      var n = this.nodes[i]; if (!n.mesh || !visible(n)) continue;
+    var a = this.a, self = this, cuts = [];
+    function draw(n) {
       var m = n.mesh, mt = n.mat, W = world(n);
-      gl.uniformMatrix4fv(this.u.uM, false, W); gl.uniformMatrix3fv(this.u.uNM, false, M4.nrm(W));
-      gl.uniform3fv(this.u.uCol, mt.col); gl.uniform1f(this.u.uRough, mt.rough); gl.uniform1f(this.u.uMetal, mt.metal || 0);
-      gl.uniform1f(this.u.uSheen, mt.sheen || 0); gl.uniform3fv(this.u.uSheenCol, mt.sheenCol || [0,0,0]); gl.uniform1f(this.u.uEmit, mt.emit || 0);
-      gl.uniform1f(this.u.uFur, mt.fur || 0); gl.uniform1f(this.u.uAlpha, 1); gl.uniform3fv(this.u.uRim, mt.rim || [.0,.0,.0]);
-      gl.uniform1f(this.u.uTex, mt.tex ? 1 : 0); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, mt.tex || this.blank);
-      gl.uniform1f(this.u.uDual, mt.tex2 ? 1 : 0); gl.uniform1f(this.u.uFlat, mt.flat || 0); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, mt.tex2 || this.blank); gl.activeTexture(gl.TEXTURE0);
+      gl.uniformMatrix4fv(self.u.uM, false, W); gl.uniformMatrix3fv(self.u.uNM, false, M4.nrm(W));
+      gl.uniform3fv(self.u.uCol, mt.col || [1,1,1]); gl.uniform1f(self.u.uRough, mt.rough || .5); gl.uniform1f(self.u.uMetal, mt.metal || 0);
+      gl.uniform1f(self.u.uSheen, mt.sheen || 0); gl.uniform3fv(self.u.uSheenCol, mt.sheenCol || [0,0,0]); gl.uniform1f(self.u.uEmit, mt.emit || 0);
+      gl.uniform1f(self.u.uFur, mt.fur || 0); gl.uniform1f(self.u.uAlpha, mt.alpha == null ? 1 : mt.alpha); gl.uniform3fv(self.u.uRim, mt.rim || [.0,.0,.0]);
+      gl.uniform1f(self.u.uCut, mt.cut ? 1 : 0); gl.uniform1f(self.u.uShine, mt.shine == null ? -9 : mt.shine);
+      gl.uniform1f(self.u.uTex, mt.tex ? 1 : 0); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, mt.tex || self.blank);
+      gl.uniform1f(self.u.uDual, mt.tex2 ? 1 : 0); gl.uniform1f(self.u.uFlat, mt.flat || 0); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, mt.tex2 || self.blank); gl.activeTexture(gl.TEXTURE0);
       gl.bindBuffer(gl.ARRAY_BUFFER, m.p); gl.enableVertexAttribArray(a.P); gl.vertexAttribPointer(a.P, 3, gl.FLOAT, false, 0, 0);
       gl.bindBuffer(gl.ARRAY_BUFFER, m.nb); gl.enableVertexAttribArray(a.N); gl.vertexAttribPointer(a.N, 3, gl.FLOAT, false, 0, 0);
       if (a.U >= 0) { if (m.ub) { gl.bindBuffer(gl.ARRAY_BUFFER, m.ub); gl.enableVertexAttribArray(a.U); gl.vertexAttribPointer(a.U, 2, gl.FLOAT, false, 0, 0); } else { gl.disableVertexAttribArray(a.U); gl.vertexAttrib2f(a.U, 0, 0); } }
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.i); gl.drawElements(gl.TRIANGLES, m.n, gl.UNSIGNED_SHORT, 0);
+    }
+    for (var i = 0; i < this.nodes.length; i++) {
+      var n = this.nodes[i]; if (!n.mesh || !visible(n)) continue;
+      if (n.mat.cut) { cuts.push(n); continue; }
+      draw(n);
+    }
+    if (cuts.length) {
+      gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+      cuts.forEach(draw);
+      gl.depthMask(true); gl.disable(gl.BLEND); gl.uniform1f(this.u.uCut, 0);
     }
     if (points && points.count) this.drawPoints(points, VP);
   };
@@ -368,24 +382,35 @@
     return c;
   }
 
-  /* ---------------- real Monster model (monster.bin + projected artwork) ---------------- */
   function loadImg(src) { return new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = src; }); }
-  function loadModel(E, parent) {
-    return Promise.all([(window.DecompressionStream ? fetch('/models/monster.bin.gz').then(function (r) { if (!r.ok) throw 0; return new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(); }).catch(function () { return fetch('/models/monster.bin').then(function (r) { return r.arrayBuffer(); }); }) : fetch('/models/monster.bin').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); })), loadImg('/models/monster-front.webp'), loadImg('/models/monster-back.webp')]).then(function (a) {
-      var buf = a[0], hl = new DataView(buf).getUint32(0, true), H = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, hl))), o = 4 + hl, n = H.n;
-      var q = new Int16Array(buf, o, n * 3); o += n * 6; var uq = new Uint16Array(buf, o, n * 2); o += n * 4;
-      var ib = new Uint16Array(buf, o, H.body); o += H.body * 2; var ig = new Uint16Array(buf.slice(o, o + H.gold * 2));
-      var pos = new Float32Array(n * 3), uv = new Float32Array(n * 2), mn = H.min, mx = H.max;
-      for (var i = 0; i < n; i++) for (var k = 0; k < 3; k++) pos[i*3+k] = mn[k] + (q[i*3+k] + 32768) / 65535 * (mx[k] - mn[k]);
-      for (var j = 0; j < n * 2; j++) uv[j] = uq[j] / 65535;
-      var all = new Uint16Array(H.body + H.gold); all.set(ib, 0); all.set(ig, H.body);
-      var g = finish(pos, all, null); g.uv = uv;
-      var base = E.mesh(g), body = E.sub(base, new Uint16Array(ib)), gold = E.sub(base, ig);
-      var tf = E.texture(a[1]), tb = E.texture(a[2]);
-      var grp = E.group(parent, [0, -.02, 0], [0, 0, 0], [1.5, 1.5, 1.5]);
-      E.add(body, { col: [1, 1, 1], rough: .8, tex: tf, tex2: tb, flat: .55, sheen: .18, sheenCol: [.75, .5, 1], rim: [.55, .35, 1] }, grp);
-      E.add(gold, { col: srgb('#ffc23d'), rough: .28, metal: .75, tex: tf, tex2: tb, flat: .15, emit: .04 }, grp);
-      return grp;
+  /* ---------------- 2.5D layered Monster (cut from the brand artwork) ---------------- */
+  function quad() { return finish([-.5,.5,0, .5,.5,0, -.5,-.5,0, .5,-.5,0], [0,2,1, 1,2,3], [0,0, 1,0, 0,1, 1,1]); }
+  function loadRig(E, parent) {
+    var base = '/rig/';
+    return fetch(base + 'rig.json').then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (M) {
+      var names = ['hornL', 'hornR', 'body', 'arm', 'sclera', 'iris', 'glint', 'crown'];
+      return Promise.all(names.map(function (n) { return loadImg(base + n + '.webp'); })).then(function (imgs) {
+        var FS = M.frame[2], k = 3.0 / FS, cy = (M.top + M.feet) / 2, Q = E.mesh(quad()), L = {}, T = {};
+        names.forEach(function (n, i) { T[n] = E.texture(imgs[i], true); });
+        function W(px, py) { return [(px - FS / 2) * k, -(py - cy) * k]; }
+        var rig = E.group(parent), head = E.group(rig), bodyG = E.group(rig);
+        function layer(n, grp, z, origin) {
+          var rc = M.layers[n].rect, c = W(rc[0] + rc[2] / 2, rc[1] + rc[3] / 2), o = origin || [0, 0];
+          L[n] = E.add(Q, { cut: true, tex: T[n] }, grp, [c[0] - o[0], c[1] - o[1], z], [0, 0, 0], [rc[2] * k, rc[3] * k, 1]);
+          return L[n];
+        }
+        layer('hornL', head, -.14); layer('hornR', head, -.14);
+        layer('body', bodyG, 0);
+        var pv = W(M.pivot_arm[0], M.pivot_arm[1]), arm = E.group(rig, [pv[0], pv[1], .05]); layer('arm', arm, 0, pv);
+        var ec = W(M.eye.center[0], M.eye.center[1]), eye = E.group(rig, [ec[0], ec[1], .07]);
+        layer('sclera', eye, 0, ec);
+        var irisG = E.group(eye, [0, 0, .012]); var ic = W(M.eye.iris[0], M.eye.iris[1]);
+        layer('iris', irisG, 0, ec);
+        layer('glint', eye, .02, ec);
+        var crown = E.group(head, [0, 0, .16]); layer('crown', crown, 0);
+        var lim = [Math.max(0, (M.eye.axes[1] / 2 - M.eye.iris[2]) * k * .45), Math.max(0, (M.eye.axes[0] / 2 - M.eye.iris[2]) * k * .42)];
+        return { rig: rig, head: head, body: bodyG, arm: arm, eye: eye, iris: irisG, crown: crown, crownMat: L.crown.mat, lim: lim, bottom: (M.feet - cy) * k, top: (cy - M.top) * k };
+      });
     });
   }
 
@@ -398,7 +423,7 @@
     document.documentElement.classList.add('gl');
     var mon = buildMonster(E, COARSE ? 0 : 1);
     mon.body.visible = false; mon.model = null;
-    loadModel(E, mon.root).then(function (g) { mon.model = g; }, function () { mon.body.visible = true; });
+    loadRig(E, mon.root).then(function (g) { mon.model = g; }, function () { mon.body.visible = true; });
     var coinTex = E.texture(coinTexture());
     var coinMat = { col: srgb('#ffc23d'), rough: .25, metal: .85, tex: coinTex };
     var coinEdge = { col: srgb('#d99a1e'), rough: .3, metal: 1 };
@@ -410,7 +435,7 @@
     var orbit = E.group(mon.root, [0, .2, 0], [.32, 0, -.12]), coins = [];
     var NC = COARSE ? 7 : 11;
     for (var i = 0; i < NC; i++) { var c = mkCoin(orbit); c.a0 = i / NC * Math.PI * 2; c.rr = 1.85 + (i % 3) * .14; c.sp = .8 + Math.random() * .8; coins.push(c); }
-    var burst = []; for (var b = 0; b < 26; b++) { var bc = mkCoin(null); bc.visible = false; burst.push(bc); }
+    var burst = []; for (var b = 0; b < 18; b++) { var bc = mkCoin(null); bc.visible = false; burst.push(bc); }
     // sparkles
     var P = E.points(160), sp = [];
     for (var k = 0; k < P.max; k++) sp.push({ x: (Math.random()-.5)*14, y: (Math.random()-.5)*9, z: -3 - Math.random()*5, v: .002 + Math.random()*.006, ph: Math.random()*6.28, gold: Math.random() < .55 });
@@ -423,7 +448,7 @@
       var o = mon.root.p;
       burst.forEach(function (c, i) {
         c.visible = true; c.p = [o[0], o[1] + .2, o[2] + .4]; var a = Math.random() * Math.PI * 2, s = .05 + Math.random() * .07;
-        c.v = [Math.cos(a) * s, .09 + Math.random() * .1, Math.sin(a) * s * .6 + .03]; c.rv = [Math.random()*.3, Math.random()*.3, 0]; c.life = 0; var cs = mon.root.s[0]; c.k = cs; c.s = [cs, cs, cs];
+        c.v = [Math.cos(a) * s, .09 + Math.random() * .1, Math.sin(a) * s * .6 + .03]; c.rv = [Math.random()*.3, Math.random()*.3, 0]; c.life = 0; var cs = mon.root.s[0]; c.k = cs * 1.3; c.s = [cs * .55, cs * .55, cs * .55];
       });
       if (navigator.vibrate && big) try { navigator.vibrate(18); } catch (x) {}
     }
@@ -475,18 +500,28 @@
       var stretch = st.jv > 0 ? 1 + st.jv * 1.6 : 1;
       mon.root.p = [st.cur.x * hw, st.cur.y * hh + bob + st.jump * .42 * sc, 0];
       mon.root.s = [sc / Math.sqrt(st.sq * stretch), sc * st.sq * stretch, sc / Math.sqrt(st.sq * stretch)];
-      mon.root.r = [0, st.cur.r + st.lx * .28, (RM ? 0 : Math.sin(st.t * .8) * .03)];
+      mon.root.r = [0, (st.cur.r + st.lx * .28) * (mon.model ? .38 : 1), (RM ? 0 : Math.sin(st.t * .8) * .03)];
       mon.head.r = [-st.ly * .14, 0, 0];
-      if (mon.model) { mon.model.r = [-st.ly * .1, 0, Math.sin(st.t * 1.1) * .025]; var hp2 = 1 + st.happy * .06; mon.model.s = [1.5 * hp2, 1.5 / Math.sqrt(hp2), 1.5 * hp2]; }
+      if (mon.model) {
+        var G = mon.model, br = RM ? 0 : Math.sin(st.t * 1.7);
+        G.rig.r = [-st.ly * .16, 0, (RM ? 0 : Math.sin(st.t * 1.1) * .02)];
+        G.body.s = [1 + br * .006, 1 + br * .012, 1];
+        G.head.p = [0, br * .018 + Math.sin(st.t * 1.7 - .8) * .01, 0];
+        G.crown.r = [0, 0, RM ? 0 : Math.sin(st.t * 1.3 + .5) * .035];
+        G.crownMat.shine = RM ? -9 : ((st.t * .35) % 1.6) * 1.8 - .6;
+        G.arm.r = [0, 0, (RM ? 0 : Math.sin(st.t * 2.3) * .05) + st.happy * Math.sin(st.t * 16) * .22 + st.happy * .12];
+      }
       // eye tracking relative to monster screen position
       var mp = E.project(mon.root.p), r = cv.getBoundingClientRect();
       var ex = clamp(((st.lx * .5 + .5) * r.width - mp[0]) / (r.width * .35), -1, 1), ey = clamp(((-st.ly * .5 + .5) * r.height - mp[1]) / (r.height * .35), -1, 1);
       mon.look.r = [ey * .42, ex * .55 - (st.cur.r + st.lx * .28) * .6, 0];
+      if (mon.model) mon.model.iris.p = [ex * mon.model.lim[1], -ey * mon.model.lim[0], .012];
       // blink
       st.nextBlink -= dt; if (st.nextBlink <= 0 && !RM) { st.blink = 1; st.nextBlink = 2.2 + Math.random() * 3.8; if (Math.random() < .2) st.nextBlink = .28; }
       st.blink = Math.max(0, st.blink - dt * 7);
       var bl = st.blink > 0 ? Math.sin(st.blink * Math.PI) : 0;
       mon.lid.r = [lerp(-.55, 1.42, bl), 0, 0];
+      if (mon.model) mon.model.eye.s = [1, 1 - bl * .94, 1];
       // happy mouth
       st.happy = Math.max(0, st.happy - dt * .7);
       mon.mouth.s = [1 + st.happy * .12, 1 + st.happy * .5, 1];
@@ -507,7 +542,7 @@
       }
       E.render(P);
       if (shadow) {
-        var fp = E.project([mon.root.p[0], mon.root.p[1] - (mon.model ? 1.42 : 1.15) * sc - st.jump * .42 * sc, 0]), w = 2.1 * sc / hh * r.height * .5;
+        var fp = E.project([mon.root.p[0], mon.root.p[1] - (mon.model ? mon.model.bottom - .05 : 1.15) * sc - st.jump * .42 * sc, 0]), w = 2.1 * sc / hh * r.height * .5;
         shadow.style.transform = 'translate(' + (fp[0] - w) + 'px,' + (fp[1] - w * .12) + 'px) scale(' + Math.max(.4, 1 - st.jump * .8) + ')';
         shadow.style.width = (w * 2) + 'px'; shadow.style.height = (w * .24) + 'px'; shadow.style.opacity = Math.max(.15, .75 - st.jump * 1.5).toFixed(2);
       }
