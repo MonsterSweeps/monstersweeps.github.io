@@ -75,7 +75,7 @@ main,header,footer{position:relative;z-index:1}
 @keyframes eyeblink{50%{transform:scaleY(.1)}}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .hero .fallback{display:none}
-.nogl .hero .fallback{display:block;width:min(420px,80vw);margin:30px 0 0;border-radius:32px;box-shadow:0 0 0 2px rgba(255,194,61,.5)}
+.nogl .hero .fallback{display:block;width:min(420px,80vw);height:auto;margin:30px 0 0;filter:drop-shadow(0 24px 40px rgba(5,0,15,.6)) drop-shadow(0 0 30px rgba(122,60,240,.35))}
 .trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 0;padding:0;list-style:none;font-size:14.5px;color:#d8ccf2}
 .trust li{display:flex;align-items:center;gap:8px}
 .trust li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--eye);box-shadow:0 0 10px var(--eye)}
