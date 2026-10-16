@@ -1,0 +1,39 @@
+/* MonsterSweeps design tokens: deep royal purple (Monster's coat) and coin gold (his crown).
+   Loaded first on every page; css/home.css and /site.css build on these. */
+@font-face{font-family:Adventor;src:url(/fonts/adventor-bold.woff) format("woff");font-weight:700;font-display:swap}
+@font-face{font-family:InterW;src:url(/fonts/inter-400.woff) format("woff");font-weight:400;font-display:swap}
+@font-face{font-family:InterW;src:url(/fonts/inter-600.woff) format("woff");font-weight:600;font-display:swap}
+:root{
+  color-scheme:dark;
+  /* royal purples, darkest to brightest */
+  --night:#12082a;--night2:#1a0c3a;--plum:#24104f;--royal:#2a1162;--royal2:#3a1a86;--violet:#6d33e6;--violet2:#8b5cf6;--lilac:#c9adff;
+  /* coin golds */
+  --gold:#ffc23d;--gold2:#ffe08a;--goldDeep:#b77a10;--goldInk:#2a1300;
+  /* Monster's eye: a small accent only (ticks, live dots) */
+  --eye:#3fd27a;
+  /* text */
+  --bone:#f7f2ff;--mute:#b9abd9;--mute2:#9a8cc0;
+  /* lines and surfaces */
+  --line:rgba(201,173,255,.16);--line2:rgba(201,173,255,.28);--goldLine:rgba(255,194,61,.38);
+  --glass:linear-gradient(180deg,rgba(58,26,134,.42),rgba(36,16,79,.30));
+  --glassSolid:linear-gradient(180deg,#2c1466,#1f0d47);
+  /* coin button */
+  --coin:linear-gradient(180deg,#ffe08a 0%,#ffc23d 45%,#f0a21c 100%);
+  --coinShadow:0 1px 0 rgba(255,255,255,.65) inset,0 -3px 0 rgba(140,70,0,.38) inset,0 0 0 1px rgba(183,122,16,.55),0 14px 30px -12px rgba(255,177,31,.65);
+  --coinShadowHi:0 1px 0 rgba(255,255,255,.65) inset,0 -3px 0 rgba(140,70,0,.38) inset,0 0 0 1px rgba(183,122,16,.55),0 20px 38px -12px rgba(255,177,31,.8);
+  --cardShadow:0 1px 0 rgba(255,255,255,.06) inset,0 24px 50px -28px rgba(5,0,15,.85);
+  /* type */
+  --d:Adventor,"Avenir Next","Century Gothic",Futura,sans-serif;
+  --b:InterW,Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r-lg:28px;--r-md:18px;--r-sm:12px
+}
+/* body background propagates to the canvas, so the ::before backdrop below paints on top of it */
+body{background-color:var(--night);color:var(--bone)}
+/* the lair: royal glow overhead, a warm gold ember low left, deep plum floor */
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+  radial-gradient(1100px 720px at 78% -8%,rgba(109,51,230,.38),transparent 62%),
+  radial-gradient(900px 640px at 6% 96%,rgba(255,194,61,.09),transparent 60%),
+  radial-gradient(700px 500px at 50% 45%,rgba(58,26,134,.22),transparent 70%),
+  linear-gradient(180deg,#170a35,#110726 60%,#0d051e)}
+::selection{background:var(--gold);color:var(--goldInk)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
