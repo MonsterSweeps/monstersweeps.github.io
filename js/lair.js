@@ -497,6 +497,8 @@
     addEventListener('scroll', choreo, { passive: true }); addEventListener('resize', choreo); choreo(); st.cur = JSON.parse(JSON.stringify(st.tgt));
 
     var shadow = document.getElementById('lairShadow');
+    // Monster lives in the hero only: he scrolls away with it, and the scene sleeps once it is off screen
+    var home = anchors[0] || null, off = false;
     var last = performance.now(), running = true;
     function frame(now) {
       if (!running) return;
@@ -505,12 +507,18 @@
       ['x', 'y', 's', 'r'].forEach(function (q) { st.cur[q] = lerp(st.cur[q], st.tgt[q], k); });
       st.lx = lerp(st.lx, st.mx, RM ? 1 : 1 - Math.pow(.002, dt)); st.ly = lerp(st.ly, st.my, RM ? 1 : 1 - Math.pow(.002, dt));
       var hh = E.halfH(), hw = hh * E.asp, sc = st.cur.s * (innerWidth < 860 ? .78 : 1);
+      var hr = home ? home.getBoundingClientRect() : null, lift = hr ? -hr.top / innerHeight * 2 * hh : 0;
+      if (hr && hr.bottom < -40) {
+        if (!off) { off = true; cv.style.visibility = 'hidden'; if (shadow) shadow.style.visibility = 'hidden'; if (bub) bub.style.visibility = 'hidden'; }
+        requestAnimationFrame(frame); return;
+      }
+      if (off) { off = false; cv.style.visibility = ''; if (shadow) shadow.style.visibility = ''; if (bub) bub.style.visibility = ''; }
       // jump physics
       var f60 = dt * 60; if (st.jv || st.jump > 0) { st.jump += st.jv * f60; st.jv -= .012 * f60; if (st.jump <= 0) { st.jump = 0; st.jv = 0; st.sq = .78; } }
       st.sq = lerp(st.sq, 1, 1 - Math.pow(.0005, dt));
       var bob = RM ? 0 : Math.sin(st.t * 1.6) * .06;
       var stretch = st.jv > 0 ? 1 + st.jv * 1.6 : 1;
-      mon.root.p = [st.cur.x * hw, st.cur.y * hh + bob + st.jump * .42 * sc, 0];
+      mon.root.p = [st.cur.x * hw, st.cur.y * hh + bob + st.jump * .42 * sc + lift, 0];
       mon.root.s = [sc / Math.sqrt(st.sq * stretch), sc * st.sq * stretch, sc / Math.sqrt(st.sq * stretch)];
       mon.root.r = [0, (st.cur.r + st.lx * .28) * (mon.model ? .38 : 1), (RM ? 0 : Math.sin(st.t * .8) * .03)];
       mon.head.r = [-st.ly * .14, 0, 0];
@@ -568,7 +576,7 @@
         shadow.style.transform = 'translate(' + (fp[0] - w) + 'px,' + (fp[1] - w * .12) + 'px) scale(' + Math.max(.4, 1 - st.jump * .8) + ')';
         shadow.style.width = (w * 2) + 'px'; shadow.style.height = (w * .24) + 'px'; shadow.style.opacity = Math.max(.15, .75 - st.jump * 1.5).toFixed(2);
       }
-      if (bub) { var hp = E.project([mon.root.p[0] - .55 * sc, mon.root.p[1] + 1.55 * sc, 0]); var bw = bub.firstChild.offsetWidth || 0, bh = bub.firstChild.offsetHeight || 0; bub.style.transform = 'translate(' + Math.round(clamp(hp[0], bw + 8, innerWidth - 8)) + 'px,' + Math.round(Math.max(hp[1], bh + 66)) + 'px)'; }
+      if (bub) { var hp = E.project([mon.root.p[0] - .55 * sc, mon.root.p[1] + 1.55 * sc, 0]); var bw = bub.firstChild.offsetWidth || 0, bh = bub.firstChild.offsetHeight || 0; bub.style.transform = 'translate(' + Math.round(clamp(hp[0], bw + 8, innerWidth - 8)) + 'px,' + Math.round(Math.max(hp[1], bh + 66 + (hr ? Math.min(0, hr.top) : 0))) + 'px)'; }
       requestAnimationFrame(frame);
     }
     document.addEventListener('visibilitychange', function () { if (document.hidden) running = false; else if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } });
