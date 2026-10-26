@@ -76,3 +76,16 @@ if(window.fetch)fetch('/data/leaderboard.json',{cache:'no-cache'}).then(function
 var y=$('#yr');if(y)y.textContent=new Date().getFullYear();
 })();
 (function(){var h=document.querySelector('.hart'),s=document.querySelector('.dhero');if(!h||!s||matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover:hover)').matches)return;s.addEventListener('pointermove',function(e){var r=s.getBoundingClientRect();h.style.setProperty('--px',((e.clientX-r.left)/r.width-.5)*-18+'px');h.style.setProperty('--py',((e.clientY-r.top)/r.height-.5)*-14+'px')});s.addEventListener('pointerleave',function(){h.style.setProperty('--px','0px');h.style.setProperty('--py','0px')})})();
+/* article contents on phones: a "Contents" button at the start of the sticky chip row opens the full list as a sheet */
+(function(){var d=document,toc=d.querySelector('.doc .toc');if(!toc)return;
+var links=[].slice.call(toc.querySelectorAll('a'));if(links.length<3)return;
+var b=d.createElement('button');b.type='button';b.className='tocbtn';b.setAttribute('aria-haspopup','dialog');b.innerHTML='Contents <span aria-hidden="true">&#9662;</span>';
+toc.insertBefore(b,toc.querySelector('a'));
+var sh=d.createElement('div');sh.className='ms-sheet tocsheet';sh.hidden=true;sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-label','Contents');
+sh.innerHTML='<div class="ms-scrim" data-close></div><div class="ms-panel"><div class="ms-head"><strong class="ms-brand">On this page</strong><button class="ms-x" type="button" data-close aria-label="Close contents">&times;</button></div><ul class="ms-list">'+links.map(function(a){return '<li><a href="'+a.getAttribute('href')+'">'+a.textContent+'</a></li>'}).join('')+'</ul></div>';
+d.body.appendChild(sh);
+function open(){sh.hidden=false;requestAnimationFrame(function(){sh.classList.add('on')});d.documentElement.classList.add('ms-lock');var cur=toc.querySelector('a.on'),i=links.indexOf(cur),t=sh.querySelectorAll('.ms-list a')[i<0?0:i];if(t)t.focus({preventScroll:true})}
+function close(){sh.classList.remove('on');d.documentElement.classList.remove('ms-lock');setTimeout(function(){sh.hidden=true},220);b.focus({preventScroll:true})}
+b.addEventListener('click',open);
+sh.addEventListener('click',function(e){var a=e.target.closest('a');if(a){e.preventDefault();close();var t=d.querySelector(a.getAttribute('href'));if(t)setTimeout(function(){t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})},60)}else if(e.target.closest('[data-close]'))close()});
+d.addEventListener('keydown',function(e){if(!sh.hidden&&e.key==='Escape')close()})})();

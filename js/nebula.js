@@ -5,7 +5,8 @@
    Reduced motion -> one still frame. Hidden tab -> paused. */
 (function () {
   'use strict';
-  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SAVE = !!(navigator.connection && navigator.connection.saveData);
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches || SAVE;   // data saver: one still frame too
   var SMALL = matchMedia('(max-width: 860px), (pointer: coarse)').matches;
   var cv = document.createElement('canvas');
   cv.id = 'nebula'; cv.setAttribute('aria-hidden', 'true');
@@ -64,9 +65,9 @@
   var ud = { t: U(DUST, 'uT'), s: U(DUST, 'uS'), m: U(DUST, 'uM'), a: U(DUST, 'uA'), px: U(DUST, 'uPx') };
   var aP = gl.getAttribLocation(CLOUD, 'aP'), aD = gl.getAttribLocation(DUST, 'aD'), aK = gl.getAttribLocation(DUST, 'aK');
 
-  var dpr = 1, W = 1, H = 1;
+  var dpr = 1, W = 1, H = 1, scale = 1, drawN = N;
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, SMALL ? 1 : 1.5);
+    dpr = Math.min(window.devicePixelRatio || 1, SMALL ? 1 : 1.5) * scale;
     W = Math.max(1, Math.round(innerWidth * dpr)); H = Math.max(1, Math.round(innerHeight * dpr));
     if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
   }
@@ -88,22 +89,35 @@
     gl.uniform1f(ud.t, t); gl.uniform1f(ud.s, s); gl.uniform2f(ud.m, mx, my); gl.uniform1f(ud.a, Math.max(.6, W / H / 1.6)); gl.uniform1f(ud.px, dpr);
     gl.bindBuffer(gl.ARRAY_BUFFER, dBuf); gl.enableVertexAttribArray(aD); gl.vertexAttribPointer(aD, 4, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, kBuf); gl.enableVertexAttribArray(aK); gl.vertexAttribPointer(aK, 1, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.POINTS, 0, N);
+    gl.drawArrays(gl.POINTS, 0, drawN);
     gl.disableVertexAttribArray(aD); gl.disableVertexAttribArray(aK);
+  }
+  /* quality guard: measure the real frame interval for ~2s; a struggling device first gets half resolution and
+     half the dust, and if it is still slow the nebula settles into a still frame */
+  var lvl = 0, sN = 0, sT = 0, slow = SMALL ? 42 : 25;   // ms per frame: below ~24fps on phones, ~40fps on desktop
+  function guard(now) {
+    if (lvl > 1) return;
+    if (!sT) { sT = now; sN = 0; return; }
+    sN++;
+    if (now - sT < 2000) return;
+    var avg = (now - sT) / sN; sT = 0;
+    if (avg <= slow) { lvl = 2; return; }                 // smooth enough: stop measuring
+    if (lvl === 0) { lvl = 1; scale = .5; drawN = Math.round(N / 2); resize(); }
+    else { lvl = 3; running = false; draw(now); }        // still too slow: freeze on a still frame
   }
   function frame(now) {
     if (!running) return;
     requestAnimationFrame(frame);
     if (step && now - last < step) return;
-    last = now; draw(now);
+    last = now; draw(now); guard(now);
   }
-  function start() { if (RM || running || document.hidden) return; running = true; requestAnimationFrame(frame); }
+  function start() { if (RM || running || document.hidden || lvl === 3) return; running = true; requestAnimationFrame(frame); }
   function still() { resize(); draw(performance.now()); }
 
   resize();
   addEventListener('resize', function () { resize(); if (RM) still(); }, { passive: true });
   if (RM) still();
   else start();
-  document.addEventListener('visibilitychange', function () { if (document.hidden) running = false; else start(); });
-  window.__nebula = { draw: draw, get running() { return running; } };
+  document.addEventListener('visibilitychange', function () { sT = 0; if (document.hidden) running = false; else start(); });  // a hidden tab is not a slow device
+  window.__nebula = { draw: draw, get running() { return running; }, get level() { return lvl; } };
 })();
