@@ -1,5 +1,5 @@
-/* MonsterSweeps "Lair" — tiny WebGL engine + code-built 3D Monster and Fortune Wheel.
-   No dependencies. Falls back to a static image when WebGL is unavailable. */
+/* MonsterSweeps — tiny WebGL engine and the 3D demo Fortune Wheel.
+   No dependencies. Without WebGL the wheel section simply shows no canvas. */
 (function () {
   'use strict';
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -43,15 +43,6 @@
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
   function hex(h) { var n = parseInt(h.slice(1), 16); return [(n>>16&255)/255, (n>>8&255)/255, (n&255)/255]; }
   function srgb(h) { return hex(h).map(function (c) { return Math.pow(c, 2.2); }); }
-
-  /* value noise for fur displacement */
-  function hash(x, y, z) { var s = Math.sin(x*127.1 + y*311.7 + z*74.7) * 43758.5453; return s - Math.floor(s); }
-  function vnoise(x, y, z) {
-    var xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z), xf = x-xi, yf = y-yi, zf = z-zi;
-    var u = xf*xf*(3-2*xf), v = yf*yf*(3-2*yf), w = zf*zf*(3-2*zf);
-    function h(a,b,c){ return hash(xi+a, yi+b, zi+c); }
-    return lerp(lerp(lerp(h(0,0,0),h(1,0,0),u), lerp(h(0,1,0),h(1,1,0),u), v), lerp(lerp(h(0,0,1),h(1,0,1),u), lerp(h(0,1,1),h(1,1,1),u), v), w);
-  }
 
   /* ---------------- geometry ---------------- */
   function finish(pos, idx, uv) {
@@ -109,30 +100,6 @@
     }
     for (var b = 0; b < sR; b++) for (var a = 0; a < sT; a++) {
       var p = b*(sT+1)+a, q = p+sT+1; idx.push(p, q, p+1, q, q+1, p+1);
-    }
-    return finish(pos, idx);
-  }
-  function tube(pts, r0, r1, seg, rad) { // tapered tube along a Catmull-Rom path
-    function cr(t) {
-      var n = pts.length - 1, f = t * n, i = Math.min(n - 1, Math.floor(f)), l = f - i;
-      var p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(n, i+2)];
-      return [0,1,2].map(function (k) {
-        return .5 * ((2*p1[k]) + (-p0[k]+p2[k])*l + (2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*l*l + (-p0[k]+3*p1[k]-3*p2[k]+p3[k])*l*l*l);
-      });
-    }
-    var pos = [], idx = [], prevN = [0, 0, 1];
-    for (var s = 0; s <= seg; s++) {
-      var t = s / seg, p = cr(t), q = cr(Math.min(1, t + .01)), pm = cr(Math.max(0, t - .01));
-      var T = norm([q[0]-pm[0], q[1]-pm[1], q[2]-pm[2]]);
-      var B = norm(cross(T, prevN)), N = cross(B, T); prevN = N;
-      var r = lerp(r0, r1, Math.pow(t, .9)) * (s === seg ? .2 : 1);
-      for (var k = 0; k <= rad; k++) {
-        var a = k / rad * Math.PI * 2, c = Math.cos(a), si = Math.sin(a);
-        pos.push(p[0] + r*(c*N[0] + si*B[0]), p[1] + r*(c*N[1] + si*B[1]), p[2] + r*(c*N[2] + si*B[2]));
-      }
-    }
-    for (var j = 0; j < seg; j++) for (var i = 0; i < rad; i++) {
-      var a2 = j*(rad+1)+i, b2 = a2+rad+1; idx.push(a2, b2, a2+1, b2, b2+1, a2+1);
     }
     return finish(pos, idx);
   }
@@ -293,84 +260,9 @@
 
   /* ---------------- materials ---------------- */
   var MAT = {
-    fur:   { col: srgb('#7a3cf0'), rough: .85, sheen: .42, sheenCol: [.85, .62, 1.0], fur: 1, rim: [.55, .35, 1.0] },
-    furD:  { col: srgb('#5a28c4'), rough: .9, sheen: .25, sheenCol: [.7, .5, 1.0], fur: 1, rim: [.25, .15, .5] },
-    eyeW:  { col: srgb('#fbf7ff'), rough: .08, sheen: .1, sheenCol: [.8, .7, 1] },
-    iris:  { col: srgb('#3fd27a'), rough: .2, emit: .18, sheen: .2, sheenCol: [.6, 1, .7] },
-    irisR: { col: srgb('#0f6b3c'), rough: .3 },
-    pupil: { col: srgb('#08040f'), rough: .05 },
-    glint: { col: [1, 1, 1], rough: .1, emit: 2.2 },
-    mouth: { col: srgb('#22071f'), rough: .7 },
-    tongue:{ col: srgb('#ff4f86'), rough: .35, sheen: .2, sheenCol: [1, .6, .8] },
-    tooth: { col: srgb('#fff6e6'), rough: .25 },
-    horn:  { col: srgb('#f1dcb2'), rough: .35, sheen: .15, sheenCol: [1, .9, .7] },
     gold:  { col: srgb('#ffc23d'), rough: .22, metal: 1, emit: .03 },
-    goldD: { col: srgb('#e0a020'), rough: .3, metal: 1 },
-    gemV:  { col: srgb('#b03cff'), rough: .05, emit: .35, metal: .2 },
-    gemR:  { col: srgb('#ff3b6b'), rough: .05, emit: .35, metal: .2 },
-    claw:  { col: srgb('#efe3ff'), rough: .3 }
+    goldD: { col: srgb('#e0a020'), rough: .3, metal: 1 }
   };
-
-  /* ---------------- Monster ---------------- */
-  function buildMonster(E, lod) {
-    var hi = lod > 0, root = E.group(null, [0, 0, 0]), body = E.group(root), head = E.group(body);
-    var bodyG = sphere(1, hi ? 120 : 72, hi ? 84 : 52, function (x, y, z) {
-      var n = vnoise(x*5+3, y*5+1, z*5) * .045 + vnoise(x*13, y*13+4, z*13) * .02;
-      var tuft = y > .55 ? Math.pow(vnoise(x*9, y*9, z*9+9), 3) * .22 * (y - .55) : 0;
-      return 1 + n + tuft - .02;
-    });
-    E.add(E.mesh(bodyG), MAT.fur, head, [0, 0, 0], [0, 0, 0], [1.06, .98, 1]);
-    // eye
-    var eye = E.group(head, [0, .24, .78], [0, 0, 0], [1, 1, 1]);
-    E.add(E.mesh(sphere(.42, 48, 32)), MAT.eyeW, eye, [0, 0, 0], [0, 0, 0], [1, 1, .82]);
-    var look = E.group(eye);
-    E.add(E.mesh(sphere(.215, 40, 24)), MAT.iris, look, [0, 0, .3], [0, 0, 0], [1, 1, .42]);
-    E.add(E.mesh(torus(.2, .022, 10, 40)), MAT.irisR, look, [0, 0, .305], [Math.PI/2, 0, 0], [1, 1, 1]);
-    var pupil = E.add(E.mesh(sphere(.1, 28, 18)), MAT.pupil, look, [0, 0, .375], [0, 0, 0], [1, 1, .45]);
-    E.add(E.mesh(sphere(.042, 14, 10)), MAT.glint, eye, [.11, .12, .345]);
-    E.add(E.mesh(sphere(.018, 10, 8)), MAT.glint, eye, [-.06, -.07, .36]);
-    // eyelids (upper hemisphere shell)
-    var lid = E.add(E.mesh(sphere(.455, 48, 20, null, 0, Math.PI * .5)), MAT.furD, eye, [0, 0, 0], [-.55, 0, 0], [1.02, 1.02, .9]);
-    // mouth
-    var mouth = E.group(head, [0, -.4, .7]);
-    E.add(E.mesh(sphere(.5, 48, 24)), MAT.mouth, mouth, [0, 0, 0], [0, 0, 0], [1.12, .4, .5]);
-    var tongue = E.add(E.mesh(sphere(.25, 28, 16)), MAT.tongue, mouth, [0, -.08, .13], [0, 0, 0], [1.15, .42, .8]);
-    var coneG = E.mesh(cyl(0, .055, .15, 14, true)), coneS = E.mesh(cyl(0, .04, .1, 12, true));
-    var teeth = [-.4, -.24, -.08, .08, .24, .4];
-    teeth.forEach(function (x) {
-      var e = 1 - Math.pow(x / .58, 2), z = .22 * Math.sqrt(Math.max(0, e)) + .02;
-      E.add(coneG, MAT.tooth, mouth, [x, .13 - (1-e)*.06, z], [Math.PI, 0, 0], [1, 1, .8]);
-    });
-    [-.3, -.1, .1, .3].forEach(function (x) {
-      var e = 1 - Math.pow(x / .58, 2), z = .2 * Math.sqrt(Math.max(0, e)) + .02;
-      E.add(coneS, MAT.tooth, mouth, [x, -.13 + (1-e)*.05, z], [0, 0, 0], [1, 1, .8]);
-    });
-    // horns
-    [-1, 1].forEach(function (sd) {
-      var pts = [[.52*sd, .6, .02], [.88*sd, .78, 0], [1.12*sd, 1.12, -.04], [1.08*sd, 1.5, -.08], [.92*sd, 1.72, -.1]];
-      E.add(E.mesh(tube(pts, .17, .03, hi ? 40 : 24, hi ? 22 : 14)), MAT.horn, head);
-      E.add(E.mesh(torus(.165, .03, 10, 36)), MAT.gold, head, [.6*sd, .64, .015], [0, 0, sd * -.95], [1, 1, 1]);
-      E.add(E.mesh(torus(.135, .024, 10, 32)), MAT.gold, head, [.95*sd, .86, -.005], [0, 0, sd * -.55], [1, 1, 1]);
-    });
-    // crown
-    var crown = E.group(head, [.02, .93, -.05], [-.12, 0, .12]);
-    E.add(E.mesh(cyl(.44, .4, .24, 48, false)), MAT.gold, crown);
-    E.add(E.mesh(torus(.41, .028, 10, 48)), MAT.goldD, crown, [0, -.12, 0]);
-    var spike = E.mesh(cyl(0, .085, .3, 20, true)), ball = E.mesh(sphere(.045, 14, 10)), gem = E.mesh(sphere(.07, 4, 2));
-    for (var i = 0; i < 5; i++) {
-      var a = i / 5 * Math.PI * 2 + Math.PI/2;
-      E.add(spike, MAT.gold, crown, [Math.cos(a)*.41, .26, Math.sin(a)*.41], [Math.sin(a)*.18, 0, -Math.cos(a)*.18]);
-      E.add(ball, MAT.gold, crown, [Math.cos(a)*.44, .43, Math.sin(a)*.44]);
-      E.add(gem, i % 2 ? MAT.gemR : MAT.gemV, crown, [Math.cos(a)*.435, 0, Math.sin(a)*.435], [0, -a, Math.PI/2], [1, .9, .55]);
-    }
-    // paws peeking over the ledge
-    var pawG = E.mesh(sphere(.3, 32, 20)), clawG = E.mesh(cyl(0, .045, .12, 10, true));
-    [-1, 1].forEach(function (sd) {
-      var paw = E.add(pawG, MAT.fur, body, [.58*sd, -.86, .62], [0, 0, 0], [1.15, .72, 1]);
-      [-.12, 0, .12].forEach(function (cx) { E.add(clawG, MAT.claw, paw, [cx, -.02, .29], [Math.PI/2 + .3, 0, 0], [1, 1, 1]); });
-    });
-    return { root: root, body: body, head: head, look: look, lid: lid, mouth: mouth, tongue: tongue, pupil: pupil, crown: crown };
-  }
 
   function coinTexture() { // gold coin face: reeded rim, raised border and an embossed crown
     var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d'), P = Math.PI * 2;
@@ -391,198 +283,6 @@
     g.fillStyle = '#7b3fe4'; g.beginPath(); g.moveTo(128, 104); g.lineTo(138, 116); g.lineTo(128, 128); g.lineTo(118, 116); g.closePath(); g.fill();   // violet gem
     g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.ellipse(92, 78, 34, 14, -.7, 0, P); g.fill();                                             // glint
     return c;
-  }
-
-  function loadImg(src) { return new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = src; }); }
-  /* ---------------- 2.5D layered Monster (cut from the brand artwork) ---------------- */
-  function quad() { return finish([-.5,.5,0, .5,.5,0, -.5,-.5,0, .5,-.5,0], [0,2,1, 1,2,3], [0,0, 1,0, 0,1, 1,1]); }
-  function loadRig(E, parent) {
-    var base = '/rig/';
-    return fetch(base + 'rig.json').then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (M) {
-      var names = ['hornL', 'hornR', 'body', 'arm', 'sclera', 'iris', 'glint', 'crown'];
-      return Promise.all(names.map(function (n) { return loadImg(base + n + '.webp'); })).then(function (imgs) {
-        var FS = M.frame[2], k = 3.0 / FS, cy = (M.top + M.feet) / 2, Q = E.mesh(quad()), L = {}, T = {};
-        names.forEach(function (n, i) { T[n] = E.texture(imgs[i], true); });
-        function W(px, py) { return [(px - FS / 2) * k, -(py - cy) * k]; }
-        var rig = E.group(parent), head = E.group(rig), bodyG = E.group(rig);
-        function layer(n, grp, z, origin) {
-          var rc = M.layers[n].rect, c = W(rc[0] + rc[2] / 2, rc[1] + rc[3] / 2), o = origin || [0, 0];
-          var rimPx = { body: 9, arm: 7, hornL: 6, hornR: 6, crown: 5 }[n];
-          L[n] = E.add(Q, { cut: true, tex: T[n], edge: rimPx ? [rimPx / rc[2], rimPx / rc[3]] : null }, grp, [c[0] - o[0], c[1] - o[1], z], [0, 0, 0], [rc[2] * k, rc[3] * k, 1]);
-          return L[n];
-        }
-        layer('hornL', head, -.14); layer('hornR', head, -.14);
-        layer('body', bodyG, 0);
-        var pv = W(M.pivot_arm[0], M.pivot_arm[1]), arm = E.group(rig, [pv[0], pv[1], .05]); layer('arm', arm, 0, pv);
-        var ec = W(M.eye.center[0], M.eye.center[1]), eye = E.group(rig, [ec[0], ec[1], .07]);
-        layer('sclera', eye, 0, ec);
-        var irisG = E.group(eye, [0, 0, .012]); var ic = W(M.eye.iris[0], M.eye.iris[1]);
-        layer('iris', irisG, 0, ec);
-        layer('glint', eye, .02, ec);
-        var crown = E.group(head, [0, 0, .16]); layer('crown', crown, 0);
-        var lim = [Math.max(0, (M.eye.axes[1] / 2 - M.eye.iris[2]) * k * .45), Math.max(0, (M.eye.axes[0] / 2 - M.eye.iris[2]) * k * .42)];
-        return { rig: rig, head: head, body: bodyG, arm: arm, eye: eye, iris: irisG, crown: crown, crownMat: L.crown.mat, hornL: L.hornL, hornR: L.hornR, lim: lim, bottom: (M.feet - cy) * k, top: (cy - M.top) * k };
-      });
-    });
-  }
-
-  /* ---------------- hero / page scene ---------------- */
-  function initLair() {
-    var cv = document.getElementById('lair'); if (!cv) return null;
-    var E;
-    try { E = new Engine(cv, { fov: .58, eye: [0, .35, 8], target: [0, .25, 0], dpr: COARSE ? 1.4 : 1.75 }); }
-    catch (e) { document.documentElement.classList.add('nogl'); return null; }
-    document.documentElement.classList.add('gl');
-    var mon = buildMonster(E, COARSE ? 0 : 1);
-    mon.body.visible = false; mon.model = null;
-    loadRig(E, mon.root).then(function (g) { mon.model = g; }, function () { mon.body.visible = true; });
-    var coinTex = E.texture(coinTexture());
-    var coinMat = { col: srgb('#ffc23d'), rough: .3, metal: .4, emit: .16, tex: coinTex }; // low metal: the dark lair would otherwise reflect them brown
-    var coinEdge = { col: srgb('#e8a92a'), rough: .3, metal: .6, emit: .1 };
-    var faceG = E.mesh(disc(.19, 40)), rimG = E.mesh(cyl(.19, .19, .045, 40, false));
-    function mkCoin(parent) {
-      var g = E.group(parent); E.add(rimG, coinEdge, g, [0, 0, 0], [Math.PI/2, 0, 0]);
-      E.add(faceG, coinMat, g, [0, 0, .023]); E.add(faceG, coinMat, g, [0, 0, -.023], [0, Math.PI, 0]); return g;
-    }
-    var orbit = E.group(mon.root, [0, .2, 0], [.32, 0, -.12]), coins = [];
-    var NC = COARSE ? 7 : 11;
-    for (var i = 0; i < NC; i++) { var c = mkCoin(orbit); c.a0 = i / NC * Math.PI * 2; c.rr = 1.85 + (i % 3) * .14; c.sp = .8 + Math.random() * .8; coins.push(c); }
-    var burst = []; for (var b = 0; b < 18; b++) { var bc = mkCoin(null); bc.visible = false; burst.push(bc); }
-    // sparkles
-    var P = E.points(160), sp = [];
-    for (var k = 0; k < P.max; k++) sp.push({ x: (Math.random()-.5)*14, y: (Math.random()-.5)*9, z: -3 - Math.random()*5, v: .002 + Math.random()*.006, ph: Math.random()*6.28, gold: Math.random() < .55 });
-    P.count = P.max;
-
-    var st = { t: 0, mx: 0, my: 0, lx: 0, ly: 0, jump: 0, jv: 0, sq: 1, blink: 0, nextBlink: 2, happy: 0, wave: 0, nextWave: 6, hop: 0, cur: { x: .5, y: 0, s: 1, r: -.25 }, tgt: { x: .5, y: 0, s: 1, r: -.25 } };
-    addEventListener('pointermove', function (e) { st.mx = e.clientX / innerWidth * 2 - 1; st.my = -(e.clientY / innerHeight * 2 - 1); }, { passive: true });
-    function cheer(big) {
-      if (st.jump > 0.01) return; st.jv = big ? .19 : .14; st.happy = 1; st.hop = 1;
-      var o = mon.root.p;
-      burst.forEach(function (c, i) {
-        c.visible = true; c.p = [o[0], o[1] + .2, o[2] + .4]; var a = Math.random() * Math.PI * 2, s = .05 + Math.random() * .07;
-        c.v = [Math.cos(a) * s, .09 + Math.random() * .1, Math.sin(a) * s * .6 + .03]; c.rv = [Math.random()*.3, Math.random()*.3, 0]; c.life = 0; var cs = mon.root.s[0]; c.k = cs * 1.3; c.s = [cs * .55, cs * .55, cs * .55];
-      });
-      if (navigator.vibrate && big) try { navigator.vibrate(18); } catch (x) {}
-    }
-    window.addEventListener('monster:cheer', function (e) { cheer(e.detail && e.detail.big); });
-    // hit test: click on the monster
-    function onTap(e) {
-      if (e.target.closest('a,button,input,select,textarea,summary,label')) return;
-      var pt = E.project(mon.root.p), r = cv.getBoundingClientRect(), hh = E.halfH(), rad = (mon.root.s[0] * 1.5 / hh) * r.height * .5;
-      if (Math.hypot(e.clientX - r.left - pt[0], e.clientY - r.top - pt[1] + rad * .2) < rad) cheer(true);
-    }
-    addEventListener('click', onTap);
-
-    // scroll choreography: elements with data-m="x y scale yaw" (x,y in -1..1 of viewport)
-    var anchors = [].slice.call(document.querySelectorAll('[data-m]')), bub = document.getElementById('bubble'), bubT = bub && bub.querySelector('span');
-    function readAnchor(el) {
-      var mob = innerWidth < 860, s = (mob && el.dataset.mm ? el.dataset.mm : el.dataset.m).split(' ').map(Number);
-      return { x: s[0], y: s[1], s: s[2], r: s[3] || 0 };
-    }
-    function choreo() {
-      if (!anchors.length) return;
-      var mid = innerHeight * .5, best = null, prev = null, next = null;
-      var list = anchors.map(function (el) { var r = el.getBoundingClientRect(); return { el: el, c: r.top + Math.min(r.height, innerHeight) * .5 }; });
-      for (var i = 0; i < list.length; i++) { if (list[i].c <= mid) prev = list[i]; else { next = list[i]; break; } }
-      if (!prev) best = readAnchor(list[0].el);
-      else if (!next) best = readAnchor(prev.el);
-      else {
-        var a = readAnchor(prev.el), b = readAnchor(next.el), t = clamp((mid - prev.c) / (next.c - prev.c), 0, 1);
-        t = t * t * (3 - 2 * t); best = { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), s: lerp(a.s, b.s, t), r: lerp(a.r, b.r, t) };
-      }
-      st.tgt = best;
-      var say = (next && prev ? ((mid - prev.c) / (next.c - prev.c) > .5 ? next : prev) : (prev || list[0])).el; say = (innerWidth < 860 && say.dataset.ms === '0') ? '' : (say.dataset.say || '');
-      if (bub && say !== bub.dataset.cur) { bub.dataset.cur = say; bub.classList.remove('on'); clearTimeout(bub._t); bub._t = setTimeout(function () { bubT.textContent = say; if (say) bub.classList.add('on'); }, 260); }
-    }
-    addEventListener('scroll', choreo, { passive: true }); addEventListener('resize', choreo); choreo(); st.cur = JSON.parse(JSON.stringify(st.tgt));
-
-    var shadow = document.getElementById('lairShadow');
-    // Monster lives in the hero only: he scrolls away with it, and the scene sleeps once it is off screen
-    var home = anchors[0] || null, off = false;
-    var last = performance.now(), running = true;
-    function frame(now) {
-      if (!running) return;
-      var dt = Math.min(.05, (now - last) / 1000); last = now; st.t += dt;
-      var k = RM ? 1 : 1 - Math.pow(.0009, dt);
-      ['x', 'y', 's', 'r'].forEach(function (q) { st.cur[q] = lerp(st.cur[q], st.tgt[q], k); });
-      st.lx = lerp(st.lx, st.mx, RM ? 1 : 1 - Math.pow(.002, dt)); st.ly = lerp(st.ly, st.my, RM ? 1 : 1 - Math.pow(.002, dt));
-      var hh = E.halfH(), hw = hh * E.asp, sc = st.cur.s * (innerWidth < 860 ? .78 : 1);
-      var hr = home ? home.getBoundingClientRect() : null, lift = hr ? -hr.top / innerHeight * 2 * hh : 0;
-      if (hr && hr.bottom < -40) {
-        if (!off) { off = true; cv.style.visibility = 'hidden'; if (shadow) shadow.style.visibility = 'hidden'; if (bub) bub.style.visibility = 'hidden'; }
-        requestAnimationFrame(frame); return;
-      }
-      if (off) { off = false; cv.style.visibility = ''; if (shadow) shadow.style.visibility = ''; if (bub) bub.style.visibility = ''; }
-      // jump physics
-      var f60 = dt * 60; if (st.jv || st.jump > 0) { st.jump += st.jv * f60; st.jv -= .012 * f60; if (st.jump <= 0) { st.jump = 0; st.jv = 0; st.sq = .78; } }
-      st.sq = lerp(st.sq, 1, 1 - Math.pow(.0005, dt));
-      var bob = RM ? 0 : Math.sin(st.t * 1.6) * .06;
-      var stretch = st.jv > 0 ? 1 + st.jv * 1.6 : 1;
-      mon.root.p = [st.cur.x * hw, st.cur.y * hh + bob + st.jump * .42 * sc + lift, 0];
-      mon.root.s = [sc / Math.sqrt(st.sq * stretch), sc * st.sq * stretch, sc / Math.sqrt(st.sq * stretch)];
-      mon.root.r = [0, (st.cur.r + st.lx * .28) * (mon.model ? .38 : 1), (RM ? 0 : Math.sin(st.t * .8) * .03)];
-      mon.head.r = [-st.ly * .14, 0, 0];
-      if (mon.model) {
-        var G = mon.model, br = RM ? 0 : Math.sin(st.t * 1.7);
-        G.rig.r = [-st.ly * .16, 0, (RM ? 0 : Math.sin(st.t * 1.1) * .02)];
-        G.body.s = [1 + br * .006, 1 + br * .012, 1];
-        G.head.p = [0, br * .018 + Math.sin(st.t * 1.7 - .8) * .01, 0];
-        // crown: gentle wobble, and a little hop that lags the jump when he cheers
-        st.hop = Math.max(0, st.hop - dt * 1.6);
-        var hop = RM ? 0 : Math.sin(st.hop * Math.PI) * .09;
-        G.crown.p = [0, hop, .16]; G.crown.r = [0, 0, (RM ? 0 : Math.sin(st.t * 1.3 + .5) * .035) + hop * .9];
-        var shine = RM ? -9 : ((st.t * .35) % 1.6) * 1.8 - .6;
-        G.crownMat.shine = shine; G.hornL.mat.shine = shine - .35; G.hornR.mat.shine = shine - .7;
-        // horns sway a touch out of phase with the breathing
-        G.hornL.r = [0, 0, RM ? 0 : Math.sin(st.t * 1.7 - .4) * .025]; G.hornR.r = [0, 0, RM ? 0 : -Math.sin(st.t * 1.7 - .4) * .025];
-        // every so often he waves on his own
-        st.nextWave -= dt; if (st.nextWave <= 0 && !RM) { st.wave = 1; st.nextWave = 9 + Math.random() * 8; }
-        st.wave = Math.max(0, st.wave - dt * .55);
-        var wv = Math.sin(st.wave * Math.PI);
-        G.arm.r = [0, 0, (RM ? 0 : Math.sin(st.t * 2.3) * .05) + st.happy * Math.sin(st.t * 16) * .22 + st.happy * .12 + wv * (.16 + Math.sin(st.t * 9) * .14)];
-      }
-      // eye tracking relative to monster screen position
-      var mp = E.project(mon.root.p), r = cv.getBoundingClientRect();
-      var ex = clamp(((st.lx * .5 + .5) * r.width - mp[0]) / (r.width * .35), -1, 1), ey = clamp(((-st.ly * .5 + .5) * r.height - mp[1]) / (r.height * .35), -1, 1);
-      mon.look.r = [ey * .42, ex * .55 - (st.cur.r + st.lx * .28) * .6, 0];
-      if (mon.model) mon.model.iris.p = [ex * mon.model.lim[1], -ey * mon.model.lim[0], .012];
-      // blink
-      st.nextBlink -= dt; if (st.nextBlink <= 0 && !RM) { st.blink = 1; st.nextBlink = 2.2 + Math.random() * 3.8; if (Math.random() < .2) st.nextBlink = .28; }
-      st.blink = Math.max(0, st.blink - dt * 7);
-      var bl = st.blink > 0 ? Math.sin(st.blink * Math.PI) : 0;
-      mon.lid.r = [lerp(-.55, 1.42, bl), 0, 0];
-      if (mon.model) mon.model.eye.s = [1, 1 - bl * .94, 1];
-      // happy mouth
-      st.happy = Math.max(0, st.happy - dt * .7);
-      mon.mouth.s = [1 + st.happy * .12, 1 + st.happy * .5, 1];
-      mon.tongue.p = [Math.sin(st.t * 9) * .03 * st.happy, -.08, .13];
-      mon.pupil.s = [1 + st.happy * .3, 1 + st.happy * .3, .45];
-      // coins orbit
-      coins.forEach(function (c) { var a = c.a0 + st.t * .35 * (RM ? 0 : 1); c.p = [Math.cos(a) * c.rr, Math.sin(a * 2) * .25, Math.sin(a) * c.rr]; c.r = [st.t * c.sp, st.t * c.sp * .7, 0]; });
-      burst.forEach(function (c) {
-        if (!c.visible) return; c.life += dt; c.v[1] -= .0045 * f60; c.p = [c.p[0] + c.v[0] * f60 * c.k, c.p[1] + c.v[1] * f60 * c.k, c.p[2] + c.v[2] * f60 * c.k]; c.r = [c.r[0] + c.rv[0] * f60, c.r[1] + c.rv[1] * f60, 0];
-        if (c.life > 2.4) c.visible = false;
-      });
-      // sparkles
-      for (var i = 0; i < sp.length; i++) {
-        var s = sp[i]; s.y += RM ? 0 : s.v; s.ph += dt; if (s.y > 5) s.y = -5;
-        P.pos[i*3] = s.x + Math.sin(s.ph * .7) * .2; P.pos[i*3+1] = s.y; P.pos[i*3+2] = s.z;
-        var tw = .35 + .65 * Math.abs(Math.sin(s.ph * 1.3)); P.size[i] = (s.gold ? .09 : .07) * (.6 + tw);
-        var cc = s.gold ? [1, .72, .2] : [.6, .4, 1]; P.col[i*3] = cc[0]*tw*.55; P.col[i*3+1] = cc[1]*tw*.55; P.col[i*3+2] = cc[2]*tw*.55;
-      }
-      E.render(P);
-      if (shadow) {
-        var fp = E.project([mon.root.p[0], mon.root.p[1] - (mon.model ? mon.model.bottom - .05 : 1.15) * sc - st.jump * .42 * sc, 0]), w = 2.1 * sc / hh * r.height * .5;
-        shadow.style.transform = 'translate(' + (fp[0] - w) + 'px,' + (fp[1] - w * .12) + 'px) scale(' + Math.max(.4, 1 - st.jump * .8) + ')';
-        shadow.style.width = (w * 2) + 'px'; shadow.style.height = (w * .24) + 'px'; shadow.style.opacity = Math.max(.15, .75 - st.jump * 1.5).toFixed(2);
-      }
-      if (bub) { var hp = E.project([mon.root.p[0] - .55 * sc, mon.root.p[1] + 1.55 * sc, 0]); var bw = bub.firstChild.offsetWidth || 0, bh = bub.firstChild.offsetHeight || 0; bub.style.transform = 'translate(' + Math.round(clamp(hp[0], bw + 8, innerWidth - 8)) + 'px,' + Math.round(Math.max(hp[1], bh + 66 + (hr ? Math.min(0, hr.top) : 0))) + 'px)'; }
-      requestAnimationFrame(frame);
-    }
-    document.addEventListener('visibilitychange', function () { if (document.hidden) running = false; else if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } });
-    requestAnimationFrame(frame);
-    window.__lair = { E: E, mon: mon, cheer: cheer, st: st };
-    return E;
   }
 
   /* ---------------- Fortune Wheel ---------------- */
@@ -616,14 +316,10 @@
     for (var i = 0; i < 8; i++) { var a = i / 8 * Math.PI * 2 + Math.PI / 8; E.add(pegG, MAT.gold, spin, [Math.cos(a) * 1.5, Math.sin(a) * 1.5, .14], [Math.PI/2, 0, 0]); }
     var bulbs = [], bG = E.mesh(sphere(.055, 14, 10));
     for (var j = 0; j < 24; j++) { var b = j / 24 * Math.PI * 2, m = { col: srgb('#fff1c2'), rough: .1, emit: .2 }; E.add(bG, m, tilt, [Math.cos(b) * 1.68, Math.sin(b) * 1.68, .17]); bulbs.push(m); }
-    // hub = a mini monster eye
+    // hub = a gold crown coin
     var hub = E.group(tilt, [0, 0, .12]);
     E.add(E.mesh(cyl(.34, .38, .1, 48, true)), MAT.gold, hub, [0, 0, 0], [Math.PI/2, 0, 0]);
-    E.add(E.mesh(sphere(.27, 36, 24)), MAT.eyeW, hub, [0, 0, .08], [0, 0, 0], [1, 1, .7]);
-    var hl = E.group(hub, [0, 0, .08]);
-    E.add(E.mesh(sphere(.13, 28, 18)), MAT.iris, hl, [0, 0, .17], [0, 0, 0], [1, 1, .4]);
-    E.add(E.mesh(sphere(.06, 18, 12)), MAT.pupil, hl, [0, 0, .215], [0, 0, 0], [1, 1, .4]);
-    E.add(E.mesh(sphere(.025, 10, 8)), MAT.glint, hub, [.07, .07, .3]);
+    E.add(E.mesh(disc(.33, 48)), { col: [1, 1, 1], rough: .3, metal: .4, emit: .16, tex: E.texture(coinTexture()) }, hub, [0, 0, .056]);
     // pointer
     var ptr = E.group(tilt, [0, 1.82, .22]);
     E.add(E.mesh(cyl(0, .17, .38, 4, true)), { col: srgb('#ff3b6b'), rough: .25, emit: .1 }, ptr, [0, -.05, 0], [Math.PI, Math.PI/4, 0], [1, 1, .5]);
@@ -651,7 +347,6 @@
         if (t >= 1) {
           busy = false; btn.disabled = false; var s = SEG[spin.k][0];
           out.textContent = 'Demo result: ' + s + '. Claim your real daily spin after you sign up.';
-          window.dispatchEvent(new CustomEvent('monster:cheer', { detail: { big: true } }));
           sp = []; for (var q = 0; q < P.max; q++) { var a2 = Math.random() * Math.PI * 2, v = .02 + Math.random() * .05; sp.push({ x: 0, y: 1.6, z: .5, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v + .03, life: 0, c: Math.random() < .6 ? [1, .75, .25] : [.75, .5, 1] }); }
         }
       }
@@ -659,7 +354,6 @@
       spin.r = [0, 0, ang];
       ptr.r = [0, 0, Math.sin(tick * Math.PI) * -.35];
       tilt.r = [-.22 - my * .08, mx * .18, 0];
-      hl.r = [-my * .5, mx * .6, 0];
       var tt = now / 1000; bulbs.forEach(function (m, i) { var on = busy ? ((i + Math.floor(tt * 14)) % 3 === 0) : (Math.sin(tt * 2 + i * .7) > .2); m.emit = on ? 2.4 : .25; });
       P.count = sp.length;
       for (var i = 0; i < sp.length; i++) { var s2 = sp[i]; s2.life += dt; s2.vy -= .0018; s2.x += s2.vx; s2.y += s2.vy; P.pos[i*3] = s2.x; P.pos[i*3+1] = s2.y; P.pos[i*3+2] = s2.z; P.size[i] = .14 * Math.max(0, 1 - s2.life / 1.8); P.col[i*3] = s2.c[0]; P.col[i*3+1] = s2.c[1]; P.col[i*3+2] = s2.c[2]; }
@@ -672,7 +366,7 @@
     window.__wheel = { go: go };
   }
 
-  function boot() { initLair(); initWheel(); }
+  function boot() { initWheel(); }
   if (document.fonts && document.fonts.load) Promise.race([document.fonts.load('bold 40px Adventor'), new Promise(function (r) { setTimeout(r, 1200); })]).then(boot, boot);
   else boot();
 })();

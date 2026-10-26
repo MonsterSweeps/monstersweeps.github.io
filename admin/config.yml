@@ -1,0 +1,49 @@
+# Decap CMS for www.monsters.win. Every save is a commit to `main`; GitHub Pages republishes in about a minute.
+# Login goes through the small OAuth worker in tools/decap-oauth-worker.js (setup steps in _SETUP-NOTES.md).
+backend:
+  name: github
+  repo: MonsterSweeps/monstersweeps.github.io
+  branch: main
+  base_url: https://REPLACE-WITH-YOUR-WORKER.workers.dev   # the deployed worker's URL, no trailing slash
+  auth_endpoint: auth
+
+site_url: https://www.monsters.win
+display_url: https://www.monsters.win
+logo_url: /mark.svg
+
+media_folder: img/games        # where uploaded images are stored in the repo
+public_folder: /img/games      # how the site refers to them
+
+collections:
+  - name: homepage
+    label: Homepage
+    files:
+      - name: games
+        label: Hero games
+        description: The first 6 games show as floating tiles in the homepage hero. Drag to reorder.
+        file: data/games.json
+        format: json
+        fields:
+          - label: Games
+            name: games
+            widget: list
+            summary: "{{fields.name}} · {{fields.provider}}"
+            fields:
+              - { label: Game name, name: name, widget: string }
+              - { label: Studio, name: provider, widget: string, required: false }
+              - label: Image
+                name: image
+                widget: image
+                required: false
+                hint: Square 1:1, at least 600 × 600 px (JPG or WebP). Leave empty to show the placeholder.
+              - label: Play link
+                name: url
+                widget: string
+                required: false
+                hint: Leave empty to link to https://monstersweeps.net/
+                pattern: ['^(https://\S+)?$', 'Use a full link starting with https://']
+              - label: Badge
+                name: badge
+                widget: select
+                required: false
+                options: [New, Hot, Live]
