@@ -24,9 +24,9 @@ The page reads /data/leaderboard.json. Replace it with live data in the same sha
 Point sweeps.monster and monster.win at https://www.monsters.win with a 301 redirect. Make sure monsters.win (no www) also redirects to https://www.monsters.win.
 
 ## Game tiles CMS (www.monsters.win/admin)
-The six floating game tiles in the homepage hero come from /data/games.json. Edit them in the CMS at /admin:
+The sliding game rows in the homepage hero come from /data/games.json. Edit them in the CMS at /admin:
 add or reorder games, type the name and studio, upload a square image (1:1, at least 600 x 600) and set the play link.
-The first 6 games show. Each save is a commit to `main`, and the site updates about a minute later.
+All games show in the three sliding rows. Each save is a commit to `main`, and the site updates about a minute later.
 Images are stored in /img/games.
 
 First merge this redesign into `main` (the CMS edits `main`). Then set up login once (about 10 minutes):

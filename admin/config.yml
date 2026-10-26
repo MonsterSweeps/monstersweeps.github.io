@@ -20,7 +20,7 @@ collections:
     files:
       - name: games
         label: Hero games
-        description: The first 6 games show as floating tiles in the homepage hero. Drag to reorder.
+        description: All games slide through the three rows in the homepage hero (game 1 in row 1, game 2 in row 2, game 3 in row 3, then repeat). Drag to reorder.
         file: data/games.json
         format: json
         fields:
