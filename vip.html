@@ -1,37 +1,33 @@
-<!DOCTYPE html><html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VIP Club | MonsterSweeps Sweepstakes Casino Rewards</title><meta name="description" content="Climb five VIP tiers from Bronze to Diamond with XP. Unlock gifts, vouchers and 24-hour dedicated support. VIP is by invitation only. 21+."><style>/* ==========================================================
+<!DOCTYPE html><html lang="en-US"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VIP Club | MonsterSweeps Sweepstakes Casino Rewards</title><meta name="description" content="Climb five VIP tiers from Bronze to Diamond with XP. Unlock gifts, vouchers and 24-hour dedicated support. VIP is by invitation only. 21+."><link rel="preload" href="/fonts/adventor-bold.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="/css/tokens.css"><style>/* ==========================================================
    MonsterSweeps VIP Club | master page | dark + gold theme
    ========================================================== */
 :root {
-  --bg: #0a0a14; --bg2: #0e0e1f; --panel: #13132a; --panel2: #1a1a38; --border: #2b2b4d;
-  --text: #d8d8ea; --muted: #9696b4; --accent: #f5b301; --accent2: #8a5cf6; --ok: #3ecf8e;
-  --bronze: #d58a45; --silver: #cfd5e2; --gold: #f5b301; --platinum: #8fd0ff; --diamond: #c4a8ff;
+  --bg: #12082a; --bg2: #1a0c3a; --panel: #1c0d42; --panel2: #26125a; --border: #3a2470;
+  --text: #e4dcf7; --muted: #b9abd9; --accent: #ffc23d; --accent2: #8b5cf6; --ok: #3fd27a;
+  --bronze: #d58a45; --silver: #cfd5e2; --gold: #ffc23d; --platinum: #8fd0ff; --diamond: #c4a8ff;
   --radius: 16px; --maxw: 1120px;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --display: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font: InterW,Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display: Adventor,"Avenir Next","Century Gothic",Futura,sans-serif;
   color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; color: var(--text); font-family: var(--font); font-size: 17px; line-height: 1.75; overflow-wrap: break-word;
-  background:
-    radial-gradient(900px 520px at 85% -5%, rgba(138, 92, 246, .2), transparent 60%),
-    radial-gradient(700px 420px at -5% 35%, rgba(245, 179, 1, .08), transparent 60%),
-    var(--bg);
-  background-attachment: fixed;
+  background-color: var(--bg);
 }
 a { color: var(--accent); }
-a:hover { color: #ffd25a; }
+a:hover { color: #ffe08a; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-::selection { background: var(--accent); color: #111; }
-.skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--accent); color: #111; padding: 10px 16px; border-radius: 8px; font-weight: 700; text-decoration: none; }
+::selection { background: var(--accent); color:#2a1300; }
+.skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--accent); color:#2a1300; padding: 10px 16px; border-radius: 8px; font-weight: 700; text-decoration: none; }
 .skip-link:focus { top: 12px; }
-.ph { background: rgba(138, 92, 246, .18); border-radius: 4px; padding: 0 5px; color: #d9c8ff; }
+.ph { background: rgba(139,92,246, .18); border-radius: 4px; padding: 0 5px; color: #d9c8ff; }
 
 /* top bar + nav */
 .bar {
   position: sticky; top: 0; z-index: 60; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  background: rgba(10, 10, 20, .82); border-bottom: 1px solid var(--border);
+  background: rgba(18,8,42, .82); border-bottom: 1px solid var(--border);
 }
 .bar-in { max-width: var(--maxw); margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 16px; }
 .brand { font-family: var(--display); font-weight: 800; font-size: 19px; color: #fff; text-decoration: none; white-space: nowrap; }
@@ -40,14 +36,14 @@ a:hover { color: #ffd25a; }
 .nav::-webkit-scrollbar { display: none; }
 .nav a { white-space: nowrap; padding: 7px 13px; border-radius: 999px; font-size: 13.5px; text-decoration: none; color: var(--muted); border: 1px solid transparent; transition: all .2s; }
 .nav a:hover { color: #fff; background: rgba(255, 255, 255, .05); }
-.nav a.active { color: #111; background: var(--accent); font-weight: 700; }
+.nav a.active { color:#2a1300; background: var(--accent); font-weight: 700; }
 .badge-21 { font-size: 12px; font-weight: 800; letter-spacing: .08em; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
 
 /* hero */
 .hero { position: relative; overflow: hidden; isolation: isolate; border-bottom: 1px solid var(--border); }
 .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 .orb { position: absolute; z-index: -2; right: -160px; top: -140px; width: 560px; height: 560px; border-radius: 50%; filter: blur(80px); opacity: .55; animation: spin 40s linear infinite;
-  background: conic-gradient(from 0deg, rgba(245, 179, 1, .5), rgba(138, 92, 246, .5), rgba(143, 208, 255, .22), rgba(245, 179, 1, .5)); }
+  background: conic-gradient(from 0deg, rgba(255,194,61, .5), rgba(139,92,246, .5), rgba(143, 208, 255, .22), rgba(255,194,61, .5)); }
 .hero-in { max-width: var(--maxw); margin: 0 auto; padding: 54px 20px 64px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 30px; align-items: center; }
 .eyebrow { display: inline-block; font-size: 12.5px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
 .hero h1 {
@@ -55,19 +51,19 @@ a:hover { color: #ffd25a; }
   background: linear-gradient(100deg, #fff 0%, #fff 30%, var(--accent) 52%, #fff 72%, var(--diamond) 100%); background-size: 220% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 9s ease-in-out infinite alternate;
 }
-.lead { font-size: clamp(17px, 2.3vw, 21px); color: #c4c4dc; max-width: 600px; margin: 0 0 26px; }
+.lead { font-size: clamp(17px, 2.3vw, 21px); color: #cfc3ea; max-width: 600px; margin: 0 0 26px; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; font: inherit; font-size: 15px; font-weight: 700; line-height: 1.2;
-  padding: 13px 24px; border-radius: 12px; border: 1px solid var(--accent); background: var(--accent); color: #111; transition: transform .15s, box-shadow .2s, background .2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; font: 700 15.5px/1.2 var(--display); letter-spacing: .01em;
+  padding: 14px 24px; border-radius: 14px; border: 0; background: var(--coin); color:#2a1300; box-shadow: var(--coinShadow); transition: transform .15s, box-shadow .2s, background .2s;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(245, 179, 1, .3); background: #ffc72c; color: #111; }
-.btn.ghost { background: transparent; color: var(--accent); }
-.btn.ghost:hover { background: rgba(245, 179, 1, .12); box-shadow: none; color: var(--accent); }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--coinShadowHi); color:#2a1300; }
+.btn.ghost { background: rgba(255,255,255,.04); color: #fff; box-shadow: inset 0 0 0 1.5px rgba(201,173,255,.45); }
+.btn.ghost:hover { background: rgba(201,173,255,.12); box-shadow: inset 0 0 0 1.5px rgba(201,173,255,.6); color: #fff; }
 .stats { display: flex; flex-wrap: wrap; gap: 10px 26px; color: var(--muted); font-size: 14px; }
 .stats b { display: block; font-family: var(--display); font-size: 26px; color: #fff; line-height: 1.2; }
 .gem-wrap { display: grid; place-items: center; }
-.gem { width: min(100%, 320px); height: auto; filter: drop-shadow(0 18px 40px rgba(138, 92, 246, .45)); animation: float 6s ease-in-out infinite; }
+.gem { width: min(100%, 320px); height: auto; filter: drop-shadow(0 18px 40px rgba(139,92,246, .45)); animation: float 6s ease-in-out infinite; }
 .gem .shine { animation: sweep 5s ease-in-out infinite; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -81,7 +77,7 @@ a:hover { color: #ffd25a; }
 section.block { padding: 64px 0 0; }
 .kick { font-size: 12.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 8px; display: block; }
 h2.title { font-family: var(--display); font-weight: 800; letter-spacing: -.01em; line-height: 1.15; color: #fff; font-size: clamp(27px, 4.2vw, 40px); margin: 0 0 12px; }
-.sub { color: #b8b8d2; max-width: 700px; margin: 0 0 28px; }
+.sub { color: #c2b6e0; max-width: 700px; margin: 0 0 28px; }
 strong { color: #fff; }
 
 /* tier stairs */
@@ -108,8 +104,8 @@ strong { color: #fff; }
 .xp-read { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .xp-read strong { font-family: var(--display); font-size: clamp(30px, 6vw, 44px); color: var(--accent); }
 input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 99px; background: var(--border); margin: 16px 0 10px; outline-offset: 8px; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; cursor: grab; background: radial-gradient(circle at 35% 30%, #fff3b0, var(--accent) 60%, #b98400); border: 2px solid #fff3; box-shadow: 0 0 0 5px rgba(245, 179, 1, .2); }
-input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; cursor: grab; border: 2px solid #fff3; background: radial-gradient(circle at 35% 30%, #fff3b0, var(--accent) 60%, #b98400); box-shadow: 0 0 0 5px rgba(245, 179, 1, .2); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; cursor: grab; background: radial-gradient(circle at 35% 30%, #fff3b0, var(--accent) 60%, #b77a10); border: 2px solid #fff3; box-shadow: 0 0 0 5px rgba(255,194,61, .2); }
+input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; cursor: grab; border: 2px solid #fff3; background: radial-gradient(circle at 35% 30%, #fff3b0, var(--accent) 60%, #b77a10); box-shadow: 0 0 0 5px rgba(255,194,61, .2); }
 .prog { height: 10px; background: var(--border); border-radius: 99px; overflow: hidden; margin: 8px 0 6px; }
 .prog i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .35s ease; }
 .fine { font-size: 13.5px; color: var(--muted); margin: 10px 0 0; }
@@ -132,7 +128,7 @@ input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius
 .vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .pct { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 8vw, 58px); line-height: 1; color: #fff; }
 .pct small { font-size: .38em; color: var(--muted); font-weight: 600; display: block; margin-top: 6px; letter-spacing: 0; }
-.vs .card.vip { border-color: rgba(245, 179, 1, .6); background: linear-gradient(180deg, rgba(245, 179, 1, .12), var(--panel)); }
+.vs .card.vip { border-color: rgba(255,194,61, .6); background: linear-gradient(180deg, rgba(255,194,61, .12), var(--panel)); }
 .calc { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-top: 18px; }
 .field { display: grid; gap: 6px; }
 .field label { font-size: 14px; color: var(--muted); }
@@ -140,7 +136,7 @@ input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius
 .field .in span { padding: 0 0 0 14px; color: var(--accent); font-weight: 800; }
 .field input { width: 130px; min-width: 0; background: transparent; border: 0; color: #fff; font: inherit; font-size: 18px; font-weight: 700; padding: 12px 14px 12px 8px; }
 .field input:focus { outline: none; }
-.field .in:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(245, 179, 1, .2); }
+.field .in:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,194,61, .2); }
 .res { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; min-width: 150px; text-align: center; }
 .res b { display: block; font-family: var(--display); font-size: 26px; color: #fff; line-height: 1.2; }
 .res span { font-size: 13px; color: var(--muted); }
@@ -156,20 +152,20 @@ input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius
 /* faq */
 .faq { display: grid; gap: 10px; }
 .faq details { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; transition: border-color .2s; }
-.faq details[open] { border-color: rgba(245, 179, 1, .5); }
+.faq details[open] { border-color: rgba(255,194,61, .5); }
 .faq summary { list-style: none; cursor: pointer; padding: 16px 52px 16px 18px; position: relative; color: #fff; font-weight: 700; line-height: 1.5; }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after { content: "+"; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--accent); transition: transform .25s; }
 .faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
-.faq .body { padding: 0 18px 16px; color: #c4c4dc; font-size: 16px; animation: fadein .3s ease; }
+.faq .body { padding: 0 18px 16px; color: #cfc3ea; font-size: 16px; animation: fadein .3s ease; }
 .faq .body p { margin: 0; }
 
 /* cta + footer */
 .cta { margin: 64px auto 0; max-width: var(--maxw); padding: 0 20px; }
 .cta-card { border-radius: 24px; padding: clamp(30px, 5vw, 58px); text-align: center; border: 1px solid var(--border);
-  background: radial-gradient(620px 240px at 50% -20%, rgba(245, 179, 1, .3), transparent 70%), linear-gradient(135deg, #1c1346, #13132a 70%); }
+  background: radial-gradient(620px 240px at 50% -20%, rgba(255,194,61, .3), transparent 70%), linear-gradient(135deg, #2a1162, #1c0d42 70%); }
 .cta-card h2 { font-family: var(--display); font-size: clamp(27px, 4.6vw, 42px); color: #fff; margin: 0 0 10px; line-height: 1.15; }
-.cta-card p { margin: 0 auto 22px; max-width: 560px; color: #c4c4dc; }
+.cta-card p { margin: 0 auto 22px; max-width: 560px; color: #cfc3ea; }
 .cta-card small { display: block; margin-top: 16px; color: var(--muted); font-size: 12.5px; }
 footer.site { margin-top: 64px; border-top: 1px solid var(--border); padding: 28px 20px 40px; text-align: center; color: var(--muted); font-size: 13px; }
 footer.site p { margin: 6px auto; max-width: 780px; }
@@ -216,10 +212,10 @@ footer.site p { margin: 6px auto; max-width: 780px; }
 .gem-wrap { perspective: 900px; }
 .stage { position: relative; width: min(100%, 340px); aspect-ratio: 1; display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
   transform: rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)); transition: transform .25s ease-out; transform-style: preserve-3d; }
-.halo { position: absolute; inset: 14%; border-radius: 50%; background: radial-gradient(circle, rgba(245,179,1,.5), rgba(138,92,246,.32) 55%, transparent 72%); filter: blur(22px); animation: pulse 3.4s ease-in-out infinite; }
+.halo { position: absolute; inset: 14%; border-radius: 50%; background: radial-gradient(circle, rgba(255,194,61,.5), rgba(139,92,246,.32) 55%, transparent 72%); filter: blur(22px); animation: pulse 3.4s ease-in-out infinite; }
 .gem3d { position: relative; width: 68%; animation: float 5.5s ease-in-out infinite; }
-.gem3d .gem { width: 100%; display: block; animation: spinY 9s linear infinite; filter: drop-shadow(0 16px 30px rgba(138,92,246,.55)); transform-origin: 50% 50%; }
-.ring { position: absolute; inset: 4%; border-radius: 50%; border: 1px dashed rgba(245,179,1,.35); animation: spin 18s linear infinite; }
+.gem3d .gem { width: 100%; display: block; animation: spinY 9s linear infinite; filter: drop-shadow(0 16px 30px rgba(139,92,246,.55)); transform-origin: 50% 50%; }
+.ring { position: absolute; inset: 4%; border-radius: 50%; border: 1px dashed rgba(255,194,61,.35); animation: spin 18s linear infinite; }
 .ring.r2 { inset: 14%; border-color: rgba(143,208,255,.3); animation-duration: 26s; animation-direction: reverse; }
 .ring i { position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px 4px var(--accent); }
 .ring.r2 i { background: #dff3ff; box-shadow: 0 0 12px 4px var(--platinum); }
@@ -234,37 +230,37 @@ footer.site p { margin: 6px auto; max-width: 780px; }
 /* invite-only join block */
 .lock{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:5px 14px;margin-bottom:14px}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;text-align:left;margin:22px 0 0}
-.step{background:rgba(10,10,20,.55);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.step{background:rgba(18,8,42,.55);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
 .step b{font-family:var(--display);font-size:24px;color:var(--accent)}
-.step h3{margin:2px 0 4px;color:#fff;font-size:18px}.step p{margin:0;font-size:15px;color:#c4c4dc}
+.step h3{margin:2px 0 4px;color:#fff;font-size:18px}.step p{margin:0;font-size:15px;color:#cfc3ea}
 @media(max-width:760px){.steps{grid-template-columns:minmax(0,1fr)}}
-</style><link rel="canonical" href="https://www.monsters.win/vip.html"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#0a0a14"><meta property="og:type" content="website"><meta property="og:site_name" content="MonsterSweeps"><meta property="og:locale" content="en_US"><meta property="og:title" content="VIP Club | MonsterSweeps Sweepstakes Casino Rewards"><meta property="og:description" content="Climb five VIP tiers from Bronze to Diamond with XP. Unlock gifts, vouchers and 24-hour dedicated support. VIP is by invitation only. 21+."><meta property="og:url" content="https://www.monsters.win/vip.html"><meta property="og:image" content="https://www.monsters.win/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.monsters.win/"},{"@type":"ListItem","position":2,"name":"VIP Club","item":"https://www.monsters.win/vip.html"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I join VIP?","acceptedAnswer":{"@type":"Answer","text":"VIP is by invitation only. Players who reach Diamond (2,000 XP) are offered a place, and we may also invite players directly. There is no application form and no fee. Every player still starts at Bronze and climbs automatically as XP grows."}},{"@type":"Question","name":"I got an invitation. What now?","acceptedAnswer":{"@type":"Answer","text":"Sign in and open your invitation in your account. Accepting is free and optional. If you are not sure a message is genuine, only trust invitations shown inside your account and contact support@monstersweeps.net."}},{"@type":"Question","name":"Can I ask to be invited?","acceptedAnswer":{"@type":"Answer","text":"Invitations are decided by us, so requests cannot be accepted. The best way to be considered is to keep playing within your limits and climb the tiers."}},{"@type":"Question","name":"How do I earn XP?","acceptedAnswer":{"@type":"Answer","text":"XP comes from deposits, referral bonuses, Fortune Wheel spins and your sign-up bonus. Birthday bonuses, weekly rewards and VIP offers are game credit only and do not add XP."}},{"@type":"Question","name":"Is XP money?","acceptedAnswer":{"@type":"Answer","text":"No. XP is a loyalty score. It cannot be redeemed, sold or transferred. It only decides your tier."}},{"@type":"Question","name":"Do tiers expire or drop?","acceptedAnswer":{"@type":"Answer","text":"Tier review rules: [XP expiry and tier-review policy]."}},{"@type":"Question","name":"How does the VIP referral boost work?","acceptedAnswer":{"@type":"Answer","text":"Standard players earn 50% credit and 50% XP of a friend's first deposit. VIP referrers earn 80% credit and 80% XP. Tier required: [tier that counts as VIP]."}},{"@type":"Question","name":"Does the Fortune Wheel change with my tier?","acceptedAnswer":{"@type":"Answer","text":"Not for now. Every tier gets one free spin every 24 hours."}},{"@type":"Question","name":"Do I have to spend money to be VIP?","acceptedAnswer":{"@type":"Answer","text":"No purchase is necessary to play. See our Sweepstakes Rules for the free method of entry. Void where prohibited by law."}}]}</script><style>
-.gbar{position:sticky;top:0;z-index:70;background:rgba(10,10,20,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #2b2b4d;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.gbar.sc{background:rgba(10,10,20,.95)}
+</style><link rel="canonical" href="https://www.monsters.win/vip.html"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png"><link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#12082a"><meta property="og:type" content="website"><meta property="og:site_name" content="MonsterSweeps"><meta property="og:locale" content="en_US"><meta property="og:title" content="VIP Club | MonsterSweeps Sweepstakes Casino Rewards"><meta property="og:description" content="Climb five VIP tiers from Bronze to Diamond with XP. Unlock gifts, vouchers and 24-hour dedicated support. VIP is by invitation only. 21+."><meta property="og:url" content="https://www.monsters.win/vip.html"><meta property="og:image" content="https://www.monsters.win/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.monsters.win/"},{"@type":"ListItem","position":2,"name":"VIP Club","item":"https://www.monsters.win/vip.html"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I join VIP?","acceptedAnswer":{"@type":"Answer","text":"VIP is by invitation only. Players who reach Diamond (2,000 XP) are offered a place, and we may also invite players directly. There is no application form and no fee. Every player still starts at Bronze and climbs automatically as XP grows."}},{"@type":"Question","name":"I got an invitation. What now?","acceptedAnswer":{"@type":"Answer","text":"Sign in and open your invitation in your account. Accepting is free and optional. If you are not sure a message is genuine, only trust invitations shown inside your account and contact support@monstersweeps.net."}},{"@type":"Question","name":"Can I ask to be invited?","acceptedAnswer":{"@type":"Answer","text":"Invitations are decided by us, so requests cannot be accepted. The best way to be considered is to keep playing within your limits and climb the tiers."}},{"@type":"Question","name":"How do I earn XP?","acceptedAnswer":{"@type":"Answer","text":"XP comes from deposits, referral bonuses, Fortune Wheel spins and your sign-up bonus. Birthday bonuses, weekly rewards and VIP offers are game credit only and do not add XP."}},{"@type":"Question","name":"Is XP money?","acceptedAnswer":{"@type":"Answer","text":"No. XP is a loyalty score. It cannot be redeemed, sold or transferred. It only decides your tier."}},{"@type":"Question","name":"Do tiers expire or drop?","acceptedAnswer":{"@type":"Answer","text":"Tier review rules: [XP expiry and tier-review policy]."}},{"@type":"Question","name":"How does the VIP referral boost work?","acceptedAnswer":{"@type":"Answer","text":"Standard players earn 50% credit and 50% XP of a friend's first deposit. VIP referrers earn 80% credit and 80% XP. Tier required: [tier that counts as VIP]."}},{"@type":"Question","name":"Does the Fortune Wheel change with my tier?","acceptedAnswer":{"@type":"Answer","text":"Not for now. Every tier gets one free spin every 24 hours."}},{"@type":"Question","name":"Do I have to spend money to be VIP?","acceptedAnswer":{"@type":"Answer","text":"No purchase is necessary to play. See our Sweepstakes Rules for the free method of entry. Void where prohibited by law."}}]}</script><style>
+.gbar{position:sticky;top:0;z-index:70;background:rgba(18,8,42,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #3a2470;font-family:InterW,Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.gbar.sc{background:rgba(18,8,42,.95)}
 .gbar-in{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px;position:relative}
-.gbrand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:#fff;text-decoration:none;white-space:nowrap}.gbrand b{color:#f5b301}
-.gnav{display:flex;gap:2px;flex:1;margin-left:6px}.gnav a{white-space:nowrap;padding:7px 12px;border-radius:999px;font-size:14.5px;text-decoration:none;color:#9696b4;transition:color .2s,background .2s}.gnav a:hover{color:#fff;background:rgba(255,255,255,.06)}.gnav a.on{color:#111;background:#f5b301;font-weight:700}
-.gcta{display:flex;align-items:center;gap:8px}.gage{font-size:12px;font-weight:800;letter-spacing:.08em;border:1px solid #f5b301;color:#f5b301;border-radius:999px;padding:4px 10px}
-.gbtn{display:inline-flex;align-items:center;font-weight:700;font-size:14px;text-decoration:none;padding:8px 16px;border-radius:12px;border:1px solid #f5b301;background:#f5b301;color:#111;white-space:nowrap}.gbtn:hover{background:#ffc72c;color:#111}.gbtn.ghost{background:transparent;color:#f5b301}
-.gmenu{display:none;background:transparent;color:#d8d8ea;border:1px solid #2b2b4d;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;margin-left:auto}
-.bar.sub{top:var(--gh,61px);z-index:60;background:rgba(10,10,20,.95)}.bar.sub .bar-in{padding-top:6px;padding-bottom:6px}
+.gbrand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:#fff;text-decoration:none;white-space:nowrap}.gbrand b{color:#ffc23d}
+.gnav{display:flex;gap:2px;flex:1;margin-left:6px}.gnav a{white-space:nowrap;padding:7px 12px;border-radius:999px;font-size:14.5px;text-decoration:none;color:#b9abd9;transition:color .2s,background .2s}.gnav a:hover{color:#fff;background:rgba(255,255,255,.06)}.gnav a.on{color:var(--gold);background:rgba(255,194,61,.1);box-shadow:inset 0 0 0 1px var(--goldLine);font-weight:600}
+.gcta{display:flex;align-items:center;gap:8px}.gage{font-size:12px;font-weight:800;letter-spacing:.08em;border:1px solid #ffc23d;color:#ffc23d;border-radius:999px;padding:4px 10px}
+.gbtn{display:inline-flex;align-items:center;font:700 14px/1.2 var(--d);letter-spacing:.01em;text-decoration:none;padding:9px 16px;border-radius:12px;border:0;background:var(--coin);color:#2a1300;box-shadow:var(--coinShadow);white-space:nowrap;transition:transform .15s,box-shadow .2s}.gbtn:hover{color:#2a1300;transform:translateY(-1px);box-shadow:var(--coinShadowHi)}.gbtn.ghost{background:rgba(255,255,255,.04);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(201,173,255,.45)}.gbtn.ghost:hover{color:#fff;background:rgba(201,173,255,.12);box-shadow:inset 0 0 0 1.5px rgba(201,173,255,.6)}
+.gmenu{display:none;background:transparent;color:#e4dcf7;border:1px solid #3a2470;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;margin-left:auto}
+.bar.sub{top:var(--gh,61px);z-index:60;background:rgba(18,8,42,.95);max-width:none;margin:0;color:inherit}.bar.sub .bar-in{padding-top:6px;padding-bottom:6px}
 main section[id],main [id].block{scroll-margin-top:130px}
-.gfoot{margin-top:72px;border-top:1px solid #2b2b4d;padding:40px 20px 44px;color:#9696b4;font-size:14px;background:linear-gradient(180deg,transparent,rgba(19,19,42,.6))}
-.gfoot-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}.gfoot h4{color:#fff;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px}.gfoot ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.gfoot a{color:#d8d8ea;text-decoration:none}.gfoot a:hover{color:#f5b301}.gfoot p{margin:8px 0}
-.glegal{max-width:1180px;margin:28px auto 0;padding-top:20px;border-top:1px solid #2b2b4d;font-size:12.5px}
-@media(max-width:1120px){.gnav{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:rgba(10,10,20,.97);border-bottom:1px solid #2b2b4d;padding:10px 16px}.gnav.open{display:flex}.gmenu{display:block}}
+.gfoot{margin-top:72px;border-top:1px solid #3a2470;padding:40px 20px 44px;color:#b9abd9;font-size:14px;background:linear-gradient(180deg,transparent,rgba(30,13,68,.6))}
+.gfoot-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}.gfoot h4{color:#fff;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px}.gfoot ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.gfoot a{color:#e4dcf7;text-decoration:none}.gfoot a:hover{color:#ffc23d}.gfoot p{margin:8px 0}
+.glegal{max-width:1180px;margin:28px auto 0;padding-top:20px;border-top:1px solid #3a2470;font-size:12.5px}
+@media(max-width:1120px){.gnav{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:rgba(18,8,42,.97);border-bottom:1px solid #3a2470;padding:10px 16px}.gnav.open{display:flex}.gmenu{display:block}}
 @media(max-width:900px){.gfoot-in{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.gbar-in{padding:8px 14px}.gage,.gcta .ghost{display:none}.gfoot-in{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:430px){.gcta .gbtn{display:none}}
 </style></head><body>
 <a class="skip-link" href="#tiers">Skip to content</a>
-<header class="gbar"><div class="gbar-in"><a class="gbrand" href="/" aria-label="MonsterSweeps home"><img class="lg" src="/logo-96.png" width="40" height="40" alt=""><span>Monster<b>Sweeps</b></span></a><button class="gmenu" id="gmenu" aria-expanded="false" aria-controls="gnav">Menu</button><nav id="gnav" class="gnav" aria-label="Main"><a href="/">Home</a><a href="/#how">How it works</a><a href="/leaderboard.html">Leaderboard</a><a href="/vip.html" class="on" aria-current="page">VIP</a><a href="/refer-a-friend.html">Refer a Friend</a><a href="/blog/">Blog</a><a href="/contact.html">Help</a></nav><div class="gcta"><span class="gage">21+</span><a class="gbtn ghost" href="https://monstersweeps.net/">Log in</a><a class="gbtn" href="https://monstersweeps.net/">Play free</a></div></div></header><div class="bar sub"><div class="bar-in"><nav class="nav" aria-label="Page sections"><a href="#tiers">Tiers</a><a href="#earn">Earn XP</a><a href="#refer">Referral boost</a><a href="#smart">Play smart</a><a href="#faq">FAQ</a><a href="#join">Join VIP</a></nav></div></div>
-<main id="top"><div class="hero"><canvas id="sparkles" aria-hidden="true"></canvas><div class="orb"></div><div class="hero-in"><div><span class="eyebrow">VIP Club</span><h1>Climb. Unlock. Shine.</h1><p class="lead">Five tiers, one simple currency: XP. Play, refer friends and spin the wheel to rise from Bronze to Diamond.</p><div class="cta-row"><a class="btn" href="https://monstersweeps.net/">Join MonsterSweeps</a><a class="btn ghost" href="#tiers">Explore tiers</a></div><div class="stats"><span><b>5</b>tiers</span><span><b>2,000</b>XP to Diamond</span><span><b>24h</b>free wheel spin</span></div></div><div class="gem-wrap"><div class="stage" id="stage" title="Tap me"><div class="halo"></div><div class="ring r1"><i></i></div><div class="ring r2"><i></i></div><div class="gem3d"><svg class="gem" viewBox="0 0 200 200" role="img" aria-label="VIP diamond"><defs><linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d6"/><stop offset="1" stop-color="#f5b301"/></linearGradient><linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd25a"/><stop offset="1" stop-color="#b87d00"/></linearGradient><linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4a8ff"/><stop offset="1" stop-color="#6a3fd6"/></linearGradient><linearGradient id="gD" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5b301"/><stop offset="1" stop-color="#8a5cf6"/></linearGradient><clipPath id="gc"><path d="M60 40h80l40 50-80 100L20 90z"/></clipPath></defs>
+<header class="gbar"><div class="gbar-in"><a class="gbrand" href="/" aria-label="MonsterSweeps home"><img class="lg" src="/mark.svg" width="40" height="40" alt=""><span>Monster<b>Sweeps</b></span></a><button class="gmenu" id="gmenu" aria-expanded="false" aria-controls="gnav">Menu</button><nav id="gnav" class="gnav" aria-label="Main"><a href="/">Home</a><a href="/#how">How it works</a><a href="/leaderboard.html">Leaderboard</a><a href="/vip.html" class="on" aria-current="page">VIP</a><a href="/refer-a-friend.html">Refer a Friend</a><a href="/blog/">Blog</a><a href="/contact.html">Help</a></nav><div class="gcta"><span class="gage">21+</span><a class="gbtn ghost" href="https://monstersweeps.net/">Log in</a><a class="gbtn" href="https://monstersweeps.net/">Play free</a></div></div></header><div class="bar sub"><div class="bar-in"><nav class="nav" aria-label="Page sections"><a href="#tiers">Tiers</a><a href="#earn">Earn XP</a><a href="#refer">Referral boost</a><a href="#smart">Play smart</a><a href="#faq">FAQ</a><a href="#join">Join VIP</a></nav></div></div>
+<main id="top"><div class="hero"><canvas id="sparkles" aria-hidden="true"></canvas><div class="orb"></div><div class="hero-in"><div><span class="eyebrow">VIP Club</span><h1>Climb. Unlock. Shine.</h1><p class="lead">Five tiers, one simple currency: XP. Play, refer friends and spin the wheel to rise from Bronze to Diamond.</p><div class="cta-row"><a class="btn" href="https://monstersweeps.net/">Join MonsterSweeps</a><a class="btn ghost" href="#tiers">Explore tiers</a></div><div class="stats"><span><b>5</b>tiers</span><span><b>2,000</b>XP to Diamond</span><span><b>24h</b>free wheel spin</span></div></div><div class="gem-wrap"><div class="stage" id="stage" title="Tap me"><div class="halo"></div><div class="ring r1"><i></i></div><div class="ring r2"><i></i></div><div class="gem3d"><svg class="gem" viewBox="0 0 200 200" role="img" aria-label="VIP diamond"><defs><linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d6"/><stop offset="1" stop-color="#ffc23d"/></linearGradient><linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd25a"/><stop offset="1" stop-color="#b87d00"/></linearGradient><linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4a8ff"/><stop offset="1" stop-color="#6a3fd6"/></linearGradient><linearGradient id="gD" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc23d"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient><clipPath id="gc"><path d="M60 40h80l40 50-80 100L20 90z"/></clipPath></defs>
 <polygon points="60,40 140,40 125,90 75,90" fill="url(#gA)"/><polygon points="60,40 75,90 20,90" fill="#e9a400"/><polygon points="140,40 180,90 125,90" fill="#ffc72c"/><polygon points="20,90 75,90 100,190" fill="url(#gC)"/><polygon points="75,90 125,90 100,190" fill="url(#gB)"/><polygon points="125,90 180,90 100,190" fill="url(#gD)"/>
 <path d="M60 40h80l40 50-80 100L20 90zM20 90h160M75 90l25 100 25-100M60 40l15 50M140 40l-15 50" stroke="#fff" stroke-opacity=".5" stroke-width="1.2" fill="none"/><g clip-path="url(#gc)"><rect class="shine" x="10" y="20" width="26" height="190" fill="#fff" opacity="0" transform="rotate(20 100 100)"/></g></svg></div><b class="tw t1"></b><b class="tw t2"></b><b class="tw t3"></b><b class="tw t4"></b></div></div></div></div>
 <div class="wrap">
 <section class="block reveal" id="tiers"><span class="kick">The ladder</span><h2 class="title">Five tiers. Pick one to preview.</h2><p class="sub">Tap a tier or drag the slider to see what unlocks. Perks stack as you climb.</p>
-<div class="stairs"><button class="tier" type="button" style="--c:#d58a45;--h:110px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Bronze</span><br><span class="x">0 XP</span></span></button><button class="tier" type="button" style="--c:#cfd5e2;--h:138px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Silver</span><br><span class="x">200 XP</span></span></button><button class="tier" type="button" style="--c:#f5b301;--h:166px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Gold</span><br><span class="x">700 XP</span></span></button><button class="tier" type="button" style="--c:#8fd0ff;--h:194px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Platinum</span><br><span class="x">1,200 XP</span></span></button><button class="tier" type="button" style="--c:#c4a8ff;--h:222px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Diamond</span><br><span class="x">2,000 XP</span></span></button></div>
+<div class="stairs"><button class="tier" type="button" style="--c:#d58a45;--h:110px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Bronze</span><br><span class="x">0 XP</span></span></button><button class="tier" type="button" style="--c:#cfd5e2;--h:138px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Silver</span><br><span class="x">200 XP</span></span></button><button class="tier" type="button" style="--c:#ffc23d;--h:166px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Gold</span><br><span class="x">700 XP</span></span></button><button class="tier" type="button" style="--c:#8fd0ff;--h:194px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Platinum</span><br><span class="x">1,200 XP</span></span></button><button class="tier" type="button" style="--c:#c4a8ff;--h:222px" aria-pressed="false"><span class="gemdot"></span><span class="t-text"><span class="n">Diamond</span><br><span class="x">2,000 XP</span></span></button></div>
 <div class="explorer"><div class="card"><span class="mini">XP explorer</span><div class="xp-read"><strong id="vxpVal">0</strong><span>XP</span></div><input id="vxp" type="range" min="0" max="2500" step="10" value="0" aria-label="Your XP"><div class="prog"><i id="vbar"></i></div><p class="fine" id="vnext"></p></div>
 <div class="card"><span class="mini">Your perks</span><h3 id="pTitle"></h3><p class="fine" id="pSub" style="margin-top:0"></p><div id="pBody"></div></div></div></section>
 <section class="block reveal" id="earn"><span class="kick">XP</span><h2 class="title">What earns XP</h2><p class="sub">XP is a loyalty score, not money. Some rewards are game credit only.</p><div class="split"><div class="card"><h3>Earns XP</h3><ul class="list yes"><li>Deposits</li><li>Referral bonuses</li><li>Fortune Wheel spins</li><li>Your sign-up bonus</li></ul></div><div class="card"><h3>Game credit only</h3><ul class="list no"><li>Birthday bonus</li><li>Weekly reward %</li><li>VIP offers</li></ul></div></div></section>
@@ -274,7 +270,7 @@ main section[id],main [id].block{scroll-margin-top:130px}
 <section class="block reveal" id="faq"><span class="kick">FAQ</span><h2 class="title">Questions</h2><div class="faq" id="faqList"><details><summary>How do I join VIP?</summary><div class="body"><p>VIP is by invitation only. Players who reach Diamond (2,000 XP) are offered a place, and we may also invite players directly. There is no application form and no fee. Every player still starts at Bronze and climbs automatically as XP grows.</p></div></details><details><summary>I got an invitation. What now?</summary><div class="body"><p>Sign in and open your invitation in your account. Accepting is free and optional. If you are not sure a message is genuine, only trust invitations shown inside your account and contact support@monstersweeps.net.</p></div></details><details><summary>Can I ask to be invited?</summary><div class="body"><p>Invitations are decided by us, so requests cannot be accepted. The best way to be considered is to keep playing within your limits and climb the tiers.</p></div></details><details><summary>How do I earn XP?</summary><div class="body"><p>XP comes from deposits, referral bonuses, Fortune Wheel spins and your sign-up bonus. Birthday bonuses, weekly rewards and VIP offers are game credit only and do not add XP.</p></div></details><details><summary>Is XP money?</summary><div class="body"><p>No. XP is a loyalty score. It cannot be redeemed, sold or transferred. It only decides your tier.</p></div></details><details><summary>Do tiers expire or drop?</summary><div class="body"><p>Tier review rules: <span class="ph">[XP expiry and tier-review policy]</span>.</p></div></details><details><summary>How does the VIP referral boost work?</summary><div class="body"><p>Standard players earn 50% credit and 50% XP of a friend's first deposit. VIP referrers earn 80% credit and 80% XP. Tier required: <span class="ph">[tier that counts as VIP]</span>.</p></div></details><details><summary>Does the Fortune Wheel change with my tier?</summary><div class="body"><p>Not for now. Every tier gets one free spin every 24 hours.</p></div></details><details><summary>Do I have to spend money to be VIP?</summary><div class="body"><p>No purchase is necessary to play. See our Sweepstakes Rules for the free method of entry. Void where prohibited by law.</p></div></details></div></section>
 </div>
 <div class="cta reveal" id="join"><div class="cta-card"><span class="lock">&#128274; By invitation only</span><h2>Join VIP</h2><p>VIP is not something you can buy or apply for. It is our way of thanking players who climb to the top, and a few others we choose to invite.</p><div class="steps"><div class="step"><b>1</b><h3>Play and climb</h3><p>Earn XP from deposits, referrals and wheel spins. Reach Diamond at 2,000 XP.</p></div><div class="step"><b>2</b><h3>Get your invitation</h3><p>Diamond players are offered a place. We may also invite players directly. It appears in your account.</p></div><div class="step"><b>3</b><h3>Accept and enjoy</h3><p>Accepting is free. Unlock 24-hour dedicated support, VIP invitations, gifts and vouchers.</p></div></div><div class="cta-row" style="justify-content:center;margin-top:24px"><a class="btn" href="https://monstersweeps.net/">Check my invitation</a><a class="btn ghost" href="https://monstersweeps.net/">Not a member yet? Join MonsterSweeps</a></div><small>VIP offers are game credit unless stated. 21+ only. 21+ only. NO PURCHASE NECESSARY. VOID WHERE PROHIBITED BY LAW. Play for entertainment. Need help? Call 1-800-MY-RESET (1-800-697-3738).</small></div></div></main>
-<footer class="gfoot"><div class="gfoot-in"><div><a class="gbrand" href="/"><img class="lg" src="/logo-96.png" width="40" height="40" alt=""><span>Monster<b>Sweeps</b></span></a><p>A free-to-play social sweepstakes casino for US players aged 21 and over.</p><p>&copy; <span id="yr">2026</span> Monster Tech International. All rights reserved.</p></div>
+<footer class="gfoot"><div class="gfoot-in"><div><a class="gbrand" href="/"><img class="lg" src="/mark.svg" width="40" height="40" alt=""><span>Monster<b>Sweeps</b></span></a><p>A free-to-play social sweepstakes casino for US players aged 21 and over.</p><p>&copy; <span id="yr">2026</span> Monster Tech International. All rights reserved.</p></div>
 <nav aria-label="Explore"><h4>Explore</h4><ul><li><a href="/#faq">What is a social casino?</a></li><li><a href="/#how">How it works</a></li><li><a href="/#rewards">Rewards</a></li><li><a href="/vip.html">VIP Club</a></li><li><a href="/refer-a-friend.html">Refer a Friend</a></li><li><a href="/leaderboard.html">Leaderboard</a></li></ul></nav>
 <nav aria-label="Learn and legal"><h4>Learn and legal</h4><ul><li><a href="/blog/">Blog and guides</a></li><li><a href="/#faq">FAQ</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/responsible-gaming.html">Responsible Gaming</a></li><li><a href="/privacy-policy.html">Privacy Policy</a></li></ul></nav>
 <div><h4>Contact</h4><ul><li><a href="mailto:support@monstersweeps.net">support@monstersweeps.net</a></li><li>Help: <a href="tel:18006973738">1-800-MY-RESET</a></li></ul></div></div>
@@ -303,7 +299,7 @@ main section[id],main [id].block{scroll-margin-top:130px}
   function celebrate(i, t) {
     var c = cards[i]; if (!c || reduce || !c.animate) return;
     var cs = getComputedStyle(c); if (cs.position === 'static') c.style.position = 'relative';
-    var cols = ['#f5b301', '#ffd25a', '#8a5cf6', '#fff3b0', '#8fd0ff'];
+    var cols = ['#ffc23d', '#ffd25a', '#8b5cf6', '#fff3b0', '#8fd0ff'];
     for (var k = 0; k < 16; k++) {
       var p = d.createElement('span'), a = Math.random() * 6.283, r = 40 + Math.random() * 60;
       p.setAttribute('aria-hidden', 'true');
@@ -320,7 +316,7 @@ main section[id],main [id].block{scroll-margin-top:130px}
     $('#vxpVal').textContent = fmt(xp);
     $('#vbar').style.width = Math.round((next ? (xp - t.xp) / (next.xp - t.xp) : 1) * 100) + '%';
     $('#vnext').textContent = next ? fmt(next.xp - xp) + ' XP to ' + next.n : 'Top tier reached. Welcome to the summit.';
-    if (range) { var f = (xp / maxXp) * 100; range.style.background = 'linear-gradient(90deg, #f5b301 ' + f + '%, #2b2b4d ' + f + '%)'; }
+    if (range) { var f = (xp / maxXp) * 100; range.style.background = 'linear-gradient(90deg, #ffc23d ' + f + '%, #3a2470 ' + f + '%)'; }
     cards.forEach(function (c, i) { c.classList.toggle('sel', i === idx); c.classList.toggle('reached', i < idx); c.setAttribute('aria-pressed', i === idx ? 'true' : 'false'); });
     if (idx !== cur) {
       if (cur > -1 && idx > cur) celebrate(idx, t);
@@ -405,7 +401,7 @@ main section[id],main [id].block{scroll-margin-top:130px}
       gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.25, c1); gr.addColorStop(1, c2);
       g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return s;
     };
-    var gold = mk('rgba(245,179,1,.85)', 'rgba(245,179,1,0)'), vio = mk('rgba(138,92,246,.75)', 'rgba(138,92,246,0)'), ice = mk('rgba(143,208,255,.7)', 'rgba(143,208,255,0)');
+    var gold = mk('rgba(245,179,1,.85)', 'rgba(245,179,1,0)'), vio = mk('rgba(139,92,246,.75)', 'rgba(139,92,246,0)'), ice = mk('rgba(201,173,255,.7)', 'rgba(201,173,255,0)');
     var sprites = [gold, gold, vio, ice];
     var make = function (any) { return { x: Math.random() * W, y: any ? Math.random() * H : H + 20, s: 6 + Math.random() * 20, vy: .12 + Math.random() * .45, vx: (Math.random() - .5) * .18, ph: Math.random() * 6.28, sp: .01 + Math.random() * .03, im: sprites[Math.floor(Math.random() * sprites.length)] }; };
     var size = function () {

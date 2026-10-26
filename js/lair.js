@@ -156,9 +156,12 @@
     ' c+=vec3(1.1,.75,.3)*smoothstep(.75,.98,r.x)*.9;',                               // gold strip right
     ' c+=vec3(.55,.35,1.2)*smoothstep(.72,.98,-r.x)*.8;return c;}',                  // violet strip left
     'vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}',
-    'uniform float uCut;uniform float uShine;',
+    'uniform float uCut;uniform float uShine;uniform vec2 uEdge;',
     'void main(){',
-    ' if(uCut>.5){vec4 t=texture2D(uS,vU);float sh=smoothstep(.07,0.,abs(vU.x*.8+vU.y*.45-uShine))*.55;gl_FragColor=vec4((t.rgb+sh*t.a)*uAlpha,t.a*uAlpha);return;}',
+    ' if(uCut>.5){vec4 t=texture2D(uS,vU);float sh=smoothstep(.07,0.,abs(vU.x*.8+vU.y*.45-uShine))*.55;vec3 c=t.rgb+sh*t.a;',
+    '  if(uEdge.x>0.){float aL=texture2D(uS,vU-vec2(uEdge.x,0.)).a,aR=texture2D(uS,vU+vec2(uEdge.x,0.)).a,aT=texture2D(uS,vU-vec2(0.,uEdge.y)).a;',
+    '   c+=t.a*(vec3(.62,.36,1.)*(1.-aL)*.5+vec3(1.,.74,.3)*(1.-aR)*.34+vec3(1.,.86,.6)*(1.-aT)*.22);}',   // violet back-rim left, gold key right, soft top light
+    '  gl_FragColor=vec4(c*uAlpha,t.a*uAlpha);return;}',
     ' vec3 N=normalize(vN);vec3 V=normalize(uEye-vW);if(dot(N,V)<0.)N=-N;',
     ' vec3 base=uCol;',
     ' if(uTex>.5){vec4 t=texture2D(uS,vU);base=pow(t.rgb,vec3(2.2));if(uDual>.5){vec3 bk=pow(texture2D(uS2,vU).rgb,vec3(2.2));float fw=smoothstep(.05,.55,normalize(vNo).z);base=mix(bk,base,fw);}}',
@@ -186,7 +189,7 @@
     if (!gl) throw new Error('nogl');
     this.gl = gl; this.cv = canvas; this.nodes = []; this.fov = opts.fov || .62; this.eye = opts.eye || [0, .3, 7.2]; this.target = opts.target || [0, .2, 0];
     this.prog = prog(gl, VS, FS); this.pprog = prog(gl, PVS, PFS);
-    var p = this.prog, u = {}; ['uM','uVP','uNM','uCol','uEye','uRough','uMetal','uSheen','uSheenCol','uEmit','uFur','uTex','uS','uAlpha','uRim','uS2','uDual','uFlat','uCut','uShine'].forEach(function (n) { u[n] = gl.getUniformLocation(p, n); });
+    var p = this.prog, u = {}; ['uM','uVP','uNM','uCol','uEye','uRough','uMetal','uSheen','uSheenCol','uEmit','uFur','uTex','uS','uAlpha','uRim','uS2','uDual','uFlat','uCut','uShine','uEdge'].forEach(function (n) { u[n] = gl.getUniformLocation(p, n); });
     this.u = u; this.a = { P: gl.getAttribLocation(p, 'aP'), N: gl.getAttribLocation(p, 'aN'), U: gl.getAttribLocation(p, 'aU') };
     this.dprMax = opts.dpr || 1.75; this.resize();
     gl.enable(gl.DEPTH_TEST);
@@ -246,7 +249,7 @@
       gl.uniform3fv(self.u.uCol, mt.col || [1,1,1]); gl.uniform1f(self.u.uRough, mt.rough || .5); gl.uniform1f(self.u.uMetal, mt.metal || 0);
       gl.uniform1f(self.u.uSheen, mt.sheen || 0); gl.uniform3fv(self.u.uSheenCol, mt.sheenCol || [0,0,0]); gl.uniform1f(self.u.uEmit, mt.emit || 0);
       gl.uniform1f(self.u.uFur, mt.fur || 0); gl.uniform1f(self.u.uAlpha, mt.alpha == null ? 1 : mt.alpha); gl.uniform3fv(self.u.uRim, mt.rim || [.0,.0,.0]);
-      gl.uniform1f(self.u.uCut, mt.cut ? 1 : 0); gl.uniform1f(self.u.uShine, mt.shine == null ? -9 : mt.shine);
+      gl.uniform1f(self.u.uCut, mt.cut ? 1 : 0); gl.uniform1f(self.u.uShine, mt.shine == null ? -9 : mt.shine); gl.uniform2fv(self.u.uEdge, mt.edge || [0, 0]);
       gl.uniform1f(self.u.uTex, mt.tex ? 1 : 0); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, mt.tex || self.blank);
       gl.uniform1f(self.u.uDual, mt.tex2 ? 1 : 0); gl.uniform1f(self.u.uFlat, mt.flat || 0); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, mt.tex2 || self.blank); gl.activeTexture(gl.TEXTURE0);
       gl.bindBuffer(gl.ARRAY_BUFFER, m.p); gl.enableVertexAttribArray(a.P); gl.vertexAttribPointer(a.P, 3, gl.FLOAT, false, 0, 0);
@@ -369,16 +372,24 @@
     return { root: root, body: body, head: head, look: look, lid: lid, mouth: mouth, tongue: tongue, pupil: pupil, crown: crown };
   }
 
-  function coinTexture() {
-    var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
-    var gr = g.createRadialGradient(100, 90, 10, 128, 128, 130); gr.addColorStop(0, '#fff2b8'); gr.addColorStop(.55, '#ffc23d'); gr.addColorStop(1, '#b77a10');
-    g.fillStyle = gr; g.beginPath(); g.arc(128, 128, 128, 0, Math.PI*2); g.fill();
-    g.strokeStyle = 'rgba(120,70,0,.55)'; g.lineWidth = 10; g.beginPath(); g.arc(128, 128, 104, 0, Math.PI*2); g.stroke();
-    g.fillStyle = 'rgba(120,70,0,.35)'; g.beginPath(); g.arc(128, 132, 62, 0, Math.PI*2); g.fill();
-    g.fillStyle = '#fff8e0'; g.beginPath(); g.arc(128, 128, 58, 0, Math.PI*2); g.fill();
-    g.fillStyle = '#2f9d5c'; g.beginPath(); g.arc(128, 128, 30, 0, Math.PI*2); g.fill();
-    g.fillStyle = '#120818'; g.beginPath(); g.arc(128, 128, 15, 0, Math.PI*2); g.fill();
-    g.fillStyle = '#fff'; g.beginPath(); g.arc(140, 116, 7, 0, Math.PI*2); g.fill();
+  function coinTexture() { // gold coin face: reeded rim, raised border and an embossed crown
+    var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d'), P = Math.PI * 2;
+    function disc(r, fill) { g.fillStyle = fill; g.beginPath(); g.arc(128, 128, r, 0, P); g.fill(); }
+    function grad(x0, y0, x1, y1, stops) { var gr = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(function (s) { gr.addColorStop(s[0], s[1]); }); return gr; }
+    disc(128, grad(30, 20, 226, 236, [[0, '#fff0b0'], [.35, '#ffc23d'], [.7, '#d8901a'], [1, '#7a4508']]));
+    g.strokeStyle = 'rgba(90,48,0,.55)'; g.lineWidth = 3;
+    for (var i = 0; i < 72; i++) { var a = i / 72 * P; g.beginPath(); g.moveTo(128 + Math.cos(a) * 116, 128 + Math.sin(a) * 116); g.lineTo(128 + Math.cos(a) * 127, 128 + Math.sin(a) * 127); g.stroke(); }
+    disc(110, grad(220, 230, 40, 30, [[0, '#ffe58a'], [.5, '#e7a628'], [1, '#9a5a0a']]));     // bevel, lit from the opposite side
+    disc(98, grad(40, 30, 220, 230, [[0, '#ffe9a0'], [.45, '#ffc23d'], [1, '#c27c12']]));     // field
+    var cr = [[-52, 30], [-60, -26], [-28, 2], [0, -40], [28, 2], [60, -26], [52, 30]];
+    function crown(dx, dy, fill) {
+      g.fillStyle = fill; g.beginPath(); cr.forEach(function (p, i) { g[i ? 'lineTo' : 'moveTo'](128 + p[0] + dx, 122 + p[1] + dy); }); g.closePath(); g.fill();
+      g.fillRect(128 - 54 + dx, 122 + 34 + dy, 108, 14);
+      [[-60, -26], [0, -40], [60, -26]].forEach(function (p) { g.beginPath(); g.arc(128 + p[0] + dx, 122 + p[1] - 6 + dy, 8, 0, P); g.fill(); });
+    }
+    crown(3, 3, 'rgba(110,60,0,.6)'); crown(-2, -2, 'rgba(255,248,214,.85)'); crown(0, 0, '#f2b230');
+    g.fillStyle = '#7b3fe4'; g.beginPath(); g.moveTo(128, 104); g.lineTo(138, 116); g.lineTo(128, 128); g.lineTo(118, 116); g.closePath(); g.fill();   // violet gem
+    g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.ellipse(92, 78, 34, 14, -.7, 0, P); g.fill();                                             // glint
     return c;
   }
 
@@ -396,7 +407,8 @@
         var rig = E.group(parent), head = E.group(rig), bodyG = E.group(rig);
         function layer(n, grp, z, origin) {
           var rc = M.layers[n].rect, c = W(rc[0] + rc[2] / 2, rc[1] + rc[3] / 2), o = origin || [0, 0];
-          L[n] = E.add(Q, { cut: true, tex: T[n] }, grp, [c[0] - o[0], c[1] - o[1], z], [0, 0, 0], [rc[2] * k, rc[3] * k, 1]);
+          var rimPx = { body: 9, arm: 7, hornL: 6, hornR: 6, crown: 5 }[n];
+          L[n] = E.add(Q, { cut: true, tex: T[n], edge: rimPx ? [rimPx / rc[2], rimPx / rc[3]] : null }, grp, [c[0] - o[0], c[1] - o[1], z], [0, 0, 0], [rc[2] * k, rc[3] * k, 1]);
           return L[n];
         }
         layer('hornL', head, -.14); layer('hornR', head, -.14);
@@ -409,7 +421,7 @@
         layer('glint', eye, .02, ec);
         var crown = E.group(head, [0, 0, .16]); layer('crown', crown, 0);
         var lim = [Math.max(0, (M.eye.axes[1] / 2 - M.eye.iris[2]) * k * .45), Math.max(0, (M.eye.axes[0] / 2 - M.eye.iris[2]) * k * .42)];
-        return { rig: rig, head: head, body: bodyG, arm: arm, eye: eye, iris: irisG, crown: crown, crownMat: L.crown.mat, lim: lim, bottom: (M.feet - cy) * k, top: (cy - M.top) * k };
+        return { rig: rig, head: head, body: bodyG, arm: arm, eye: eye, iris: irisG, crown: crown, crownMat: L.crown.mat, hornL: L.hornL, hornR: L.hornR, lim: lim, bottom: (M.feet - cy) * k, top: (cy - M.top) * k };
       });
     });
   }
@@ -425,8 +437,8 @@
     mon.body.visible = false; mon.model = null;
     loadRig(E, mon.root).then(function (g) { mon.model = g; }, function () { mon.body.visible = true; });
     var coinTex = E.texture(coinTexture());
-    var coinMat = { col: srgb('#ffc23d'), rough: .25, metal: .85, tex: coinTex };
-    var coinEdge = { col: srgb('#d99a1e'), rough: .3, metal: 1 };
+    var coinMat = { col: srgb('#ffc23d'), rough: .3, metal: .4, emit: .16, tex: coinTex }; // low metal: the dark lair would otherwise reflect them brown
+    var coinEdge = { col: srgb('#e8a92a'), rough: .3, metal: .6, emit: .1 };
     var faceG = E.mesh(disc(.19, 40)), rimG = E.mesh(cyl(.19, .19, .045, 40, false));
     function mkCoin(parent) {
       var g = E.group(parent); E.add(rimG, coinEdge, g, [0, 0, 0], [Math.PI/2, 0, 0]);
@@ -441,10 +453,10 @@
     for (var k = 0; k < P.max; k++) sp.push({ x: (Math.random()-.5)*14, y: (Math.random()-.5)*9, z: -3 - Math.random()*5, v: .002 + Math.random()*.006, ph: Math.random()*6.28, gold: Math.random() < .55 });
     P.count = P.max;
 
-    var st = { t: 0, mx: 0, my: 0, lx: 0, ly: 0, jump: 0, jv: 0, sq: 1, blink: 0, nextBlink: 2, happy: 0, cur: { x: .5, y: 0, s: 1, r: -.25 }, tgt: { x: .5, y: 0, s: 1, r: -.25 } };
+    var st = { t: 0, mx: 0, my: 0, lx: 0, ly: 0, jump: 0, jv: 0, sq: 1, blink: 0, nextBlink: 2, happy: 0, wave: 0, nextWave: 6, hop: 0, cur: { x: .5, y: 0, s: 1, r: -.25 }, tgt: { x: .5, y: 0, s: 1, r: -.25 } };
     addEventListener('pointermove', function (e) { st.mx = e.clientX / innerWidth * 2 - 1; st.my = -(e.clientY / innerHeight * 2 - 1); }, { passive: true });
     function cheer(big) {
-      if (st.jump > 0.01) return; st.jv = big ? .19 : .14; st.happy = 1;
+      if (st.jump > 0.01) return; st.jv = big ? .19 : .14; st.happy = 1; st.hop = 1;
       var o = mon.root.p;
       burst.forEach(function (c, i) {
         c.visible = true; c.p = [o[0], o[1] + .2, o[2] + .4]; var a = Math.random() * Math.PI * 2, s = .05 + Math.random() * .07;
@@ -485,6 +497,8 @@
     addEventListener('scroll', choreo, { passive: true }); addEventListener('resize', choreo); choreo(); st.cur = JSON.parse(JSON.stringify(st.tgt));
 
     var shadow = document.getElementById('lairShadow');
+    // Monster lives in the hero only: he scrolls away with it, and the scene sleeps once it is off screen
+    var home = anchors[0] || null, off = false;
     var last = performance.now(), running = true;
     function frame(now) {
       if (!running) return;
@@ -493,12 +507,18 @@
       ['x', 'y', 's', 'r'].forEach(function (q) { st.cur[q] = lerp(st.cur[q], st.tgt[q], k); });
       st.lx = lerp(st.lx, st.mx, RM ? 1 : 1 - Math.pow(.002, dt)); st.ly = lerp(st.ly, st.my, RM ? 1 : 1 - Math.pow(.002, dt));
       var hh = E.halfH(), hw = hh * E.asp, sc = st.cur.s * (innerWidth < 860 ? .78 : 1);
+      var hr = home ? home.getBoundingClientRect() : null, lift = hr ? -hr.top / innerHeight * 2 * hh : 0;
+      if (hr && hr.bottom < -40) {
+        if (!off) { off = true; cv.style.visibility = 'hidden'; if (shadow) shadow.style.visibility = 'hidden'; if (bub) bub.style.visibility = 'hidden'; }
+        requestAnimationFrame(frame); return;
+      }
+      if (off) { off = false; cv.style.visibility = ''; if (shadow) shadow.style.visibility = ''; if (bub) bub.style.visibility = ''; }
       // jump physics
       var f60 = dt * 60; if (st.jv || st.jump > 0) { st.jump += st.jv * f60; st.jv -= .012 * f60; if (st.jump <= 0) { st.jump = 0; st.jv = 0; st.sq = .78; } }
       st.sq = lerp(st.sq, 1, 1 - Math.pow(.0005, dt));
       var bob = RM ? 0 : Math.sin(st.t * 1.6) * .06;
       var stretch = st.jv > 0 ? 1 + st.jv * 1.6 : 1;
-      mon.root.p = [st.cur.x * hw, st.cur.y * hh + bob + st.jump * .42 * sc, 0];
+      mon.root.p = [st.cur.x * hw, st.cur.y * hh + bob + st.jump * .42 * sc + lift, 0];
       mon.root.s = [sc / Math.sqrt(st.sq * stretch), sc * st.sq * stretch, sc / Math.sqrt(st.sq * stretch)];
       mon.root.r = [0, (st.cur.r + st.lx * .28) * (mon.model ? .38 : 1), (RM ? 0 : Math.sin(st.t * .8) * .03)];
       mon.head.r = [-st.ly * .14, 0, 0];
@@ -507,9 +527,19 @@
         G.rig.r = [-st.ly * .16, 0, (RM ? 0 : Math.sin(st.t * 1.1) * .02)];
         G.body.s = [1 + br * .006, 1 + br * .012, 1];
         G.head.p = [0, br * .018 + Math.sin(st.t * 1.7 - .8) * .01, 0];
-        G.crown.r = [0, 0, RM ? 0 : Math.sin(st.t * 1.3 + .5) * .035];
-        G.crownMat.shine = RM ? -9 : ((st.t * .35) % 1.6) * 1.8 - .6;
-        G.arm.r = [0, 0, (RM ? 0 : Math.sin(st.t * 2.3) * .05) + st.happy * Math.sin(st.t * 16) * .22 + st.happy * .12];
+        // crown: gentle wobble, and a little hop that lags the jump when he cheers
+        st.hop = Math.max(0, st.hop - dt * 1.6);
+        var hop = RM ? 0 : Math.sin(st.hop * Math.PI) * .09;
+        G.crown.p = [0, hop, .16]; G.crown.r = [0, 0, (RM ? 0 : Math.sin(st.t * 1.3 + .5) * .035) + hop * .9];
+        var shine = RM ? -9 : ((st.t * .35) % 1.6) * 1.8 - .6;
+        G.crownMat.shine = shine; G.hornL.mat.shine = shine - .35; G.hornR.mat.shine = shine - .7;
+        // horns sway a touch out of phase with the breathing
+        G.hornL.r = [0, 0, RM ? 0 : Math.sin(st.t * 1.7 - .4) * .025]; G.hornR.r = [0, 0, RM ? 0 : -Math.sin(st.t * 1.7 - .4) * .025];
+        // every so often he waves on his own
+        st.nextWave -= dt; if (st.nextWave <= 0 && !RM) { st.wave = 1; st.nextWave = 9 + Math.random() * 8; }
+        st.wave = Math.max(0, st.wave - dt * .55);
+        var wv = Math.sin(st.wave * Math.PI);
+        G.arm.r = [0, 0, (RM ? 0 : Math.sin(st.t * 2.3) * .05) + st.happy * Math.sin(st.t * 16) * .22 + st.happy * .12 + wv * (.16 + Math.sin(st.t * 9) * .14)];
       }
       // eye tracking relative to monster screen position
       var mp = E.project(mon.root.p), r = cv.getBoundingClientRect();
@@ -546,7 +576,7 @@
         shadow.style.transform = 'translate(' + (fp[0] - w) + 'px,' + (fp[1] - w * .12) + 'px) scale(' + Math.max(.4, 1 - st.jump * .8) + ')';
         shadow.style.width = (w * 2) + 'px'; shadow.style.height = (w * .24) + 'px'; shadow.style.opacity = Math.max(.15, .75 - st.jump * 1.5).toFixed(2);
       }
-      if (bub) { var hp = E.project([mon.root.p[0] - .55 * sc, mon.root.p[1] + 1.55 * sc, 0]); var bw = bub.firstChild.offsetWidth || 0, bh = bub.firstChild.offsetHeight || 0; bub.style.transform = 'translate(' + Math.round(clamp(hp[0], bw + 8, innerWidth - 8)) + 'px,' + Math.round(Math.max(hp[1], bh + 66)) + 'px)'; }
+      if (bub) { var hp = E.project([mon.root.p[0] - .55 * sc, mon.root.p[1] + 1.55 * sc, 0]); var bw = bub.firstChild.offsetWidth || 0, bh = bub.firstChild.offsetHeight || 0; bub.style.transform = 'translate(' + Math.round(clamp(hp[0], bw + 8, innerWidth - 8)) + 'px,' + Math.round(Math.max(hp[1], bh + 66 + (hr ? Math.min(0, hr.top) : 0))) + 'px)'; }
       requestAnimationFrame(frame);
     }
     document.addEventListener('visibilitychange', function () { if (document.hidden) running = false; else if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } });

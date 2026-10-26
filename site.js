@@ -49,7 +49,7 @@ q.addEventListener('input',flt);cats.forEach(function(b){b.addEventListener('cli
 /* XP tier explorer */
 var xr=$('#xpRange');
 if(xr){var tb=$$('#mt5 button'),T2=tb.map(function(b){return+b.dataset.xp}),names=tb.map(function(b){return $('b',b).textContent}),mx=+xr.max,cur2=-1;
-function px(){var xp=+xr.value,k=0;T2.forEach(function(t,i){if(xp>=t)k=i});$('#xpValue').textContent=xp.toLocaleString('en-US');var nx=T2[k+1],p=nx?(xp-T2[k])/(nx-T2[k]):1;$('#xpBar').style.width=Math.round(p*100)+'%';$('#xpNext').textContent=nx?(nx-xp).toLocaleString('en-US')+' XP to '+names[k+1]:'Top tier reached. Welcome to the summit.';var f=xp/mx*100;xr.style.background='linear-gradient(90deg,#f5b301 '+f+'%,#2b2b4d '+f+'%)';
+function px(){var xp=+xr.value,k=0;T2.forEach(function(t,i){if(xp>=t)k=i});$('#xpValue').textContent=xp.toLocaleString('en-US');var nx=T2[k+1],p=nx?(xp-T2[k])/(nx-T2[k]):1;$('#xpBar').style.width=Math.round(p*100)+'%';$('#xpNext').textContent=nx?(nx-xp).toLocaleString('en-US')+' XP to '+names[k+1]:'Top tier reached. Welcome to the summit.';var f=xp/mx*100;xr.style.background='linear-gradient(90deg,#ffc23d '+f+'%,#3a2470 '+f+'%)';
 tb.forEach(function(b,i){b.setAttribute('aria-pressed',i===k);b.classList.toggle('reached',i<k)});if(k!==cur2){if(cur2>-1&&k>cur2){tb[k].animate&&!rm&&tb[k].animate([{transform:'translateY(-4px) scale(1)'},{transform:'translateY(-12px) scale(1.12)'},{transform:'translateY(-4px) scale(1)'}],{duration:520,easing:'cubic-bezier(.3,1.6,.5,1)'})}cur2=k;$('#perk').textContent=tb[k].dataset.perk}}
 xr.addEventListener('input',px);tb.forEach(function(b,i){b.addEventListener('click',function(){xr.value=T2[i];px()})});xr.value=0;px()}
 /* redeem checklist */
@@ -62,14 +62,14 @@ if(cf){cf.addEventListener('submit',function(e){e.preventDefault();var v=$('#ct'
 /* leaderboard */
 var pod=$('#podium');
 if(pod){var D=null,per='weekly',tabs=$$('.lbtabs button'),lst=$('#lblist'),note=$('#lbnote');
-var TT=[['Bronze',0,'#d58a45'],['Silver',200,'#cfd5e2'],['Gold',700,'#f5b301'],['Platinum',1200,'#8fd0ff'],['Diamond',2000,'#c4a8ff']];
+var TT=[['Bronze',0,'#d58a45'],['Silver',200,'#cfd5e2'],['Gold',700,'#ffc23d'],['Platinum',1200,'#8fd0ff'],['Diamond',2000,'#c4a8ff']];
 function cnt(el,t){if(rm){el.textContent=t.toLocaleString('en-US');return}var t0=null;(function f(t1){if(!t0)t0=t1;var p=Math.min((t1-t0)/1300,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(t*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)})(performance.now())}
 function esc2(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function render(){if(!D)return;var rows=(D[per]||[]).slice(0,10);note.classList.toggle('show',!!D.sample);
 if(!rows.length){pod.innerHTML='';lst.innerHTML='<li style="opacity:1;transform:none;display:block;text-align:center">No rankings yet for this period. Be the first!</li>';return}
 var order=[1,0,2],ph='';order.forEach(function(i){var r=rows[i];if(!r)return;ph+='<div class="pod p'+(i+1)+'">'+(i===0?'<div class="crown" aria-hidden="true">&#128081;</div>':'')+'<div class="who">'+esc2(r.name)+'</div><div class="xpv" data-n="'+r.xp+'">0</div><div class="tr">'+(r.tier?esc2(r.tier)+' &middot; ':'')+'XP this period</div><div class="blk">'+(i+1)+'</div></div>'});pod.innerHTML=ph;
 $$('.xpv',pod).forEach(function(e){setTimeout(function(){cnt(e,+e.dataset.n)},rm?0:700)});
-lst.innerHTML=rows.slice(3).map(function(r,i){var t=TT.filter(function(x){return x[0]===r.tier})[0];return'<li style="--k:'+i+';--c:'+(t?t[2]:'#2b2b4d')+'"><span class="rk">'+(i+4)+'</span><span class="nm">'+esc2(r.name)+'</span>'+(t?'<span class="tchip">'+t[0]+'</span>':'')+'<span class="xp">'+r.xp.toLocaleString('en-US')+' XP</span></li>'}).join('')}
+lst.innerHTML=rows.slice(3).map(function(r,i){var t=TT.filter(function(x){return x[0]===r.tier})[0];return'<li style="--k:'+i+';--c:'+(t?t[2]:'#3a2470')+'"><span class="rk">'+(i+4)+'</span><span class="nm">'+esc2(r.name)+'</span>'+(t?'<span class="tchip">'+t[0]+'</span>':'')+'<span class="xp">'+r.xp.toLocaleString('en-US')+' XP</span></li>'}).join('')}
 tabs.forEach(function(b){b.addEventListener('click',function(){per=b.dataset.p;tabs.forEach(function(o){o.setAttribute('aria-selected',o===b)});render()})});
 try{D=JSON.parse($('#lbdata').textContent)}catch(e){}render();
 if(window.fetch)fetch('/data/leaderboard.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.weekly){D=j;render()}}).catch(function(){})}
