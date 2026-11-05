@@ -1,4 +1,4 @@
-"""Draw og-image.png (1200x630), the picture shown when someone shares a MonsterSweeps link.
+"""Draw og-image.jpg (1200x630), the picture shown when someone shares a MonsterSweeps link.
     python3 tools/og-image.py
 Needs Playwright (uses the Chromium in /opt/pw-browsers when present) and the site fonts in /fonts."""
 import asyncio, glob, os, pathlib, random
@@ -37,10 +37,10 @@ async def main():
             b = await p.chromium.launch(executable_path=exe)
             pg = await b.new_page(viewport={'width': 1200, 'height': 630})
             await pg.goto(tmp.as_uri()); await pg.wait_for_timeout(500)
-            await pg.screenshot(path=str(ROOT / 'og-image.png'))
+            await pg.screenshot(path=str(ROOT / 'og-image.jpg'), type='jpeg', quality=85)
             await b.close()
     finally:
         tmp.unlink(missing_ok=True)
-    print('wrote og-image.png')
+    print('wrote og-image.jpg')
 
 asyncio.run(main())

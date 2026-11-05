@@ -2,8 +2,10 @@
    One fixed WebGL canvas: soft royal-purple clouds (fbm noise) plus three depth layers of dust
    (gold, lilac, a few bright glints) that drift upward and shift with scroll and pointer.
    No WebGL -> nothing is drawn and the CSS gradient from /css/tokens.css stays as the background.
-   Reduced motion -> one still frame. Hidden tab -> paused. */
+   Reduced motion -> one still frame. Hidden tab -> paused.
+   It starts once the browser is idle after the first paint, so text and the hero picture show first. */
 (function () {
+  function nebula() {
   'use strict';
   var SAVE = !!(navigator.connection && navigator.connection.saveData);
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches || SAVE;   // data saver: one still frame too
@@ -120,4 +122,6 @@
   else start();
   document.addEventListener('visibilitychange', function () { sT = 0; if (document.hidden) running = false; else start(); });  // a hidden tab is not a slow device
   window.__nebula = { draw: draw, get running() { return running; }, get level() { return lvl; } };
+  }
+  if (window.requestIdleCallback) requestIdleCallback(nebula, { timeout: 1500 }); else setTimeout(nebula, 300);
 })();
