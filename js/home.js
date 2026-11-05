@@ -3,7 +3,7 @@ var top=$('#top'),mc=$('#mcta'),fin=$('#join');
 function onS(){top.classList.toggle('sc',scrollY>20);if(mc&&fin){var r=fin.getBoundingClientRect();mc.classList.toggle('hide',scrollY<innerHeight*.6||r.top<innerHeight*.9)}}
 addEventListener('scroll',onS,{passive:true});onS();
 var m=$('#menu'),n=$('#nav');m.addEventListener('click',function(){var o=n.classList.toggle('open');m.setAttribute('aria-expanded',o)});n.addEventListener('click',function(e){if(e.target.tagName==='A'){n.classList.remove('open');m.setAttribute('aria-expanded','false')}});
-/* hero: three endless rows of games from /data/games.json (edited in the CMS at /admin).
+/* featured games: three endless rows of games from /data/games.json.
    Game i goes to row i%3; short rows repeat until they fill the width; each row is two identical
    tracks so the CSS slide loops without a jump. */
 var rows=$('#rows'),PLAY='https://monstersweeps.net/',NROWS=3,MIN=8;
@@ -30,4 +30,7 @@ var st=$$('.stair'),pt=$('#pt'),pp=$('#pp');st.forEach(function(b){b.addEventLis
 /* faq: one open at a time */
 var f=$$('#faqList details');f.forEach(function(x){x.addEventListener('toggle',function(){if(x.open)f.forEach(function(o){if(o!==x)o.open=false})})});
 var y=$('#yr');if(y)y.textContent=new Date().getFullYear();
+/* the 3D demo wheel (js/lair.js) loads only when its section is about to scroll into view */
+(function(){var w=$('#spin');if(!w)return;var done=false;function load(){if(done)return;done=true;var sc=d.createElement('script');var me=d.querySelector('script[src*="/js/home.js"]'),v=me&&me.src.split('?v=')[1];sc.src='/js/lair.js'+(v?'?v='+v:'');d.body.appendChild(sc)}
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();load()}},{rootMargin:'600px 0px'});io.observe(w)}else load()})();
 })();

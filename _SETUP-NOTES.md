@@ -23,24 +23,11 @@ The page reads /data/leaderboard.json. Replace it with live data in the same sha
 ## Domains
 Point sweeps.monster and monster.win at https://www.monsters.win with a 301 redirect. Make sure monsters.win (no www) also redirects to https://www.monsters.win.
 
-## Game tiles CMS (www.monsters.win/admin)
-The sliding game rows in the homepage hero come from /data/games.json. Edit them in the CMS at /admin:
-add or reorder games, type the name and studio, upload a square image (1:1, at least 600 x 600) and set the play link.
-All games show in the three sliding rows. Each save is a commit to `main`, and the site updates about a minute later.
-Images are stored in /img/games.
+## How updates work
+There is no CMS to log in to. Every change goes through Claude Code in chat: describe it (or send game images,
+names and links, or new text), agree the plan, and Claude edits the site, tests it, pushes it and merges when you
+say "merge". GitHub Pages then publishes www.monsters.win within about a minute.
 
-First merge this redesign into `main` (the CMS edits `main`). Then set up login once (about 10 minutes):
-
-1. **Cloudflare Worker.** In a free Cloudflare account: Workers & Pages -> Create -> Worker, name it
-   `monstersweeps-cms-auth`, and replace its code with tools/decap-oauth-worker.js. Deploy and note its URL,
-   for example https://monstersweeps-cms-auth.<your-name>.workers.dev
-2. **GitHub OAuth App.** github.com -> your organisation -> Settings -> Developer settings -> OAuth Apps -> New:
-   - Homepage URL: https://www.monsters.win
-   - Authorization callback URL: <worker URL>/callback
-   Create a client secret.
-3. **Worker settings** (Settings -> Variables and Secrets): GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET (as a Secret),
-   ALLOWED_ORIGIN = https://www.monsters.win
-4. **CMS config.** In admin/config.yml set `base_url:` to the worker URL (no trailing slash) and commit.
-5. Open https://www.monsters.win/admin, click "Login with GitHub". Only people with write access to this repo can save.
-
-Until step 4 is done the site works normally; only the /admin login does not.
+- Featured games (the sliding rows in the homepage hero) live in /data/games.json: name, provider, image, url, badge.
+  Game images go in /img/games (square 1:1, at least 600 x 600).
+- Before each release, tools/bump-version.sh stamps the CSS/JS links so browsers fetch fresh files.
