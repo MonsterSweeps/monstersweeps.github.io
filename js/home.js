@@ -30,7 +30,9 @@ var st=$$('.stair'),pt=$('#pt'),pp=$('#pp');st.forEach(function(b){b.addEventLis
 /* faq: one open at a time */
 var f=$$('#faqList details');f.forEach(function(x){x.addEventListener('toggle',function(){if(x.open)f.forEach(function(o){if(o!==x)o.open=false})})});
 var y=$('#yr');if(y)y.textContent=new Date().getFullYear();
-/* the 3D demo wheel (js/lair.js) loads only when its section is about to scroll into view */
-(function(){var w=$('#spin');if(!w)return;var done=false;function load(){if(done)return;done=true;var sc=d.createElement('script');var me=d.querySelector('script[src*="/js/home.js"]'),v=me&&me.src.split('?v=')[1];sc.src='/js/lair.js'+(v?'?v='+v:'');d.body.appendChild(sc)}
+/* the 3D demo wheel (js/wheel.js, on the shared js/engine.js) loads only when its section is about to scroll into view */
+(function(){var w=$('#spin');if(!w)return;var done=false,me=d.querySelector('script[src*="/js/home.js"]'),v=me&&me.src.split('?v=')[1],q=v?'?v='+v:'';
+function add(src,cb){var sc=d.createElement('script');sc.src=src+q;sc.onload=cb;d.body.appendChild(sc)}
+function load(){if(done)return;done=true;if(window.MSE)add('/js/wheel.js');else add('/js/engine.js',function(){add('/js/wheel.js')})}
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();load()}},{rootMargin:'600px 0px'});io.observe(w)}else load()})();
 })();
