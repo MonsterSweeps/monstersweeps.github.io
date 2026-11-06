@@ -264,3 +264,10 @@ html.lair3d .stair small{margin-top:3px}
 html.lair3d #how .steps{margin-top:84px}
 html.lair3d #redeem{padding-bottom:170px}
 @media (max-width:860px){html.lair3d #how .steps{margin-top:56px}html.lair3d #redeem{padding-bottom:52px}html.lair3d .final{padding-top:120px}}
+/* game titles sit on the picture: a dark strip that slides up on hover (desktop) and stays visible on touch screens */
+.art .meta{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;background:linear-gradient(180deg,transparent,rgba(12,5,30,.92) 55%);
+  transform:translateY(100%);opacity:0;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s}
+.art .meta b{font-size:15px}.art .meta small{font-size:13px;color:#d6cbef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile:hover .meta,.tile:focus-visible .meta{transform:none;opacity:1}
+@media (hover:none),(pointer:coarse){.art .meta{transform:none;opacity:1;padding:20px 9px 8px}.art .meta b{font-size:13.5px}.art .meta small{font-size:13px}}
+@media (prefers-reduced-motion:reduce){.art .meta{transform:none}}

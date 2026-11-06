@@ -11,10 +11,11 @@ function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){retur
 function safeUrl(u,fb){u=String(u||'').trim();return /^https?:\/\//i.test(u)||/^\/[^\/]/.test(u)?u:fb}
 function tile(x,hid){
   var img=safeUrl(x.image,''),b=String(x.badge||'').toLowerCase();
-  var art=img?'<span class="art"><img src="'+esc(img)+'" alt="" loading="lazy" width="600" height="600">':'<span class="art ph"><img src="/mark.svg" alt="" width="48" height="48"><em>Game art &middot; 1:1</em>';
+  var art=img?'<span class="art"><img src="'+esc(img)+'" alt="" loading="lazy" decoding="async" width="600" height="600">':'<span class="art ph"><img src="/mark.svg" alt="" width="48" height="48">';
   if(b==='new'||b==='hot'||b==='live')art+='<span class="bdg '+b+'">'+b+'</span>';
-  return '<li><a class="tile" href="'+esc(safeUrl(x.url,PLAY))+'"'+(hid?' tabindex="-1"':'')+'>'+art+'</span><span class="meta"><b>'+esc(x.name||'Game')+'</b><small>'+esc(x.provider||'')+'</small></span></a></li>'
+  return '<li><a class="tile" href="'+esc(safeUrl(x.url,PLAY))+'"'+(hid?' tabindex="-1"':'')+'>'+art+'<span class="meta"><b>'+esc(x.name||'Game')+'</b><small>'+esc(x.provider||'')+'</small></span></span></a></li>'
 }
+
 if(rows&&window.fetch)fetch('/data/games.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null}).then(function(d){
   var g=(d&&d.games||[]).filter(function(x){return x&&x.name});if(!g.length)return;
   var html='';
