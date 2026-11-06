@@ -1,86 +1,86 @@
 {
   "games": [
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Classic Slots",
+      "provider": "Spin the classics",
+      "image": "/img/games/classic-slots.webp",
+      "url": "",
+      "badge": "Hot"
+    },
+    {
+      "name": "Megaways",
+      "provider": "Thousands of ways to win",
+      "image": "/img/games/megaways.webp",
       "url": "",
       "badge": ""
     },
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Hold & Win",
+      "provider": "Lock the coins",
+      "image": "/img/games/hold-and-win.webp",
+      "url": "",
+      "badge": "New"
+    },
+    {
+      "name": "Jackpots",
+      "provider": "Chase the crown",
+      "image": "/img/games/jackpots.webp",
+      "url": "",
+      "badge": "Hot"
+    },
+    {
+      "name": "Crash",
+      "provider": "Cash out in time",
+      "image": "/img/games/crash.webp",
       "url": "",
       "badge": ""
     },
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Fish Games",
+      "provider": "Hunt for gold",
+      "image": "/img/games/fish-games.webp",
       "url": "",
       "badge": ""
     },
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Live Tables",
+      "provider": "Real dealers",
+      "image": "/img/games/live-tables.webp",
+      "url": "",
+      "badge": "Live"
+    },
+    {
+      "name": "Roulette",
+      "provider": "Red, black or green",
+      "image": "/img/games/roulette.webp",
       "url": "",
       "badge": ""
     },
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Blackjack",
+      "provider": "Beat the dealer to 21",
+      "image": "/img/games/blackjack.webp",
       "url": "",
       "badge": ""
     },
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Scratch Cards",
+      "provider": "Scratch and reveal",
+      "image": "/img/games/scratch-cards.webp",
+      "url": "",
+      "badge": "New"
+    },
+    {
+      "name": "Bonus Buy",
+      "provider": "Jump to the feature",
+      "image": "/img/games/bonus-buy.webp",
       "url": "",
       "badge": ""
     },
     {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
-      "url": "",
-      "badge": ""
-    },
-    {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
-      "url": "",
-      "badge": ""
-    },
-    {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
-      "url": "",
-      "badge": ""
-    },
-    {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
-      "url": "",
-      "badge": ""
-    },
-    {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
-      "url": "",
-      "badge": ""
-    },
-    {
-      "name": "Game title",
-      "provider": "Studio",
-      "image": "",
+      "name": "Daily Wheel",
+      "provider": "A free spin every 24 hours",
+      "image": "/img/games/daily-wheel.webp",
       "url": "",
       "badge": ""
     }
