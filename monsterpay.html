@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MonsterPay — Multi-Channel Payment Gateway</title>
+<meta name="description" content="One system. All methods. Zero friction. Payment links or a full API, pay-ins and pay-outs, and a fully white-labelled platform for distribution partners.">
+<meta name="theme-color" content="#0E0228">
+<link rel="canonical" href="https://pay.monsters.win/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MonsterPay">
+<meta property="og:title" content="MonsterPay — Multi-Channel Payment Gateway">
+<meta property="og:description" content="One system. All methods. Zero friction.">
+<meta property="og:url" content="https://pay.monsters.win/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0}
+  img{max-width:100%;height:auto}
+  [hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@500;600&family=Public+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* Layout: ledger-dark. Full-bleed violet-black bands, a 1120px content rail,
+   skewed speed-bars (from the wordmark) marking section edges and active states. */
+:root{
+  --bg:#0E0228;
+  --band:#130533;
+  --surface:#1B0A41;
+  --surface-2:#23104F;
+  --line:#34185F;
+  --fg:#EFEBF8;
+  --muted:#A096C4;
+  --violet:#8331F9;
+  --violet-hi:#B38CFF;
+  --violet-dim:#4D2496;
+  --bone:#E8DFC8;
+  --ok:#5EE6A8;
+  --warn:#F2B55C;
+  --rail:1120px;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-wordmark:"Outfit","Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);
+  z-index:60;background:rgba(10,6,18,.92);backdrop-filter:blur(10px);
+}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.08;letter-spacing:-.025em}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--violet-hi);outline-offset:3px;border-radius:3px}
+
+.rail{
+  max-width:var(--rail);margin-inline:auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.band{background:var(--band)}
+.sec{padding-block:clamp(56px,8vw,104px)}
+
+/* ---------- speed bars ---------- */
+.bars{display:inline-flex;gap:4px;align-items:center;flex-shrink:0}
+.bars i{display:block;width:5px;height:16px;background:var(--violet);transform:skewX(-18deg);border-radius:1px}
+.bars i:nth-child(2){opacity:.6;height:13px}
+.bars i:nth-child(3){opacity:.3;height:10px}
+
+.eyebrow{
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--violet-hi);display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--violet);transform:skewX(-18deg)}
+
+/* ---------- wordmark ---------- */
+.wordmark{display:inline-flex;flex-direction:column;align-items:stretch;gap:2px;text-decoration:none;line-height:1;font-family:var(--f-wordmark)}
+.wordmark .m{color:#fff;font-size:21px;font-weight:600;letter-spacing:.004em}
+.wm-bot{display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.wordmark .p{color:var(--violet);font-size:21px;font-weight:600;font-style:italic;letter-spacing:.004em}
+.wm-bars{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.wm-bars i{display:block;height:2.5px;border-radius:2px;background:var(--violet);transform:skewX(-20deg)}
+.wm-bars i:nth-child(1){width:21px}
+.wm-bars i:nth-child(2){width:13px}
+.wm-bars i:nth-child(3){width:4px}
+.wordmark.sm .m,.wordmark.sm .p{font-size:17px}
+.wordmark.sm .wm-bars i:nth-child(1){width:17px}
+.wordmark.sm .wm-bars i:nth-child(2){width:11px}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:50;
+  background:rgba(10,6,18,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.hdr{display:flex;align-items:center;gap:20px;padding-block:14px}
+nav{display:flex;gap:26px;margin-left:auto;font-size:14px;font-weight:500}
+nav a{color:var(--muted);text-decoration:none;transition:color .18s}
+nav a:hover{color:var(--fg)}
+@media (max-width:860px){nav{display:none}}
+
+.btn{
+  display:inline-flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:600;
+  font-size:14.5px;padding:11px 20px;text-decoration:none;border:1px solid transparent;cursor:pointer;
+  transition:transform .16s,background .18s,border-color .18s;
+}
+.btn-primary{background:var(--violet);color:#fff}
+.btn-primary:hover{background:var(--violet-hi);color:#17102B;transform:translateY(-1px)}
+.btn-ghost{border-color:var(--line);color:var(--fg);background:transparent}
+.btn-ghost:hover{border-color:var(--violet);background:rgba(131,49,249,.09)}
+.hdr .btn{margin-left:auto;flex-shrink:0}
+@media (min-width:861px){.hdr .btn{margin-left:0}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero::after{
+  content:"";position:absolute;top:-30%;right:-10%;width:60%;height:140%;
+  background:radial-gradient(closest-side,rgba(131,49,249,.17),transparent 72%);
+  pointer-events:none;
+}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,64px);align-items:center;padding-block:clamp(52px,8vw,96px)}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.hero-copy{min-width:0}
+h1{font-size:clamp(40px,6.4vw,68px);font-weight:800}
+h1 .alt{color:var(--violet-hi);font-style:italic}
+.lede{color:var(--muted);font-size:clamp(16px,2vw,18.5px);max-width:50ch;margin-top:22px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:30px;font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.03em}
+.trust span{display:flex;align-items:center;gap:8px}
+.dot{width:6px;height:6px;background:var(--ok);border-radius:50%;flex-shrink:0}
+.dot.soon{background:var(--warn)}
+
+/* ---------- summary panel ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);min-width:0}
+.panel-top{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.panel-top h4{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.seg{display:flex;margin-left:auto;border:1px solid var(--line);background:var(--bg)}
+.seg button{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 11px;background:transparent;border:0;color:var(--muted);cursor:pointer;transition:all .16s;
+}
+.seg button[aria-pressed="true"]{background:var(--violet);color:#fff}
+.rows{padding:6px 18px 14px}
+.row{display:flex;align-items:baseline;gap:14px;padding-block:11px;border-bottom:1px solid rgba(44,33,71,.7)}
+.row:last-child{border-bottom:0}
+.row .k{font-size:13.5px;color:var(--muted);min-width:0}
+.row .v{margin-left:auto;font-family:var(--f-mono);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.net{border-top:1px solid var(--line);margin-top:4px;padding-top:14px}
+.row.net .k{color:var(--fg);font-weight:600}
+.row.net .v{color:var(--ok);font-size:17px}
+.v.neg{color:var(--warn)}
+.panel-foot{padding:10px 18px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- rails strip ---------- */
+.strip{border-bottom:1px solid var(--line);padding-block:26px}
+.strip-in{display:flex;flex-wrap:wrap;align-items:center;gap:14px 30px}
+.strip-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px}
+.strip-row .strip-label{min-width:148px}
+.strip-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rail-chip{display:flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:600;font-size:15px}
+.rail-chip small{font-family:var(--f-mono);font-weight:400;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);border:1px solid rgba(242,181,92,.4);padding:2px 6px}
+
+/* ---------- section heading ---------- */
+.sec-head{max-width:62ch;margin-bottom:clamp(32px,4vw,52px)}
+.sec-head h2{font-size:clamp(28px,4vw,42px);font-weight:700}
+.sec-head p{color:var(--muted);margin-top:16px;font-size:17px}
+
+/* ---------- tracks ---------- */
+.tabs{display:flex;gap:0;border:1px solid var(--line);width:fit-content;max-width:100%;margin-bottom:34px;flex-wrap:wrap}
+.tabs button{
+  font-family:var(--f-display);font-weight:600;font-size:14.5px;padding:12px 22px;
+  background:transparent;border:0;color:var(--muted);cursor:pointer;transition:all .18s;
+}
+.tabs button[aria-selected="true"]{background:var(--violet);color:#fff}
+.track-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);padding:26px 24px;min-width:0;position:relative}
+.card::before{content:"";position:absolute;left:24px;top:0;width:26px;height:3px;background:var(--violet);transform:skewX(-18deg)}
+.card h3{font-size:18px;font-weight:700;margin-bottom:10px;margin-top:4px}
+.card p{color:var(--muted);font-size:14.5px}
+
+/* ---------- tiers ---------- */
+.tiers{display:flex;flex-direction:column;gap:0;position:relative}
+.tier{
+  background:var(--surface);border:1px solid var(--line);border-bottom:0;
+  padding:24px 26px 24px 30px;min-width:0;position:relative;
+}
+.tier:last-child{border-bottom:1px solid var(--line)}
+.tier::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--violet-dim)}
+.tier.t-hq::before{background:var(--violet-hi)}
+.tier.t-re::before{background:var(--violet)}
+.tier.t-me::before{background:var(--violet-dim)}
+.tier.t-pl::before{background:#3A2C5C}
+.tier-n{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.tier h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.tier p{color:var(--muted);font-size:14.5px;max-width:72ch}
+.tier.t-re{background:var(--surface-2)}
+.tier.t-re h3{color:var(--violet-hi)}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;counter-reset:s}
+.step{border-top:2px solid var(--line);padding-top:20px;min-width:0;position:relative}
+.step::after{content:"";position:absolute;top:-2px;left:0;width:34px;height:2px;background:var(--violet)}
+.step .n{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--violet-hi);display:block;margin-bottom:10px}
+.step h3{font-size:16.5px;font-weight:700;margin-bottom:8px}
+.step p{color:var(--muted);font-size:14.5px}
+
+/* ---------- capability grid ---------- */
+.caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.cap{background:var(--band);padding:26px 24px;min-width:0}
+.cap .bars{margin-bottom:16px}
+.cap h3{font-size:16.5px;font-weight:700;margin-bottom:9px}
+.cap p{color:var(--muted);font-size:14.5px}
+
+/* ---------- economics ---------- */
+.econ{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);align-items:start}
+@media (max-width:820px){.econ{grid-template-columns:1fr}}
+.ladder{display:flex;flex-direction:column;gap:12px}
+.rung{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);padding:18px 20px;min-width:0}
+.rung .pct{font-family:var(--f-mono);font-weight:500;font-size:22px;color:var(--violet-hi);font-variant-numeric:tabular-nums;flex-shrink:0;min-width:64px}
+.rung .who{font-family:var(--f-display);font-weight:600;font-size:15px}
+.rung .who small{display:block;font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--muted);letter-spacing:0;margin-top:3px}
+.rung.you{border-color:var(--violet);background:linear-gradient(90deg,rgba(131,49,249,.13),transparent)}
+.note{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-top:18px;line-height:1.7}
+
+/* ---------- faq ---------- */
+.faq{max-width:76ch}
+details{border-bottom:1px solid var(--line)}
+summary{
+  font-family:var(--f-display);font-weight:600;font-size:16.5px;padding-block:20px;cursor:pointer;
+  list-style:none;display:flex;align-items:center;gap:14px;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;font-family:var(--f-mono);color:var(--violet-hi);font-size:19px;flex-shrink:0}
+details[open] summary::after{content:"–"}
+details p{color:var(--muted);font-size:15px;padding-bottom:22px;max-width:65ch}
+
+/* ---------- contact ---------- */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px)}
+@media (max-width:820px){.contact{grid-template-columns:1fr}}
+form{display:flex;flex-direction:column;gap:14px;min-width:0}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+label{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{
+  font-family:var(--f-body);font-size:15px;background:var(--surface);color:var(--fg);
+  border:1px solid var(--line);padding:11px 13px;width:100%;min-width:0;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--violet);outline:none}
+textarea{resize:vertical;min-height:92px}
+.form-msg{font-family:var(--f-mono);font-size:12.5px;line-height:1.7;color:var(--violet-hi);border-left:2px solid var(--violet);padding-left:12px}
+.reach{display:flex;flex-direction:column;gap:18px}
+.reach-item{border-top:1px solid var(--line);padding-top:16px}
+.reach-item .lab{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.reach-item .val{font-family:var(--f-mono);font-size:15px;user-select:all;word-break:break-all}
+.copy{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid var(--line);color:var(--muted);padding:5px 9px;cursor:pointer;margin-top:9px;transition:all .16s}
+.copy:hover{border-color:var(--violet);color:var(--violet-hi)}
+
+/* ---------- cta band ---------- */
+.cta-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.cta-band::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 50% 0%,rgba(131,49,249,.16),transparent 70%);pointer-events:none}
+.cta-in{position:relative;text-align:center;padding-block:clamp(52px,7vw,88px);display:flex;flex-direction:column;align-items:center;gap:22px}
+.cta-in h2{font-size:clamp(28px,4.4vw,44px);font-weight:800;max-width:18ch}
+.cta-in p{color:var(--muted);max-width:52ch}
+
+/* ---------- footer ---------- */
+footer{padding-block:38px;font-size:13.5px;color:var(--muted)}
+.foot{display:flex;flex-wrap:wrap;gap:18px 32px;align-items:center}
+.foot .spacer{margin-left:auto}
+.disclaimer{margin-top:22px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);max-width:90ch;line-height:1.75}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="rail hdr">
+    <a class="wordmark" href="#top" aria-label="MonsterPay home"><span class="m">monster</span><span class="wm-bot"><span class="wm-bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="p">pay</span></span></a>
+    <nav>
+      <a href="#platform">Platform</a>
+      <a href="#tracks">Who it's for</a>
+      <a href="#stack">Structure</a>
+      <a href="#flow">How it works</a>
+      <a href="#partners">Partners</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary" href="#contact">Request access</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="rail hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Multi-channel payment gateway</div>
+      <h1>One system.<br>All methods.<br><span class="alt">Zero friction.</span></h1>
+      <p class="lede">Take payments through a shareable link or a full API. Settle out to the account you actually use. One dashboard behind all of it, for merchants who move real volume.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#contact">Request merchant access</a>
+        <a class="btn btn-ghost" href="#partners">Partner program</a>
+      </div>
+      <div class="trust">
+        <span><i class="dot"></i>In: Google Pay · Apple Pay · Chime</span>
+        <span><i class="dot"></i>Out: ACH · PayPal · Venmo · Cash App · Zelle · Debit</span>
+      </div>
+    </div>
+
+    <div class="panel" aria-label="Example merchant summary">
+      <div class="panel-top">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h4>Summary</h4>
+        <div class="seg" role="group" aria-label="Reporting period">
+          <button type="button" id="seg-all" data-period="all" aria-pressed="true">All time</button>
+          <button type="button" id="seg-month" data-period="month" aria-pressed="false">This month</button>
+        </div>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="k">Deposits</span><span class="v" data-f="dep">$4,812,900</span></div>
+        <div class="row"><span class="k">Withdrawals</span><span class="v" data-f="wd">$3,106,440</span></div>
+        <div class="row"><span class="k">Fees owed</span><span class="v neg" data-f="fee">$240,645</span></div>
+        <div class="row"><span class="k">Disputes &amp; refunds</span><span class="v neg" data-f="dis">$18,220</span></div>
+        <div class="row net"><span class="k">Net cash flow</span><span class="v" data-f="net">$1,447,595</span></div>
+      </div>
+      <div class="panel-foot">Example data · merchant view</div>
+    </div>
+  </div>
+</section>
+
+<!-- RAILS STRIP -->
+<section class="strip band">
+  <div class="rail strip-in" style="flex-direction:column;align-items:stretch;gap:18px">
+    <div class="strip-row">
+      <span class="strip-label">Customers pay with</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Google Pay</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Apple Pay</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Chime</span>
+    </div>
+    <div class="strip-row">
+      <span class="strip-label">You get paid out to</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>ACH / US bank</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>PayPal</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Venmo</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Cash App</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Zelle</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Chime</span>
+      <span class="rail-chip"><span class="bars"><i></i></span>Debit card</span>
+    </div>
+  </div>
+</section>
+
+<!-- TRACKS -->
+<section class="sec" id="tracks">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">Who it's for</div>
+      <h2>Two ways to work with MonsterPay</h2>
+      <p>Run your own volume through it, or resell it. The platform is the same; the economics are not.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Audience">
+      <button type="button" role="tab" id="tab-op" aria-selected="true" aria-controls="p-op">For operators</button>
+      <button type="button" role="tab" id="tab-pa" aria-selected="false" aria-controls="p-pa">For distributors</button>
+    </div>
+
+    <div class="track-grid" id="p-op" role="tabpanel" aria-labelledby="tab-op">
+      <div class="card">
+        <h3>Payment links or full API</h3>
+        <p>Spin up a shareable payment link in seconds with no website required, or wire the API into your platform and create an order per transaction. Same methods either way.</p>
+      </div>
+      <div class="card">
+        <h3>Your own scoped dashboard</h3>
+        <p>Log in and see only your account: deposits, withdrawals, fees owed, disputes and refunds, all-time and by month.</p>
+      </div>
+      <div class="card">
+        <h3>Automatic, with a hand on the brake</h3>
+        <p>Deposits and withdrawals clear automatically through the API, with manual override and limits where you want oversight.</p>
+      </div>
+      <div class="card">
+        <h3>Staff limits that match the role</h3>
+        <p>Role-based tiers rather than one flat ceiling. Junior staff and senior staff get different approval limits.</p>
+      </div>
+      <div class="card">
+        <h3>Checkout in your colours</h3>
+        <p>Your logo and your accent colour on the checkout your customers see. Test mode and live mode side by side, so you can prove the flow before a cent moves.</p>
+      </div>
+      <div class="card">
+        <h3>One point of contact</h3>
+        <p>You deal with us. Not with a chain of upstream processors you've never spoken to.</p>
+      </div>
+    </div>
+
+    <div class="track-grid" id="p-pa" role="tabpanel" aria-labelledby="tab-pa" hidden>
+      <div class="card">
+        <h3>It's your gateway, not ours</h3>
+        <p>Your brand name, your logo, your colour, your domain. Switch off "Powered by MonsterPay" and nothing on the panel or the checkout says we exist.</p>
+      </div>
+      <div class="card">
+        <h3>Your own domain</h3>
+        <p>Your panel and your checkout run on a domain you choose. We activate it, you publish the DNS records, and your merchants never see another name.</p>
+      </div>
+      <div class="card">
+        <h3>You set each merchant's price</h3>
+        <p>Your commission rate is set per merchant, not fixed across the book. Price the ones you fought for differently from the ones that walked in.</p>
+      </div>
+      <div class="card">
+        <h3>Onboard a merchant in a minute</h3>
+        <p>Four steps — business, contact, pricing, review — and the owner login goes out. No per-merchant build, no engineering ticket.</p>
+      </div>
+      <div class="card">
+        <h3>A wallet you control</h3>
+        <p>Commission moves to your available balance as your merchants' settlements are paid. Withdraw on request, or set rules and let it run.</p>
+      </div>
+      <div class="card">
+        <h3>Tiers that pay you more</h3>
+        <p>Partners move up through tiers as volume grows, and the rate moves with them. The book you build is the rate you get.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="sec" id="stack">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">How it's structured</div>
+      <h2>Four levels, one set of rails</h2>
+      <p>Each level sees its own book and nothing above it. A merchant never sees us at all if their partner doesn't want them to.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier t-hq">
+        <span class="tier-n">Level 1</span>
+        <h3>MonsterPay HQ</h3>
+        <p>Gateway routing, settlement, commissions, KYC review and audit across the whole network. Ours alone.</p>
+      </div>
+      <div class="tier t-re">
+        <span class="tier-n">Level 2</span>
+        <h3>Reseller</h3>
+        <p>A fully white-labelled platform — own brand, own domain, own checkout, own support desk. Onboards and prices its own merchants and draws commission to its wallet.</p>
+      </div>
+      <div class="tier t-me">
+        <span class="tier-n">Level 3</span>
+        <h3>Merchant</h3>
+        <p>Payment links or the API, transactions, refunds, settlements and payout accounts. Branded checkout, scoped to their own data.</p>
+      </div>
+      <div class="tier t-pl">
+        <span class="tier-n">Level 4 · planned</span>
+        <h3>Player accounts</h3>
+        <p>An optional layer beneath a merchant, kept deliberately plain: pay in, get paid out, message the merchant. Nothing else on the screen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="sec band" id="flow">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">How it works</div>
+      <h2>From first call to first transaction</h2>
+      <p>No integration work to get started. The API is there when you want it, not before.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">STEP 01</span>
+        <h3>We talk</h3>
+        <p>What you're running, what volume you expect, and what your commission looks like. One conversation, not a procurement process.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 02</span>
+        <h3>We build your brand</h3>
+        <p>Your name, your logo, your colour, your subdomain. We stand it up for you. Nothing to integrate and no developer required.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 03</span>
+        <h3>You start signing people up</h3>
+        <p>Create merchants, create players, and run the book from your own panel. Money moves from day one.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 04</span>
+        <h3>Go deeper if you want to</h3>
+        <p>Building your own gateway on top? We hand over API keys, webhooks and the docs. Optional, and only when you ask.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM -->
+<section class="sec" id="platform">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">Platform</div>
+      <h2>What you actually get</h2>
+      <p>Not a payment page with your logo on it. A multi-tenant gateway with the controls an operator needs on day one.</p>
+    </div>
+    <div class="caps">
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Two ways to take money</h3>
+        <p>Payment links for anyone without a site to integrate into, and a full REST API with keys, webhooks and docs for anyone who has one.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Scoped at every level</h3>
+        <p>Resellers see their own merchants, merchants see their own transactions, and nobody sees the level above. Audit logs sit behind all of it.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Summary reporting</h3>
+        <p>All-time and monthly totals for deposits, withdrawals, fees owed, disputes and refunds, and net cash flow.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Hybrid approval model</h3>
+        <p>Automatic clearing by default, with manual override and configurable limits where you want a human in the loop.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Role-based staff tiers</h3>
+        <p>Approval ceilings set per role, so a junior cashier and a senior manager don't carry the same authority.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Settlements and refunds</h3>
+        <p>A settlement cycle you can see, refunds handled in the dashboard, and disputes flagged with the action window attached.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Alerts that matter</h3>
+        <p>Email and SMS on failed payments, refunds, settlements, disputes and webhook failures — plus a high-value alert above a figure you set.</p>
+      </div>
+      <div class="cap">
+        <span class="bars"><i></i><i></i><i></i></span>
+        <h3>Built for developers</h3>
+        <p>API keys, webhook endpoints with failure alerting, and docs in the dashboard. Auto-capture on, or capture manually through the API.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="sec band" id="partners">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">Partner program</div>
+      <h2>The margin lives in the spread</h2>
+      <p>We supply distributors at a wholesale rate. You price your own merchants above it and keep the difference on every transaction they process.</p>
+    </div>
+    <div class="econ">
+      <div class="ladder">
+        <div class="rung">
+          <span class="pct">01</span>
+          <span class="who">Your wholesale rate<small>What MonsterPay charges you, set by agreement and volume</small></span>
+        </div>
+        <div class="rung you">
+          <span class="pct">02</span>
+          <span class="who">Your merchant's rate<small>You set it, per merchant, from your own panel</small></span>
+        </div>
+        <div class="rung">
+          <span class="pct">03</span>
+          <span class="who">The spread is yours<small>Paid into your wallet as their settlements clear</small></span>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:20px;font-weight:700;margin-bottom:14px">Who this suits</h3>
+        <p style="color:var(--muted);font-size:15.5px">Distributors already supplying gaming operators who want a payment product to put alongside what they sell — without building a processing stack, hiring a compliance team or carrying integration work.</p>
+        <p style="color:var(--muted);font-size:15.5px;margin-top:14px">You own the merchant relationship end to end. We stay behind the platform and you remain the point of contact.</p>
+        <p class="note">Pricing is set per agreement and depends on volume, methods and settlement terms. Partner tiers move the wholesale rate as your book grows. Talk to us for numbers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">Questions</div>
+      <h2>Before you ask</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Which payment methods are live right now?</summary>
+        <p>Customers pay in with Google Pay, Apple Pay or Chime. You take settlement out to an ACH bank account, PayPal, Venmo, Cash App, Zelle, Chime or a debit card. Crypto is on the roadmap and is not live yet — we'd rather say that than list it and make you chase it.</p>
+      </details>
+      <details>
+        <summary>Do I need a website to start taking payments?</summary>
+        <p>No. Create a payment link with a title and an amount, share it, and you're collecting. The API is there when you want payments inside your own product instead.</p>
+      </details>
+      <details>
+        <summary>Why are the checkout amounts fixed?</summary>
+        <p>The checkout accepts a set list of amounts, from $9.99 up to $199.99. That's a constraint of the rails we run on today, not a design choice, and it's the honest answer. If your business needs arbitrary amounts or larger single transactions, say so early and we'll tell you straight whether we fit.</p>
+      </details>
+      <details>
+        <summary>Can the platform carry my branding?</summary>
+        <p>Depends which level you come in at. Merchants get their logo and accent colour on the checkout their customers see. Resellers get the lot — brand name, logo, colour, their own domain, their own support email, and the option to switch off any mention of MonsterPay entirely.</p>
+      </details>
+      <details>
+        <summary>How long does onboarding take?</summary>
+        <p>The account and key issuance are handled by us and are usually quick. The variable is your side: whitelisting the right server IP and wiring the API into your platform.</p>
+      </details>
+      <details>
+        <summary>Do I need developers to get started?</summary>
+        <p>No. We build your branded platform and hand you the keys. You create merchants and players from your own panel, and nothing needs integrating. API keys, webhooks and documentation come later, if and when you want to build your own gateway on top.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band band">
+  <div class="rail cta-in">
+    <span class="bars" style="transform:scale(1.5)"><i></i><i></i><i></i></span>
+    <h2>Let's talk volume</h2>
+    <p>Tell us what you're processing and what you need, and we'll come back with a rate and a timeline.</p>
+    <a class="btn btn-primary" href="#contact">Start the conversation</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact">
+  <div class="rail">
+    <div class="sec-head">
+      <div class="eyebrow">Contact</div>
+      <h2>Request access</h2>
+    </div>
+    <div class="contact">
+      <form id="lead" novalidate>
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-company">Company</label>
+          <input id="f-company" name="company" type="text" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="f-type">I'm enquiring as</label>
+          <select id="f-type" name="type">
+            <option>An operator — I want to process</option>
+            <option>A distributor — I want to resell</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-vol">Expected monthly volume</label>
+          <input id="f-vol" name="volume" type="text" placeholder="e.g. $250,000">
+        </div>
+        <div class="field">
+          <label for="f-msg">Anything else</label>
+          <textarea id="f-msg" name="message"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit" style="align-self:flex-start">Send enquiry</button>
+        <p class="form-msg" id="form-msg" hidden></p>
+      </form>
+
+      <div class="reach">
+        <div class="reach-item">
+          <span class="lab">Merchants &amp; partners</span>
+          <span class="val" id="r1">sales@monsters.win</span>
+          <button class="copy" type="button" data-copy="r1">Copy</button>
+        </div>
+        <div class="reach-item">
+          <span class="lab">Telegram</span>
+          <span class="val" id="r2">@monsterpay</span>
+          <button class="copy" type="button" data-copy="r2">Copy</button>
+        </div>
+        <div class="reach-item">
+          <span class="lab">What to send</span>
+          <span class="val" style="font-family:var(--f-body);font-size:14px;color:var(--muted);user-select:auto">Your business and vertical, expected monthly volume, and whether you're processing or reselling.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="band">
+  <div class="rail">
+    <div class="foot">
+      <a class="wordmark sm" href="#top" aria-label="MonsterPay home"><span class="m">monster</span><span class="wm-bot"><span class="wm-bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="p">pay</span></span></a>
+      <span class="spacer"></span>
+      <span>Multi-channel payment gateway</span>
+      <span>© 2026 Monster Tech Inc.</span>
+    </div>
+    <p class="disclaimer">MonsterPay is operated by Monster Tech Inc. and provides payment processing services to approved business customers. Services, available methods and pricing vary by jurisdiction, business type and agreement. Figures shown on this page are examples. Nothing here is an offer of service; all accounts are subject to review and approval.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Summary panel period toggle — example figures
+  var data = {
+    all:   {dep:"$4,812,900", wd:"$3,106,440", fee:"$240,645", dis:"$18,220", net:"$1,447,595"},
+    month: {dep:"$412,780",   wd:"$268,310",   fee:"$20,639",  dis:"$1,940",  net:"$121,891"}
+  };
+  var segs = document.querySelectorAll(".seg button");
+  segs.forEach(function(b){
+    b.addEventListener("click", function(){
+      segs.forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true");
+      var d = data[b.dataset.period];
+      Object.keys(d).forEach(function(k){
+        var el = document.querySelector('[data-f="'+k+'"]');
+        if(el) el.textContent = d[k];
+      });
+    });
+  });
+
+  // Audience tabs
+  var tabs = [["tab-op","p-op"],["tab-pa","p-pa"]];
+  tabs.forEach(function(pair){
+    var btn = document.getElementById(pair[0]);
+    btn.addEventListener("click", function(){
+      tabs.forEach(function(p){
+        var on = p[0] === pair[0];
+        document.getElementById(p[0]).setAttribute("aria-selected", on ? "true" : "false");
+        document.getElementById(p[1]).hidden = !on;
+      });
+    });
+  });
+
+  // Lead form — not wired to a backend
+  var form = document.getElementById("lead");
+  var msg = document.getElementById("form-msg");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    msg.textContent = "This form isn't connected yet. Email the address shown alongside and we'll pick it up from there.";
+    msg.hidden = false;
+  });
+
+  // Copy buttons
+  document.querySelectorAll(".copy").forEach(function(b){
+    b.addEventListener("click", function(){
+      var el = document.getElementById(b.dataset.copy);
+      var txt = el ? el.textContent.trim() : "";
+      var done = function(){ var o=b.textContent; b.textContent="Copied"; setTimeout(function(){b.textContent=o;},1400); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(done).catch(function(){ select(el); });
+      } else { select(el); }
+    });
+  });
+  function select(el){
+    if(!el) return;
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+})();
+</script>
+</body>
+</html>
