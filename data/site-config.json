@@ -7,16 +7,20 @@
   "eligibleStates": [],
   "registerUrl": "https://monstersweeps.net/",
   "loginUrl": "https://monstersweeps.net/",
-  "social": { "facebook": "TODO", "telegram": "TODO", "messenger": "TODO" },
+  "social": {
+    "facebook": "TODO",
+    "telegram": "TODO",
+    "messenger": "TODO"
+  },
   "gameCount": "TODO",
   "providers": [],
   "streak": "TODO",
   "popup": {
-    "enabled": false,
-    "desktopImage": "TODO",
-    "mobileImage": "TODO",
-    "ctaText": "TODO",
+    "enabled": true,
+    "desktopImage": "/img/promo/welcome-desktop.webp",
+    "mobileImage": "/img/promo/welcome-mobile.webp",
+    "ctaText": "Claim your bonus",
     "ctaUrl": "https://monstersweeps.net/",
-    "alt": "TODO"
+    "alt": "MonsterSweeps signing bonus: $5 bonus on your first purchase. Terms and conditions apply."
   }
 }
