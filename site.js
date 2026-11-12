@@ -65,13 +65,13 @@ if(pod){var D=null,per='weekly',tabs=$$('.lbtabs button'),lst=$('#lblist'),note=
 var TT=[['Bronze',0,'#d58a45'],['Silver',200,'#cfd5e2'],['Gold',700,'#ffc23d'],['Platinum',1200,'#8fd0ff'],['Diamond',2000,'#c4a8ff']];
 function cnt(el,t){if(rm){el.textContent=t.toLocaleString('en-US');return}var t0=null;(function f(t1){if(!t0)t0=t1;var p=Math.min((t1-t0)/1300,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(t*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(f)})(performance.now())}
 function esc2(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function render(){if(!D)return;var rows=(D[per]||[]).slice(0,10);note.classList.toggle('show',!!D.sample);
-if(!rows.length){pod.innerHTML='';lst.innerHTML='<li style="opacity:1;transform:none;display:block;text-align:center">No rankings yet for this period. Be the first!</li>';return}
+function render(){var rows=(D&&!D.sample&&Array.isArray(D[per])?D[per]:[]).filter(function(r){return r&&typeof r.name==='string'&&r.name.indexOf('*')>-1&&isFinite(r.xp)}).slice(0,10);
+if(!rows.length){pod.innerHTML='';lst.innerHTML='<li class="lbsoon" style="opacity:1;transform:none;display:block;text-align:center"><strong>Rankings open soon.</strong><br>The leaderboard goes live when the first ranking period starts. Your XP already counts.</li>';return}
 var order=[1,0,2],ph='';order.forEach(function(i){var r=rows[i];if(!r)return;ph+='<div class="pod p'+(i+1)+'">'+(i===0?'<div class="crown" aria-hidden="true">&#128081;</div>':'')+'<div class="who">'+esc2(r.name)+'</div><div class="xpv" data-n="'+r.xp+'">0</div><div class="tr">'+(r.tier?esc2(r.tier)+' &middot; ':'')+'XP this period</div><div class="blk">'+(i+1)+'</div></div>'});pod.innerHTML=ph;
 $$('.xpv',pod).forEach(function(e){setTimeout(function(){cnt(e,+e.dataset.n)},rm?0:700)});
 lst.innerHTML=rows.slice(3).map(function(r,i){var t=TT.filter(function(x){return x[0]===r.tier})[0];return'<li style="--k:'+i+';--c:'+(t?t[2]:'#3a2470')+'"><span class="rk">'+(i+4)+'</span><span class="nm">'+esc2(r.name)+'</span>'+(t?'<span class="tchip">'+t[0]+'</span>':'')+'<span class="xp">'+r.xp.toLocaleString('en-US')+' XP</span></li>'}).join('')}
 tabs.forEach(function(b){b.addEventListener('click',function(){per=b.dataset.p;tabs.forEach(function(o){o.setAttribute('aria-selected',o===b)});render()})});
-try{D=JSON.parse($('#lbdata').textContent)}catch(e){}render();
+render();
 if(window.fetch)fetch('/data/leaderboard.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.weekly){D=j;render()}}).catch(function(){})}
 var y=$('#yr');if(y)y.textContent=new Date().getFullYear();
 })();

@@ -1,0 +1,22 @@
+{
+  "_readme": "Every business value on the site lives here. A value of \"TODO\" (or an empty list) keeps its block hidden. Never put sample or invented numbers in this file.",
+  "welcomeOffer": "TODO",
+  "redemptionMin": "TODO",
+  "payoutTime": "TODO",
+  "playthrough": "TODO",
+  "eligibleStates": [],
+  "registerUrl": "https://monstersweeps.net/",
+  "loginUrl": "https://monstersweeps.net/",
+  "social": { "facebook": "TODO", "telegram": "TODO", "messenger": "TODO" },
+  "gameCount": "TODO",
+  "providers": [],
+  "streak": "TODO",
+  "popup": {
+    "enabled": false,
+    "desktopImage": "TODO",
+    "mobileImage": "TODO",
+    "ctaText": "TODO",
+    "ctaUrl": "https://monstersweeps.net/",
+    "alt": "TODO"
+  }
+}

@@ -1,4 +1,4 @@
-"""Draw the 12 original game-category tiles (img/games/<slug>.webp, 600x600) used in the homepage game rows
+"""Draw the 11 original game-category tiles (img/games/<slug>.webp, 600x600) used in the homepage game rows
 until the platform's official game thumbnails arrive. Royal purple scenes with a coin-gold emblem; no studio art.
     python3 tools/game-art.py
 Reuses the gradients and helpers from tools/blog-art.py. Needs Pillow and Playwright."""
@@ -81,16 +81,6 @@ def crash():
             + sparkle(130, 140, 1.2) + sparkle(520, 420, .9))
 
 
-def fish():
-    return (bg(6, '#3fb6ff') + '<g filter="url(#shadow)" transform="translate(300 300)">'
-            '<path d="M-170 0 C -100 -110 90 -110 150 0 C 90 110 -100 110 -170 0 Z" fill="url(#gold)" stroke="#8a4f08" stroke-width="4"/>'
-            '<path d="M150 0 L240 -80 L215 0 L240 80 Z" fill="url(#goldV)" stroke="#8a4f08" stroke-width="4"/>'
-            '<circle cx="-95" cy="-18" r="20" fill="#fff"/><circle cx="-92" cy="-18" r="10" fill="#1a0c3a"/>'
-            '<path d="M-40 -70 C -10 -40 -10 40 -40 70 M20 -72 C 50 -40 50 40 20 72" fill="none" stroke="#8a4f08" stroke-opacity=".5" stroke-width="4"/>'
-            '</g>'
-            + ''.join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="none" stroke="#c9adff" stroke-width="3" opacity=".7"/>' for x, y, r in [(110, 150, 16), (140, 110, 10), (480, 470, 14), (510, 430, 8)]))
-
-
 def card(x, y, rot, label, suit, col='#c0262f'):
     return (f'<g transform="translate({x} {y}) rotate({rot})"><rect x="-80" y="-115" width="160" height="230" rx="18" fill="#fff6e0" stroke="#8a4f08" stroke-width="3"/>'
             f'<text x="-58" y="-70" font-family="Adventor, Arial Black, sans-serif" font-weight="700" font-size="44" fill="{col}">{label}</text>'
@@ -159,7 +149,7 @@ def daily_wheel():
 
 TILES = [  # slug, drawer
     ('classic-slots', classic_slots), ('megaways', megaways), ('hold-and-win', hold_and_win), ('jackpots', jackpots),
-    ('crash', crash), ('fish-games', fish), ('live-tables', live_tables), ('roulette', roulette),
+    ('crash', crash), ('live-tables', live_tables), ('roulette', roulette),
     ('blackjack', blackjack), ('scratch-cards', scratch), ('bonus-buy', bonus_buy), ('daily-wheel', daily_wheel),
 ]
 

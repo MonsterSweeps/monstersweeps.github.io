@@ -1,0 +1,4 @@
+{
+  "_readme": "This week at Monster. Up to one card per type: race, mission, drop. Item: {\"type\": \"race\", \"title\": \"...\", \"text\": \"...\", \"endsAt\": \"2026-11-16T23:59:00-05:00\", \"url\": \"\"}. Ended events are skipped; an empty list hides the section.",
+  "events": []
+}

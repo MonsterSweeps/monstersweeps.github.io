@@ -1,4 +1,5 @@
 {
+  "_readme": "Homepage game area. Entries WITHOUT a \"row\" are original category tiles (shown as 'Game types'). Once real games are added, give each one \"row\": \"hot\" | \"new\" | \"live\" | \"jackpots\", a real square thumbnail in /img/games (webp, 600x600) and the studio in \"provider\"; as soon as any entry has a row, only real games are shown, in those four rows.",
   "games": [
     {
       "name": "Classic Slots",
@@ -32,13 +33,6 @@
       "name": "Crash",
       "provider": "Cash out in time",
       "image": "/img/games/crash.webp",
-      "url": "",
-      "badge": ""
-    },
-    {
-      "name": "Fish Games",
-      "provider": "Hunt for gold",
-      "image": "/img/games/fish-games.webp",
       "url": "",
       "badge": ""
     },

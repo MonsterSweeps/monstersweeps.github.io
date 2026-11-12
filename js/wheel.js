@@ -66,6 +66,7 @@
         if (t >= 1) {
           busy = false; btn.disabled = false; var s = SEG[spin.k][0];
           out.textContent = 'Demo result: ' + s + '. Claim your real daily spin after you sign up.';
+          window.dispatchEvent(new CustomEvent('monster:react'));
           sp = []; for (var q = 0; q < P.max; q++) { var a2 = Math.random() * Math.PI * 2, v = .02 + Math.random() * .05; sp.push({ x: 0, y: 1.6, z: .5, vx: Math.cos(a2) * v, vy: Math.sin(a2) * v + .03, life: 0, c: Math.random() < .6 ? [1, .75, .25] : [.75, .5, 1] }); }
         }
       }
