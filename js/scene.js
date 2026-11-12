@@ -246,6 +246,14 @@
     if (live) start(); else draw(performance.now());
     window.__lair3d = { get running() { return running; }, get level() { return lvl; }, draw: function () { draw(performance.now()); } };
   }
-  function boot() { if (window.requestIdleCallback) requestIdleCallback(init, { timeout: 1500 }); else setTimeout(init, 300); }
+  function boot() { (function (fn) {
+    // phones and small screens: wait for the first touch, scroll or key press, so loading stays light;
+    // larger screens: start once the browser is idle after the first paint
+    if (matchMedia('(max-width: 860px), (pointer: coarse)').matches) {
+      var ev = ['scroll', 'touchstart', 'pointerdown', 'keydown'], done = false;
+      var go = function () { if (done) return; done = true; ev.forEach(function (e) { removeEventListener(e, go); }); setTimeout(fn, 60); };
+      ev.forEach(function (e) { addEventListener(e, go, { passive: true }); });
+    } else if (window.requestIdleCallback) requestIdleCallback(fn, { timeout: 1500 }); else setTimeout(fn, 300);
+  })(init); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

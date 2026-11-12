@@ -35,6 +35,10 @@
 
   d.body.appendChild(bar); d.body.appendChild(sheet);
   d.documentElement.classList.add('has-msbar');
+  if (window.MS) MS.ready.then(function () {
+    MS.apply(bar); MS.apply(sheet);
+    var soc = MS.socialLinks(''); if (soc.length) { var p = d.createElement('p'); p.className = 'ms-safe ms-soc'; p.innerHTML = 'Community: ' + soc.join(' &middot; '); sheet.querySelector('.ms-panel').appendChild(p); }
+  });
 
   /* ---- open / close with focus trap and scroll lock ---- */
   var opener = null, btn = bar.querySelector('.ms-menu');

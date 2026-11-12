@@ -92,7 +92,7 @@ td.me,th.me{background:linear-gradient(180deg,rgba(255,194,61,.14),rgba(255,194,
 .final img{width:120px;height:120px;border-radius:50%;box-shadow:0 0 0 3px var(--ac),0 0 40px rgba(255,194,61,.4);margin:0 auto 18px;display:block;animation:float 4.5s ease-in-out infinite}
 .final p{margin:0 auto 24px;max-width:540px;color:#d6cbef}.final small{display:block;margin-top:18px;color:var(--mu);font-size:12.5px}.final .btn{animation:beat 2.6s ease-in-out infinite}
 .foot{margin-top:84px;border-top:1px solid var(--bd);padding:40px 20px 44px;color:var(--mu);font-size:14px;background:linear-gradient(180deg,transparent,rgba(30,13,68,.6))}
-.foot-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}.foot h4{color:#fff;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.foot a{color:var(--tx);text-decoration:none}.foot a:hover{color:var(--ac)}.foot p{margin:8px 0}
+.foot-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:28px}.foot h3,.foot h4{color:#fff;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.foot a{color:var(--tx);text-decoration:none}.foot a:hover{color:var(--ac)}.foot p{margin:8px 0}
 .legal{max-width:1180px;margin:28px auto 0;padding-top:20px;border-top:1px solid var(--bd);font-size:12.5px}
 .totop{position:fixed;right:18px;bottom:18px;z-index:90;width:46px;height:46px;border-radius:50%;border:1px solid var(--ac);background:rgba(18,8,42,.9);color:var(--ac);font-size:20px;cursor:pointer;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .3s,transform .3s}.totop.show{opacity:1;transform:none;pointer-events:auto}
 .js .rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;transition-delay:calc(var(--d0,0)*.1s)}.js .rv.in{opacity:1;transform:none}
@@ -285,7 +285,7 @@ html body .diaw,html body .final img,html body .wheelart .glow{animation:none}
 html body .scrollcue::after{animation-iteration-count:3}
 @media(max-width:860px),(pointer:coarse){html body .orb,html body .ring,html body .ring2,html body .wheel,html body .dia,html body .dhero .mesh{animation:none}}
 /* compact phone footer: brand on top, link groups side by side */
-@media(max-width:620px){html body .foot-in{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px}html body .foot-in>div:first-child{grid-column:1/-1}html body .foot{padding-top:36px}html body .foot h4{margin:14px 0 2px}}
+@media(max-width:620px){html body .foot-in{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px}html body .foot-in>div:first-child{grid-column:1/-1}html body .foot{padding-top:36px}html body .foot h3,.foot h4{margin:14px 0 2px}}
 /* blog index on phones: category chips stay reachable in one swipeable row; cards stay compact */
 @media(max-width:860px){
 .bfilter{padding:20px 16px 0}
