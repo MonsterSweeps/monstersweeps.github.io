@@ -1,0 +1,29 @@
+{
+  "_readme": "Game platforms shown under Sweeps.Monster. Entry: {\"name\", \"image\" (square webp in /img/platforms), \"about\" (one factual line), \"url\" (optional; empty = the Sweeps.Monster link)}. Names and logos belong to their owners.",
+  "platforms": [
+    {
+      "name": "Juwa",
+      "image": "/img/platforms/juwa.webp",
+      "about": "Game platform",
+      "url": ""
+    },
+    {
+      "name": "Panda Master",
+      "image": "/img/platforms/panda-master.webp",
+      "about": "Game platform",
+      "url": ""
+    },
+    {
+      "name": "Ultra Panda",
+      "image": "/img/platforms/ultra-panda.webp",
+      "about": "Game platform",
+      "url": ""
+    },
+    {
+      "name": "Vblink",
+      "image": "/img/platforms/vblink.webp",
+      "about": "Game platform",
+      "url": ""
+    }
+  ]
+}

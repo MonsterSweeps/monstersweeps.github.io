@@ -22,5 +22,20 @@
     "ctaText": "Claim your bonus",
     "ctaUrl": "https://monstersweeps.net/",
     "alt": "MonsterSweeps signing bonus: $5 bonus on your first purchase. Terms and conditions apply."
+  },
+  "products": {
+    "sweepsmonster": {
+      "url": "https://sweeps.monster/"
+    },
+    "casino": {
+      "url": "https://monstersweeps.net/"
+    },
+    "monsterpay": {
+      "url": "TODO"
+    },
+    "predictions": {
+      "enabled": false,
+      "url": "TODO"
+    }
   }
 }

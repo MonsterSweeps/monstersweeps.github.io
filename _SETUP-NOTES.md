@@ -20,8 +20,8 @@ The page reads /data/leaderboard.json. Replace it with live data in the same sha
 - Up to 10 rows per period, highest XP first.
 - leaderboard.html is noindex while it shows sample data. Remove the noindex when it goes live, and add it to sitemap.xml.
 
-## Domains
-Point sweeps.monster and monster.win at https://www.monsters.win with a 301 redirect. Make sure monsters.win (no www) also redirects to https://www.monsters.win.
+## Domains and products
+www.monsters.win is the landing page for three products: Sweeps.Monster (https://sweeps.monster/, the game platforms), the MonsterSweeps sweepstakes casino (https://monstersweeps.net/) and MonsterPay. Product links live in data/site-config.json under "products"; platforms are listed in data/platforms.json with logos in /img/platforms. Make sure monsters.win (no www) redirects to https://www.monsters.win.
 
 ## How updates work
 There is no CMS to log in to. Every change goes through Claude Code in chat: describe it (or send game images,

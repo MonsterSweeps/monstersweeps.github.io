@@ -381,3 +381,27 @@ html.lair3d #redeem{padding-bottom:170px}
   .shelf .tile{width:120px}
 }
 @media (prefers-reduced-motion:reduce){.mon{animation:none}.rv{opacity:1;transform:none}.xpbar i{transition:none}}
+
+/* ===== three-product landing: doors, platforms section, casino band ===== */
+.doors{padding:0 0 34px}
+.door3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.door{--a:var(--gold);position:relative;display:flex;flex-direction:column;padding:26px 24px 24px;border-radius:26px;background:var(--glass);
+  box-shadow:inset 0 3px 0 var(--a),inset 0 0 0 1px var(--line),var(--cardShadow);overflow:hidden}
+.door::before{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:var(--a);opacity:.16;filter:blur(30px);pointer-events:none}
+.d-sm{--a:#ff5a4d}.d-ca{--a:#8b5cf6}.d-mp{--a:#3fd27a}
+.dk{margin:0 0 6px;font:700 13px var(--d);letter-spacing:.1em;text-transform:uppercase;color:var(--a)}
+.d-ca .dk{color:var(--lilac)}
+.door h3{font-size:clamp(24px,2.4vw,30px);margin:0 0 14px}
+.door ul{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:9px}
+.door li{position:relative;padding-left:26px;color:#ddd2f5;font-size:15.5px}
+.door li::before{content:"";position:absolute;left:3px;top:.45em;width:12px;height:7px;border-left:2.5px solid var(--a);border-bottom:2.5px solid var(--a);transform:rotate(-45deg)}
+.dact{margin-top:auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}
+.dmore{display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:var(--lilac)}
+.band{padding:90px 0 10px}.band h2{font-size:clamp(34px,5vw,60px);line-height:1.02;margin:0 0 20px}.band .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.pred{margin-top:26px;padding:22px;border-radius:22px;background:var(--glass);box-shadow:inset 0 0 0 1px var(--goldLine);max-width:620px}
+.pred h3{font-size:21px;margin:0 0 6px}.pred p{margin:0 0 14px;color:#d8ccf2}
+.plats .ctas{display:flex;flex-wrap:wrap;gap:12px}
+.final .ctas{display:flex;flex-wrap:wrap;gap:12px}
+@media (max-width:860px){.door3{grid-template-columns:minmax(0,1fr)}.doors{padding-bottom:12px}.band{padding:56px 0 0}}
+.dact{flex-direction:column;align-items:flex-start;gap:4px}
+.hero .col{max-width:660px}
