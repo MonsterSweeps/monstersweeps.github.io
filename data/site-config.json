@@ -22,5 +22,42 @@
     "ctaText": "Claim your bonus",
     "ctaUrl": "https://monstersweeps.net/",
     "alt": "MonsterSweeps signing bonus: $5 bonus on your first purchase. Terms and conditions apply."
-  }
+  },
+  "products": {
+    "sweepsmonster": {
+      "url": "https://sweeps.monster/"
+    },
+    "casino": {
+      "url": "https://monstersweeps.net/"
+    },
+    "monsterpay": {
+      "url": "https://monsterspay.net/"
+    },
+    "predictions": {
+      "enabled": true,
+      "url": "https://monstersweeps.net/"
+    }
+  },
+  "company": {
+    "legalName": "Monster Tech International",
+    "registration": "TODO",
+    "address": "TODO",
+    "phone": "TODO",
+    "email": "support@monstersweeps.net",
+    "supportHours": "TODO",
+    "replyTime": "TODO"
+  },
+  "officialDomains": [
+    "monsters.win",
+    "sweeps.monster",
+    "monsterspay.net",
+    "monstersweeps.net"
+  ],
+  "payouts": [],
+  "availability": {
+    "sweepsmonster": [],
+    "casino": [],
+    "monsterpay": []
+  },
+  "reviewsUrl": "TODO"
 }

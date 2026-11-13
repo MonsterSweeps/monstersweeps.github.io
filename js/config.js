@@ -12,6 +12,7 @@
     if (v == null) return false;
     if (Array.isArray(v)) return v.length > 0 && v.every(real);
     if (typeof v === 'string') return v.trim() !== '' && !/^todo\b/i.test(v.trim());
+    if (typeof v === 'boolean') return v;
     return true;
   }
   function has(k) { return real(dig(k)); }
@@ -42,8 +43,17 @@
     [].forEach.call(root.querySelectorAll('[data-cfg]'), function (el) { var v = get(el.dataset.cfg); if (v !== undefined) el.textContent = Array.isArray(v) ? v.join(', ') : v; });
     [].forEach.call(root.querySelectorAll('[data-needs]'), function (el) { el.hidden = !el.dataset.needs.split(/\s+/).every(has); });
     // every link to the play site gets the register/login URL from config plus UTM parameters
-    [].forEach.call(root.querySelectorAll('a[href^="https://monstersweeps.net"],a[data-cta]'), function (a) {
+    // product links: Sweeps.Monster, the casino, MonsterPay and predictions each have their own URL in products{}.
+    // A product with no URL yet shows "Link coming soon" instead of a guessed link.
+    [].forEach.call(root.querySelectorAll('a[data-product]'), function (a) {
       if (a.dataset.utm) return;
+      var k = a.dataset.product, url = get('products.' + k + '.url') || (k === 'casino' ? get('registerUrl') : '');
+      if (a.dataset.href && /^https:\/\//i.test(a.dataset.href)) url = a.dataset.href;
+      if (!/^https:\/\//i.test(url || '')) { var sp = d.createElement('span'); sp.className = 'soon'; sp.textContent = 'Link coming soon'; a.replaceWith(sp); return; }
+      a.href = cta(url, campaignOf(a)); a.dataset.utm = '1';
+    });
+    [].forEach.call(root.querySelectorAll('a[href^="https://monstersweeps.net"],a[data-cta]'), function (a) {
+      if (a.dataset.utm || a.dataset.product) return;
       var login = a.dataset.to === 'login' || /^\s*log ?in\s*$/i.test(a.textContent);
       var base = a.dataset.href || get(login ? 'loginUrl' : 'registerUrl') || FALLBACK;
       a.href = cta(base, campaignOf(a)); a.dataset.utm = '1';
@@ -65,5 +75,18 @@
   var ready = (window.fetch ? fetch('/data/site-config.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : {}; }) : Promise.resolve({}))
     .catch(function () { return {}; })
     .then(function (j) { cfg = j && typeof j === 'object' ? j : {}; apply(d); return cfg; });
+  // platform lists ([data-platforms]) are filled from /data/platforms.json, so adding a platform needs no page edit
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var lists = d.querySelectorAll('[data-platforms]');
+  if (lists.length && window.fetch) fetch('/data/platforms.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    var pl = (j && j.platforms || []).filter(function (x) { return x && x.name && /^\/[^\/]/.test(x.image || ''); });
+    if (!pl.length) return;
+    var html = pl.map(function (x) {
+      return '<li><a class="plat" href="https://sweeps.monster/" data-product="sweepsmonster" data-cta="platform_' + x.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '"' + (/^https:\/\//i.test(x.url || '') ? ' data-href="' + esc(x.url) + '"' : '') + '>' +
+        '<span class="plogo"><img src="' + esc(x.image) + '" alt="' + esc(x.name) + ' logo" width="560" height="560" loading="lazy" decoding="async"></span><b>' + esc(x.name) + '</b><small>' + esc(x.about || '') + '</small></a></li>';
+    }).join('');
+    [].forEach.call(lists, function (ul) { ul.innerHTML = html; });
+    ready.then(function () { [].forEach.call(lists, apply); });
+  }).catch(function () {});
   window.MS = { ready: ready, has: has, get: get, cta: cta, apply: apply, socialLinks: socialLinks };
 })();

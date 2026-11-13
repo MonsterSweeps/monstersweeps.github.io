@@ -85,6 +85,26 @@ if(rows)getJSON('/data/games.json').then(function(j){
     if(!real.length){var gc=$('.gcount');if(gc)gc.hidden=true}   // a game count next to category tiles would mislead
   })});
 
+/* trust section: payout table, state checker and reviews link appear only when the config has real values */
+MS.ready.then(function(){
+  var rows=(MS.get('payouts')||[]).filter(function(r){return r&&r.method&&(r.min||r.time||r.limit)}),pt=$('#paytable');
+  if(pt&&rows.length){pt.innerHTML='<table><caption class="sr">Redemptions by wallet</caption><thead><tr><th scope="col">Wallet</th><th scope="col">Minimum</th><th scope="col">Typical time</th><th scope="col">Limit</th></tr></thead><tbody>'+rows.map(function(r){return'<tr><td>'+esc(r.method)+'</td><td>'+esc(r.min||'')+'</td><td>'+esc(r.time||'')+'</td><td>'+esc(r.limit||'')+'</td></tr>'}).join('')+'</tbody></table>';pt.hidden=false}
+  var rv=$('#revLink'),ru=MS.get('reviewsUrl');if(rv&&/^https:\/\//i.test(ru||''))rv.href=ru;else if(rv)rv.closest('.reviews').hidden=true;
+  var dm=MS.get('officialDomains'),dl=$('#doms');
+  if(dl&&Array.isArray(dm)&&dm.length){var role={'monsters.win':'Main site','sweeps.monster':'Game platforms','monsterspay.net':'Payments','monstersweeps.net':'Casino and predictions'};
+    dl.innerHTML=dm.map(function(x){return'<li><b>'+esc(x)+'</b><span>'+esc(role[x]||'')+'</span></li>'}).join('')}
+  /* state checker: needs at least one product with a state list */
+  var av={},names={sweepsmonster:'Sweeps.Monster',casino:'Casino and predictions',monsterpay:'MonsterPay'},all={},box=$('#statecheck');
+  Object.keys(names).forEach(function(k){var a=MS.get('availability.'+k);if(Array.isArray(a)&&a.length){av[k]=a;a.forEach(function(st){all[st]=1})}});
+  var list=Object.keys(all).sort();
+  if(box&&list.length){var sel=$('#stSel'),res=$('#stRes');
+    var US=['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+    sel.insertAdjacentHTML('beforeend',US.map(function(x){return'<option>'+x+'</option>'}).join(''));
+    sel.addEventListener('change',function(){var st=sel.value;if(!st){res.innerHTML='';return}
+      res.innerHTML=Object.keys(av).map(function(k){var ok=av[k].indexOf(st)>-1;return'<li class="'+(ok?'y':'n')+'">'+names[k]+': '+(ok?'available':'not available')+' in '+esc(st)+'</li>'}).join('')});
+    box.hidden=false}
+});
+
 /* tier bar fills once when it scrolls into view; sections fade up without moving the layout */
 (function(){var io='IntersectionObserver' in window;
   var xb=$('#xpbar');if(xb){if(io&&!RM){var o=new IntersectionObserver(function(e){if(e[0].isIntersecting){xb.classList.add('in');o.disconnect()}},{threshold:.6});o.observe(xb)}else xb.classList.add('in')}

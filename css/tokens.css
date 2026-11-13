@@ -89,3 +89,18 @@ html.wp-lock,html.wp-lock body{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.wp-scrim,.wp-card{transition:none}.wp-card{transform:none}}
 /* community column added to footers by js/config.js */
 .community h3{margin-top:0}
+
+/* ---------- platform logo grid (homepage and platforms.html) ---------- */
+.pgrid{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px}
+.prose .pgrid{padding:0}.prose .pgrid li{margin:0;padding:0}.prose .pgrid li::before{content:none}
+.plat{display:grid;gap:4px;justify-items:center;text-align:center;padding:14px 12px 16px;border-radius:22px;text-decoration:none;color:inherit;
+  background:var(--glass);box-shadow:inset 0 0 0 1px var(--line),var(--cardShadow);transition:transform .25s,box-shadow .25s}
+.plat:hover,.plat:focus-visible{transform:translateY(-5px);box-shadow:inset 0 0 0 1.5px var(--gold),0 26px 44px -22px rgba(255,177,31,.55)}
+.plogo{display:block;width:100%;aspect-ratio:1/1;border-radius:16px;background:radial-gradient(circle at 50% 35%,#fff,#efe7ff);padding:8%}
+.plogo img{display:block;width:100%;height:100%;object-fit:contain}
+.plat b{font:700 17px var(--d);color:#fff;margin-top:8px}.plat small{font-size:13px;color:var(--mute)}
+/* a product button whose link is not set yet */
+.soon{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;font:600 14px var(--b);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line2);cursor:default}
+@media (max-width:520px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+.pgrid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+@media (max-width:520px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
