@@ -405,3 +405,35 @@ html.lair3d #redeem{padding-bottom:170px}
 @media (max-width:860px){.door3{grid-template-columns:minmax(0,1fr)}.doors{padding-bottom:12px}.band{padding:56px 0 0}}
 .dact{flex-direction:column;align-items:flex-start;gap:4px}
 .hero .col{max-width:660px}
+
+/* ===== trust section: who we are, official domains, verification, disputes, payout table, state check ===== */
+.tgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
+.tcard{padding:24px;border-radius:24px;background:var(--glass);box-shadow:inset 0 1px 0 rgba(255,194,61,.3),inset 0 0 0 1px var(--line),var(--cardShadow)}
+.tcard h3{font-size:21px;margin:0 0 12px}.tcard p{margin:0 0 12px;color:#d8ccf2;font-size:15.5px}
+.tcard .more{display:inline-flex;align-items:center;min-height:44px;font-size:15px}
+.who{margin:0 0 6px;display:grid;gap:8px}.who div{display:grid;grid-template-columns:120px 1fr;gap:10px;font-size:15.5px}
+.who dt{color:var(--mute)}.who dd{margin:0;color:#fff;overflow-wrap:anywhere}
+.doms{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.doms li{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--goldLine)}
+.doms b{font:700 16px var(--d);color:var(--gold)}.doms span{font-size:13px;color:var(--mute);text-align:right}
+.never,.plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.never li,.plain li{position:relative;padding-left:28px;color:#ddd2f5;font-size:15.5px}
+.plain li::before{content:"";position:absolute;left:4px;top:.45em;width:13px;height:7px;border-left:3px solid var(--eye);border-bottom:3px solid var(--eye);transform:rotate(-45deg)}
+.never li::before{content:"";position:absolute;left:3px;top:.2em;width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 2px #ff7a7a;background:linear-gradient(45deg,transparent 44%,#ff7a7a 44% 56%,transparent 56%)}
+.steps3{margin:0 0 12px;padding-left:22px;display:grid;gap:8px;color:#ddd2f5;font-size:15.5px}
+.help2{margin:0!important;font-size:14.5px!important;color:var(--mute)!important}
+.statecheck{margin-top:16px;padding:22px 24px;border-radius:24px;background:var(--glass);box-shadow:inset 0 0 0 1px var(--line)}
+.statecheck h3{font-size:19px;margin:0 0 6px}.statecheck p{margin:0 0 12px;color:#d8ccf2;font-size:15.5px}
+.statecheck select{min-height:48px;padding:0 14px;border-radius:12px;border:0;background:#1c0d42;color:#fff;font:600 16px var(--b);box-shadow:inset 0 0 0 1px var(--line2);max-width:100%}
+.stres{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.stres li{padding:8px 14px;border-radius:999px;font-size:14.5px;font-weight:600}
+.stres .y{background:rgba(63,210,122,.14);color:#7ff0ad;box-shadow:inset 0 0 0 1px rgba(63,210,122,.5)}
+.stres .n{background:rgba(255,255,255,.05);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
+.reviews{margin:16px 0 0;font-size:15.5px;color:#d8ccf2}
+.paytable{margin:18px 0 0;overflow-x:auto;border-radius:16px;box-shadow:inset 0 0 0 1px var(--goldLine)}
+.paytable table{width:100%;border-collapse:collapse;font-size:15px}
+.paytable th,.paytable td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.paytable th{font:700 13px var(--d);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.paytable tr:last-child td{border-bottom:0}.paytable td:first-child{font-weight:600;color:#fff}
+@media (max-width:860px){.tgrid{grid-template-columns:minmax(0,1fr)}.who div{grid-template-columns:96px 1fr}}
+.never li:not(:first-child)::before{left:4px;top:.45em;width:13px;height:7px;border-radius:0;box-shadow:none;background:none;border-left:3px solid var(--eye);border-bottom:3px solid var(--eye);transform:rotate(-45deg)}

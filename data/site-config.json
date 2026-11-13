@@ -31,11 +31,33 @@
       "url": "https://monstersweeps.net/"
     },
     "monsterpay": {
-      "url": "TODO"
+      "url": "https://monsterspay.net/"
     },
     "predictions": {
-      "enabled": false,
-      "url": "TODO"
+      "enabled": true,
+      "url": "https://monstersweeps.net/"
     }
-  }
+  },
+  "company": {
+    "legalName": "Monster Tech International",
+    "registration": "TODO",
+    "address": "TODO",
+    "phone": "TODO",
+    "email": "support@monstersweeps.net",
+    "supportHours": "TODO",
+    "replyTime": "TODO"
+  },
+  "officialDomains": [
+    "monsters.win",
+    "sweeps.monster",
+    "monsterspay.net",
+    "monstersweeps.net"
+  ],
+  "payouts": [],
+  "availability": {
+    "sweepsmonster": [],
+    "casino": [],
+    "monsterpay": []
+  },
+  "reviewsUrl": "TODO"
 }
