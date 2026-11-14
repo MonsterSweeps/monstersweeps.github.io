@@ -16,7 +16,7 @@
   "providers": [],
   "streak": "TODO",
   "popup": {
-    "enabled": true,
+    "enabled": false,
     "desktopImage": "/img/promo/welcome-desktop.webp",
     "mobileImage": "/img/promo/welcome-mobile.webp",
     "ctaText": "Claim your bonus",
@@ -39,7 +39,7 @@
     }
   },
   "company": {
-    "legalName": "Monster Tech International",
+    "legalName": "Monsters Tech Inc.",
     "registration": "TODO",
     "address": "TODO",
     "phone": "TODO",
