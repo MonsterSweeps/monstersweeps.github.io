@@ -1,5 +1,5 @@
 /* MonsterSweeps mobile shell, shared by every page.
-   On phones and small tablets (<= 860px): a slim bottom bar with "Play free" and "Menu" that stays in thumb reach
+   On phones and small tablets (<= 860px): a slim bottom bar with "Our platforms" and "Menu" that stays in thumb reach
    (hides while you scroll down to read, comes back when you scroll up or reach the end), and a full-screen menu
    sheet. The page headers' own "Menu" buttons open the same sheet. Styles live in /css/tokens.css (.ms-*). */
 (function () {
@@ -7,7 +7,7 @@
   var d = document, PLAY = 'https://monstersweeps.net/';
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var LINKS = [
-    ['Home', '/'], ['Sweeps.Monster platforms', '/platforms.html'], ['Casino', '/#casino'], ['MonsterPay', '/monsterpay.html'], ['Rewards and tiers', '/#rewards'],
+    ['Home', '/'], ['Sweeps.Monster platforms', '/platforms.html'], ['MonsterSweeps casino', '/casino.html'], ['MonsterPay', '/monsterpay.html'],
     ['VIP Club', '/vip.html'], ['Refer a Friend', '/refer-a-friend.html'], ['Leaderboard', '/leaderboard.html'], ['Blog and guides', '/blog/'], ['Help and contact', '/contact.html']
   ];
   var here = location.pathname.replace(/index\.html$/, '');
@@ -15,7 +15,7 @@
   function el(html) { var t = d.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
 
   var bar = el('<div class="ms-bar" role="navigation" aria-label="Quick actions">' +
-    '<a class="ms-play" href="/#doors">Play</a>' +
+    '<a class="ms-play" href="/#doors">Our platforms</a>' +
     '<button class="ms-menu" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="ms-sheet"><span class="ms-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</button></div>');
 
   var items = LINKS.map(function (l) {
@@ -29,7 +29,6 @@
       '<div class="ms-head"><a class="ms-brand" href="/"><img src="/logo-80.webp" width="34" height="34" alt=""><span>Monster<b>Sweeps</b></span></a>' +
       '<button class="ms-x" type="button" data-close aria-label="Close menu">&times;</button></div>' +
       '<nav aria-label="Site"><ul class="ms-list">' + items + '</ul></nav>' +
-      '<div class="ms-acts"><a class="ms-play" href="/#doors">Choose how to play</a><a class="ms-login" href="' + PLAY + '" data-product="casino" data-to="login">Casino log in</a></div>' +
       '<p class="ms-safe"><b>21+</b> only &middot; <a href="/responsible-gaming.html">Play responsibly</a> &middot; Free help 24/7: <a href="tel:18006973738">1-800-MY-RESET</a></p>' +
     '</div></div>');
 
