@@ -1,5 +1,5 @@
 {
-  "_readme": "Tier tables for sweeps.html (sweepsmonster) and casino.html (casino). The casino list is a copy of the Sweeps.Monster one until its own numbers are final. Fields per tier: name, color, xp, weekly, birthday, maxBet, note (optional).",
+  "_readme": "Tier tables for sweeps.html (sweepsmonster) and casino.html (casino). The casino list is a copy of the Sweeps.Monster one until its own numbers are final. Fields per tier: name, color, xp, weekly, birthday, maxBet, note (optional), perk (the 'what is new' line; the page text for it is written at build time).",
   "sweepsmonster": {
     "tiers": [
       {
@@ -9,7 +9,8 @@
         "weekly": "$5",
         "birthday": "10%",
         "maxBet": "$500",
-        "note": "You start here"
+        "note": "You start here",
+        "perk": "Free Fortune Wheel spin every 24 hours"
       },
       {
         "name": "Silver",
@@ -17,7 +18,8 @@
         "xp": "200",
         "weekly": "$10",
         "birthday": "20%",
-        "maxBet": "$1,000"
+        "maxBet": "$1,000",
+        "perk": "Shown in your account"
       },
       {
         "name": "Gold",
@@ -25,7 +27,8 @@
         "xp": "700",
         "weekly": "$15",
         "birthday": "30%",
-        "maxBet": "$2,000"
+        "maxBet": "$2,000",
+        "perk": "Shown in your account"
       },
       {
         "name": "Platinum",
@@ -33,7 +36,8 @@
         "xp": "1,200",
         "weekly": "$20",
         "birthday": "40%",
-        "maxBet": "$3,000"
+        "maxBet": "$3,000",
+        "perk": "Surprise gifts and vouchers"
       },
       {
         "name": "Diamond",
@@ -41,7 +45,8 @@
         "xp": "2,000",
         "weekly": "$25",
         "birthday": "50%",
-        "maxBet": "$5,000"
+        "maxBet": "$5,000",
+        "perk": "24-hour dedicated support, VIP invitations, extra gifts and vouchers"
       },
       {
         "name": "VIP",
@@ -50,7 +55,8 @@
         "weekly": "$25",
         "birthday": "50%",
         "maxBet": "Uncapped",
-        "note": "Invite only"
+        "note": "Invite only",
+        "perk": "Bigger referral reward: 80% instead of 50%"
       }
     ]
   },
@@ -63,7 +69,8 @@
         "weekly": "$5",
         "birthday": "10%",
         "maxBet": "$500",
-        "note": "You start here"
+        "note": "You start here",
+        "perk": "Free Fortune Wheel spin every 24 hours"
       },
       {
         "name": "Silver",
@@ -71,7 +78,8 @@
         "xp": "200",
         "weekly": "$10",
         "birthday": "20%",
-        "maxBet": "$1,000"
+        "maxBet": "$1,000",
+        "perk": "Shown in your account"
       },
       {
         "name": "Gold",
@@ -79,7 +87,8 @@
         "xp": "700",
         "weekly": "$15",
         "birthday": "30%",
-        "maxBet": "$2,000"
+        "maxBet": "$2,000",
+        "perk": "Shown in your account"
       },
       {
         "name": "Platinum",
@@ -87,7 +96,8 @@
         "xp": "1,200",
         "weekly": "$20",
         "birthday": "40%",
-        "maxBet": "$3,000"
+        "maxBet": "$3,000",
+        "perk": "Surprise gifts and vouchers"
       },
       {
         "name": "Diamond",
@@ -95,7 +105,8 @@
         "xp": "2,000",
         "weekly": "$25",
         "birthday": "50%",
-        "maxBet": "$5,000"
+        "maxBet": "$5,000",
+        "perk": "24-hour dedicated support, VIP invitations, extra gifts and vouchers"
       },
       {
         "name": "VIP",
@@ -104,7 +115,8 @@
         "weekly": "$25",
         "birthday": "50%",
         "maxBet": "Uncapped",
-        "note": "Invite only"
+        "note": "Invite only",
+        "perk": "Bigger referral reward: 80% instead of 50%"
       }
     ]
   }

@@ -89,3 +89,8 @@ function close(){sh.classList.remove('on');d.documentElement.classList.remove('m
 b.addEventListener('click',open);
 sh.addEventListener('click',function(e){var a=e.target.closest('a');if(a){e.preventDefault();close();var t=d.querySelector(a.getAttribute('href'));if(t)setTimeout(function(){t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})},60)}else if(e.target.closest('[data-close]'))close()});
 d.addEventListener('keydown',function(e){if(!sh.hidden&&e.key==='Escape')close()})})();
+/* the 3D demo wheel (js/engine.js + js/wheel.js) loads only when it is about to scroll into view */
+(function(){var d=document,w=d.getElementById('wheel3d');if(!w)return;var done=false,me=d.querySelector('script[src*="/site.js"]'),v=me&&me.src.split('?v=')[1],q=v?'?v='+v:'';
+function add(src,cb){var sc=d.createElement('script');sc.src=src+q;sc.onload=cb;d.body.appendChild(sc)}
+function load(){if(done)return;done=true;if(window.MSE)add('/js/wheel.js');else add('/js/engine.js',function(){add('/js/wheel.js')})}
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();load()}},{rootMargin:'600px 0px'});io.observe(w)}else load()})();
