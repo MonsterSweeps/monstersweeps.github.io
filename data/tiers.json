@@ -1,0 +1,111 @@
+{
+  "_readme": "Tier tables for sweeps.html (sweepsmonster) and casino.html (casino). The casino list is a copy of the Sweeps.Monster one until its own numbers are final. Fields per tier: name, color, xp, weekly, birthday, maxBet, note (optional).",
+  "sweepsmonster": {
+    "tiers": [
+      {
+        "name": "Bronze",
+        "color": "#d9915a",
+        "xp": "0",
+        "weekly": "$5",
+        "birthday": "10%",
+        "maxBet": "$500",
+        "note": "You start here"
+      },
+      {
+        "name": "Silver",
+        "color": "#d5dbe8",
+        "xp": "200",
+        "weekly": "$10",
+        "birthday": "20%",
+        "maxBet": "$1,000"
+      },
+      {
+        "name": "Gold",
+        "color": "#ffc23d",
+        "xp": "700",
+        "weekly": "$15",
+        "birthday": "30%",
+        "maxBet": "$2,000"
+      },
+      {
+        "name": "Platinum",
+        "color": "#8fd6ff",
+        "xp": "1,200",
+        "weekly": "$20",
+        "birthday": "40%",
+        "maxBet": "$3,000"
+      },
+      {
+        "name": "Diamond",
+        "color": "#c9a8ff",
+        "xp": "2,000",
+        "weekly": "$25",
+        "birthday": "50%",
+        "maxBet": "$5,000"
+      },
+      {
+        "name": "VIP",
+        "color": "#ffe08a",
+        "xp": "Invite only",
+        "weekly": "$25",
+        "birthday": "50%",
+        "maxBet": "Uncapped",
+        "note": "Invite only"
+      }
+    ]
+  },
+  "casino": {
+    "tiers": [
+      {
+        "name": "Bronze",
+        "color": "#d9915a",
+        "xp": "0",
+        "weekly": "$5",
+        "birthday": "10%",
+        "maxBet": "$500",
+        "note": "You start here"
+      },
+      {
+        "name": "Silver",
+        "color": "#d5dbe8",
+        "xp": "200",
+        "weekly": "$10",
+        "birthday": "20%",
+        "maxBet": "$1,000"
+      },
+      {
+        "name": "Gold",
+        "color": "#ffc23d",
+        "xp": "700",
+        "weekly": "$15",
+        "birthday": "30%",
+        "maxBet": "$2,000"
+      },
+      {
+        "name": "Platinum",
+        "color": "#8fd6ff",
+        "xp": "1,200",
+        "weekly": "$20",
+        "birthday": "40%",
+        "maxBet": "$3,000"
+      },
+      {
+        "name": "Diamond",
+        "color": "#c9a8ff",
+        "xp": "2,000",
+        "weekly": "$25",
+        "birthday": "50%",
+        "maxBet": "$5,000"
+      },
+      {
+        "name": "VIP",
+        "color": "#ffe08a",
+        "xp": "Invite only",
+        "weekly": "$25",
+        "birthday": "50%",
+        "maxBet": "Uncapped",
+        "note": "Invite only"
+      }
+    ]
+  }
+}

@@ -31,3 +31,9 @@ say "merge". GitHub Pages then publishes www.monsters.win within about a minute.
 - Featured games (the sliding rows in the homepage hero) live in /data/games.json: name, provider, image, url, badge.
   Game images go in /img/games (square 1:1, at least 600 x 600).
 - Before each release, tools/bump-version.sh stamps the CSS/JS links so browsers fetch fresh files.
+
+## Platform pages
+- `sweeps.html` (Sweeps.Monster) and `casino.html` (MonsterSweeps) each show the daily streak, tier table, XP and VIP.
+- Tier numbers live in `data/tiers.json` (`sweepsmonster` and `casino`). The casino list is a copy of the Sweeps.Monster one until its own numbers are final.
+- Streak amounts appear on both pages when `streak` in `data/site-config.json` has seven values.
+- `platforms.html` and `vip.html` only redirect to the pages above.

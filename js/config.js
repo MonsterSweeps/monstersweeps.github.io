@@ -88,5 +88,25 @@
     [].forEach.call(lists, function (ul) { ul.innerHTML = html; });
     ready.then(function () { [].forEach.call(lists, apply); });
   }).catch(function () {});
+  // tier tables ([data-tiers="sweepsmonster|casino"]) are refreshed from /data/tiers.json; the HTML already holds the same table
+  var tts = d.querySelectorAll('[data-tiers]');
+  if (tts.length && window.fetch) fetch('/data/tiers.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    [].forEach.call(tts, function (box) {
+      var t = j && j[box.getAttribute('data-tiers')], tb = box.querySelector('table'); t = t && t.tiers;
+      if (!tb || !Array.isArray(t) || !t.length || !t.every(function (x) { return x && x.name && x.xp != null; })) return;
+      var rows = [['xp', 'XP needed'], ['weekly', 'Weekly reward'], ['birthday', 'Birthday bonus'], ['maxBet', 'Max bet']].filter(function (r) { return t.every(function (x) { return x[r[0]] != null && x[r[0]] !== ''; }); });
+      tb.querySelector('thead').innerHTML = '<tr><td></td>' + t.map(function (x) {
+        return '<th scope="col" style="--c:' + (/^#[0-9a-f]{3,8}$/i.test(x.color || '') ? x.color : '#ffc23d') + '"><span class="gem" aria-hidden="true"></span>' + esc(x.name) + (x.note ? '<small>' + esc(x.note) + '</small>' : '') + '</th>';
+      }).join('') + '</tr>';
+      tb.querySelector('tbody').innerHTML = rows.map(function (r) { return '<tr><th scope="row">' + r[1] + '</th>' + t.map(function (x) { return '<td>' + esc(x[r[0]]) + '</td>'; }).join('') + '</tr>'; }).join('');
+    });
+  }).catch(function () {});
+  // 7-day streak ([data-streak]): amounts show only when the config has all seven
+  ready.then(function () {
+    var st = get('streak');
+    if (Array.isArray(st) && st.length === 7 && st.every(function (v) { return real(v); })) [].forEach.call(d.querySelectorAll('[data-streak]'), function (ol) {
+      [].forEach.call(ol.querySelectorAll('li span'), function (s, i) { s.textContent = st[i]; }); ol.classList.add('vals');
+    });
+  });
   window.MS = { ready: ready, has: has, get: get, cta: cta, apply: apply, socialLinks: socialLinks };
 })();
