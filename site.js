@@ -58,7 +58,7 @@ if(rc.length){function ur(){var k=rc.filter(function(c){return c.getAttribute('a
 rc.forEach(function(c){c.addEventListener('click',function(){c.setAttribute('aria-pressed',c.getAttribute('aria-pressed')==='true'?'false':'true');ur()})})}
 /* contact form */
 var cf=$('#cform');
-if(cf){cf.addEventListener('submit',function(e){e.preventDefault();var v=$('#ct').value.split('|'),to=v[0]==='privacy'?'privacy@monstersweeps.net':'support@monstersweeps.net',u=$('#cu').value.trim(),b=$('#cm').value.trim()+(u?'\n\nUsername: '+u:'');location.href='mailto:'+to+'?subject='+encodeURIComponent(v[1])+'&body='+encodeURIComponent(b)})}
+if(cf){cf.addEventListener('submit',function(e){e.preventDefault();var v=$('#ct').value.split('|'),to=v[0]==='privacy'?'privacy@monsters.win':'support@monsters.win',u=$('#cu').value.trim(),b=$('#cm').value.trim()+(u?'\n\nUsername: '+u:'');location.href='mailto:'+to+'?subject='+encodeURIComponent(v[1])+'&body='+encodeURIComponent(b)})}
 /* leaderboard */
 var pod=$('#podium');
 if(pod){var D=null,per='weekly',tabs=$$('.lbtabs button'),lst=$('#lblist'),note=$('#lbnote');

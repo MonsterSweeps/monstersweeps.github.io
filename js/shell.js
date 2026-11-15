@@ -8,7 +8,7 @@
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var LINKS = [
     ['Home', '/'], ['Sweeps.Monster', '/sweeps.html'], ['MonsterSweeps casino', '/casino.html'], ['MonsterPay', '/monsterpay.html'],
-    ['Refer a Friend', '/refer-a-friend.html'], ['Leaderboard', '/leaderboard.html'], ['Blog and guides', '/blog/'], ['Help and contact', '/contact.html']
+    ['Sweeps.Monster VIP', '/sweeps-vip.html'], ['MonsterSweeps VIP', '/casino-vip.html'], ['Refer a Friend', '/refer-a-friend.html'], ['Blog and guides', '/blog/'], ['Help and contact', '/contact.html']
   ];
   var here = location.pathname.replace(/index\.html$/, '');
 
