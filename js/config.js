@@ -75,17 +75,18 @@
   var ready = (window.fetch ? fetch('/data/site-config.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : {}; }) : Promise.resolve({}))
     .catch(function () { return {}; })
     .then(function (j) { cfg = j && typeof j === 'object' ? j : {}; apply(d); return cfg; });
-  // platform lists ([data-platforms]) are filled from /data/platforms.json, so adding a platform needs no page edit
+  // platform lists ([data-platforms]) are filled from /data/platforms.json, so adding a platform needs no page edit.
+  // Each logo may have a 240px twin (<name>-240.webp) for small tiles; data-sizes on the list sets the img sizes.
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var lists = d.querySelectorAll('[data-platforms]');
   if (lists.length && window.fetch) fetch('/data/platforms.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
     var pl = (j && j.platforms || []).filter(function (x) { return x && x.name && /^\/[^\/]/.test(x.image || ''); });
     if (!pl.length) return;
-    var html = pl.map(function (x) {
+    var html = function (sizes) { return pl.map(function (x) {
       return '<li><a class="plat" href="https://sweeps.monster/" data-product="sweepsmonster" data-cta="platform_' + x.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '"' + (/^https:\/\//i.test(x.url || '') ? ' data-href="' + esc(x.url) + '"' : '') + '>' +
-        '<span class="plogo"><img src="' + esc(x.image) + '" alt="' + esc(x.name) + ' logo" width="560" height="560" loading="lazy" decoding="async"></span><b>' + esc(x.name) + '</b><small>' + esc(x.about || '') + '</small></a></li>';
-    }).join('');
-    [].forEach.call(lists, function (ul) { ul.innerHTML = html; });
+        '<span class="plogo"><img src="' + esc(x.image) + '"' + (/\.webp$/.test(x.image) ? ' srcset="' + esc(x.image.replace(/\.webp$/, '-240.webp')) + ' 240w, ' + esc(x.image) + ' 560w" sizes="' + esc(sizes) + '"' : '') + ' alt="' + esc(x.name) + ' logo" width="560" height="560" loading="lazy" decoding="async"></span><b>' + esc(x.name) + '</b><small>' + esc(x.about || '') + '</small></a></li>';
+    }).join(''); };
+    [].forEach.call(lists, function (ul) { ul.innerHTML = html(ul.dataset.sizes || '(max-width: 520px) 45vw, 240px'); });
     ready.then(function () { [].forEach.call(lists, apply); });
   }).catch(function () {});
   // tier tables ([data-tiers="sweepsmonster|casino"]) are refreshed from /data/tiers.json; the HTML already holds the same table
