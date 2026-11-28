@@ -3,11 +3,10 @@
    - hero depth: stage glow, spotlight beams, key art and motes move at different depths with the pointer,
      phone tilt and scroll (one rAF loop that sleeps while the hero is off screen)
    - motes: <= 56 gold specks floating in 3D in the spotlight (canvas 2D, perspective-projected)
-   - Meet the King: a turntable from six photographed views; drag, scroll, arrow buttons or the slider turn him
    - platform cards tilt in 3D under the pointer
    - MonsterSweeps (monstersweeps.net) shows "Opening soon" until products.casino.live is true in site-config.json
    - trust section, state checker, FAQ (one open at a time, smooth height), section reveals
-   Reduced motion or data saver: nothing moves on its own; the turntable still turns when the visitor asks. */
+   Reduced motion or data saver: nothing moves on its own. */
 (function () {
   'use strict';
   var d = document, $ = function (s) { return d.querySelector(s); }, $$ = function (s) { return [].slice.call(d.querySelectorAll(s)); };
@@ -107,79 +106,6 @@
     drawMotes(0, 0);
   }
 
-  /* ---------- Meet the King: turntable ---------- */
-  (function () {
-    var box = $('#turn'), fig = $('#turnFig'), range = $('#spinR'); if (!box || !fig) return;
-    var imgs = [].slice.call(fig.querySelectorAll('img')), NV = imgs.length, STEP = 360 / NV, floor = box.querySelector('.turn-floor');
-    var ang = 0, vel = 0, target = null, dragging = false, lastX = 0, touched = false, visible = false, loop = 0, lt = 0, lastScroll = scrollY;
-    function load() {
-      imgs.forEach(function (im) {
-        var s = im.dataset.src; if (!s) return;
-        im.srcset = s + '-sm.webp 211w, ' + s + '.webp 423w'; im.sizes = SMALL ? '62vw' : '360px'; im.src = s + '.webp'; im.removeAttribute('data-src');
-      });
-    }
-    function render() {
-      var a = ((ang % 360) + 360) % 360, f = a / STEP, i0 = Math.floor(f) % NV, i1 = (i0 + 1) % NV, fr = f - Math.floor(f);
-      for (var i = 0; i < NV; i++) {
-        var im = imgs[i];
-        if (i === i0) { im.style.opacity = 1; im.style.zIndex = 1; }
-        else if (i === i1) { im.style.opacity = fr.toFixed(3); im.style.zIndex = 2; }
-        else { im.style.opacity = 0; im.style.zIndex = 0; }
-      }
-      imgs[0].classList.remove('on');
-      if (floor) floor.style.transform = 'translate(-50%,50%) rotateX(76deg) rotateZ(' + (-a).toFixed(1) + 'deg)';
-      if (range && d.activeElement !== range) range.value = Math.round(a) % 360;
-    }
-    function tick(t) {
-      loop = 0;
-      var dt = lt ? Math.min((t - lt) / 1000, .05) : .016; lt = t;
-      if (target != null) { var diff = target - ang; ang += diff * Math.min(1, dt * 9); if (Math.abs(diff) < .2) { ang = target; target = null; } }
-      else if (!dragging) {
-        if (Math.abs(vel) > 2) { ang += vel * dt; vel *= Math.pow(.04, dt); }
-        else if (!RM && !touched) ang += 14 * dt;               // idle: a slow royal turn
-        else vel = 0;
-      }
-      render();
-      if (visible && !d.hidden && (dragging || target != null || Math.abs(vel) > 2 || (!RM && !touched))) loop = requestAnimationFrame(tick);
-    }
-    function go() { if (!loop) { lt = 0; loop = requestAnimationFrame(tick); } }
-    if ('IntersectionObserver' in window) {
-      // the other five views wait until the page has loaded, so they never compete with the hero picture
-      var near = false, loaded = d.readyState === 'complete';
-      function maybe() { if (near && loaded) load(); }
-      if (!loaded) addEventListener('load', function () { loaded = true; maybe(); });
-      new IntersectionObserver(function (es) { if (es[0].isIntersecting) { near = true; maybe(); } }, { rootMargin: '600px 0px' }).observe(box);
-      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) go(); }).observe(box);
-    } else { load(); visible = true; go(); }
-    box.addEventListener('pointerdown', function (e) {
-      dragging = true; touched = true; target = null; vel = 0; lastX = e.clientX; box.classList.add('drag');
-      try { box.setPointerCapture(e.pointerId); } catch (x) {}
-      go();
-    });
-    box.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
-      var dx = e.clientX - lastX; lastX = e.clientX; ang -= dx * .55; vel = -dx * .55 * 60;
-    });
-    function up() { if (!dragging) return; dragging = false; box.classList.remove('drag'); if (RM) vel = 0; go(); }
-    box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up); box.addEventListener('lostpointercapture', up);
-    // scrolling past him turns him a little, like walking around a statue
-    addEventListener('scroll', function () {
-      var dy = scrollY - lastScroll; lastScroll = scrollY;
-      if (!visible || RM || dragging) return;
-      ang += dy * .25; go();
-    }, { passive: true });
-    $$('.spin-b').forEach(function (b) {
-      b.addEventListener('click', function () {
-        touched = true; vel = 0;
-        var base = target != null ? target : Math.round(ang / STEP) * STEP;
-        target = base + (+b.dataset.step) * STEP;
-        if (RM) { ang = target; target = null; render(); } else go();
-      });
-    });
-    if (range) range.addEventListener('input', function () { touched = true; vel = 0; target = null; ang = +range.value; render(); });
-    render();
-  })();
-
   /* ---------- 3D tilt cards ---------- */
   if (FINE && !RM) $$('[data-tilt]').forEach(function (c) {
     var inner = c.querySelector('.door-in'), r;
@@ -225,7 +151,7 @@
 
   /* ---------- reveals: blocks rise in from a slight 3D tilt ---------- */
   if ('IntersectionObserver' in window && !RM) {
-    var els = $$('.sec-head,.king-in,.door,.seal-row,.tgrid>.tcard,.wrong,.faq-side,.faq-in>.col').filter(function (e) { return e.getBoundingClientRect().top > innerHeight; });
+    var els = $$('.sec-head,.door,.seal-row,.tgrid>.tcard,.wrong,.faq-side,.faq-in>.col').filter(function (e) { return e.getBoundingClientRect().top > innerHeight; });
     var ro = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('rv-in'); ro.unobserve(e.target); } });
     }, { rootMargin: '0px 0px -8% 0px' });

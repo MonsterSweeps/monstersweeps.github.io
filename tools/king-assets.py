@@ -4,8 +4,6 @@ Writes:
   img/stage/king-stage-{800,1200,1600,2000}.webp   hero key art (the King waving on the velvet stage)
   img/stage/stage-ambient.webp                     a heavily blurred copy used as the full-bleed glow behind the hero
   img/king/<pose>.webp, <pose>-sm.webp             transparent cutouts, trimmed to the figure
-  img/king/turn-0..5.webp (+ -sm)                  turntable frames: front, 3/4, side, back, side (mirrored), 3/4 (mirrored),
-                                                   all scaled to the same height and standing on the same floor line
   logo-80.webp, logo-96/192/512.png, favicon-32/48.png, apple-touch-icon.png   the crest: King's head in a gold ring
   fonts/luckiest-guy.woff2, fonts/poppins-{600,800}.woff2                     Latin subsets
 The art itself is never redrawn or recoloured: only trimmed, scaled, mirrored and (for the ambient glow) blurred.
@@ -52,21 +50,6 @@ for f in sorted(os.listdir(os.path.join(KIT, 'king'))):
         full = full.resize((1100, round(full.height * 1100 / full.width)), Image.LANCZOS)
     save(full, P('img', 'king', name + '.webp'))
     save(full.resize((full.width // 2, full.height // 2), Image.LANCZOS), P('img', 'king', name + '-sm.webp'))
-
-# ---------- turntable ----------
-views = ['turn_front', 'turn_3q', 'turn_side', 'turn_back']
-cut = {v: trim(Image.open(os.path.join(KIT, 'king', v + '.webp')).convert('RGBA')) for v in views}
-H = 1080  # common figure height (crown tip to feet)
-frames = [cut['turn_front'], cut['turn_3q'], cut['turn_side'], cut['turn_back'],
-          cut['turn_side'].transpose(Image.FLIP_LEFT_RIGHT), cut['turn_3q'].transpose(Image.FLIP_LEFT_RIGHT)]
-frames = [f.resize((round(f.width * H / f.height), H), Image.LANCZOS) for f in frames]
-W = max(f.width for f in frames) + 20
-for i, f in enumerate(frames):
-    c = Image.new('RGBA', (W, H + 10), (0, 0, 0, 0))
-    c.alpha_composite(f, ((W - f.width) // 2, 10))
-    lg = c.resize((round(W * 640 / (H + 10)), 640), Image.LANCZOS)
-    save(lg, P('img', 'king', f'turn-{i}.webp'), 82)
-    save(lg.resize((lg.width // 2, 320), Image.LANCZOS), P('img', 'king', f'turn-{i}-sm.webp'), 80)
 
 # ---------- crest (logo + icons) ----------
 face = trim(Image.open(os.path.join(KIT, 'king', 'face_happy.webp')).convert('RGBA'))

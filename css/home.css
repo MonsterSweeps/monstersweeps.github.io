@@ -1,7 +1,7 @@
 /* MonsterSweeps homepage, "The King's Stage". Builds on /css/tokens.css.
    Depth: the hero is a stack of layers (blurred stage glow, spotlight beams, the key art, floating motes) that
    js/home.js moves at different speeds with the pointer, phone tilt and scroll; cards tilt in 3D under the pointer
-   and the King turntable is drag/scroll driven. Reduced motion: everything stands still. */
+   Reduced motion: everything stands still. */
 
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -54,7 +54,7 @@ h3{font-size:21px}
 
 /* ---------- hero: the stage ---------- */
 .hero{position:relative;min-height:min(100svh,980px);display:flex;align-items:center;padding:110px 0 70px;overflow:hidden;isolation:isolate}
-.stage3d{position:absolute;inset:0;z-index:-1;perspective:900px;pointer-events:none}
+.stage3d{position:absolute;inset:0;z-index:-1;perspective:900px;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000 78%,transparent);mask-image:linear-gradient(180deg,#000 78%,transparent)}
 .layer{position:absolute;inset:0;will-change:transform}
 .amb{inset:-8%;background:url(/img/stage/stage-ambient.webp) 72% 38%/cover no-repeat;opacity:.62}
 .amb::after{content:"";position:absolute;inset:0;background:
@@ -88,34 +88,6 @@ h3{font-size:21px}
 .scrollcue{position:absolute;left:50%;bottom:22px;width:30px;height:48px;margin-left:-15px;border-radius:18px;box-shadow:inset 0 0 0 1.5px var(--goldLine2)}
 .scrollcue span{position:absolute;left:50%;top:10px;width:4px;height:9px;margin-left:-2px;border-radius:2px;background:var(--gold);animation:cue 2.2s var(--ease) infinite}
 @keyframes cue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(16px);opacity:0}100%{opacity:0}}
-
-/* ---------- Meet the King: turntable ---------- */
-.kingsec{padding-top:60px;overflow:hidden}
-.kingsec::before{content:"";position:absolute;left:50%;top:-10%;width:min(900px,120vw);height:120%;transform:translateX(-10%);pointer-events:none;
-  background:radial-gradient(ellipse 40% 60% at 50% 30%,rgba(110,36,210,.35),transparent 70%)}
-.king-in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:40px}
-.king-copy h2{font-size:clamp(36px,5vw,64px)}
-.king-hint{margin:18px 0 0;color:var(--mute);font-size:17px}
-.spin-ctl{display:flex;align-items:center;gap:14px;margin-top:26px;max-width:380px}
-.spin-b{flex:none;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1.5px var(--goldLine2);color:var(--gold);font:700 26px/1 var(--d);cursor:pointer;transition:background-color .3s}
-.spin-b:hover{background:rgba(255,200,70,.12)}
-.spin-b span{display:block;margin-top:-3px}
-#spinR{flex:1;accent-color:var(--gold);height:44px;cursor:pointer}
-.turn{position:relative;display:grid;place-items:end center;height:min(620px,118vw);perspective:1000px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
-.turn.drag{cursor:grabbing}
-.turn::before{content:"";position:absolute;left:50%;top:-8%;width:70%;height:108%;transform:translateX(-50%);pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,236,170,.22),rgba(255,214,120,.05) 70%,transparent);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);filter:blur(10px)}
-.turn-floor{position:absolute;left:50%;bottom:0;width:min(440px,88%);aspect-ratio:1/1;transform:translate(-50%,50%) rotateX(76deg);transform-style:preserve-3d}
-.ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#fff6aa,#e8960f,#7a4a05,#ffd25a,#fff6aa,#e8960f,#7a4a05,#fff6aa);
-  -webkit-mask:radial-gradient(closest-side,transparent 92%,#000 93%,#000 99%,transparent 100%);mask:radial-gradient(closest-side,transparent 92%,#000 93%,#000 99%,transparent 100%);
-  animation:ringspin 18s linear infinite;box-shadow:0 0 60px rgba(255,200,70,.25)}
-.ring.r2{inset:13%;opacity:.55;animation-direction:reverse;animation-duration:26s}
-.turn-floor .shadow{position:absolute;inset:24%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent)}
-.turn-floor::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(closest-side,rgba(255,200,70,.16),rgba(110,36,210,.12) 60%,transparent)}
-@keyframes ringspin{to{transform:rotate(360deg)}}
-.turn-fig{position:relative;width:min(360px,62vw);aspect-ratio:423/640;margin-bottom:6%;transform-style:preserve-3d;will-change:transform}
-.turn-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;filter:drop-shadow(0 30px 30px rgba(0,0,0,.45));pointer-events:none;-webkit-user-drag:none}
-.turn-fig img.on{opacity:1}
 
 /* ---------- platform doors: 3D tilt cards with the King peeking over ---------- */
 .doors{padding-top:80px}
@@ -260,9 +232,6 @@ h3{font-size:21px}
   .amb::after{background:linear-gradient(180deg,rgba(18,4,31,.88) 0%,rgba(18,4,31,.6) 45%,rgba(18,4,31,.2) 75%,var(--night) 100%)}
   .beam i{left:30%;width:80vw}.beam i+i{left:10%}
   .scrollcue{display:none}
-  .king-in{grid-template-columns:minmax(0,1fr);gap:10px;text-align:center}
-  .king-copy .kicker,.spin-ctl{margin-left:auto;margin-right:auto}
-  .turn{height:min(540px,122vw)}
   .seal-row{grid-template-columns:minmax(0,1fr)}
   .seal-king{order:-1;width:170px;justify-self:center;transform:none;margin:0 0 -34px;position:relative;z-index:1}
   .seal-card,.tcard{padding:26px 22px}
@@ -293,5 +262,5 @@ h3{font-size:21px}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .rv{opacity:1;transform:none}
-  .ka-tilt,.door-in,.layer,.turn-fig{transform:none!important}
+  .ka-tilt,.door-in,.layer{transform:none!important}
 }
