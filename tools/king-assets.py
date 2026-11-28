@@ -139,7 +139,7 @@ def gold_text(img, xy, text, font):
 logo = big.resize((92, 92), Image.LANCZOS); og.alpha_composite(logo, (64, 48))
 dr = ImageDraw.Draw(og)
 dr.text((170, 72), 'Monster', font=fnt('LuckiestGuy-Regular.ttf', 40), fill=(255, 255, 255))
-dr.text((170 + dr.textlength('Monster', font=fnt('LuckiestGuy-Regular.ttf', 40)), 72), 'Sweeps', font=fnt('LuckiestGuy-Regular.ttf', 40), fill=(255, 200, 70))
+dr.text((170 + dr.textlength('Monster', font=fnt('LuckiestGuy-Regular.ttf', 40)), 72), 'HQ', font=fnt('LuckiestGuy-Regular.ttf', 40), fill=(255, 200, 70))
 gold_text(og, (64, 196), 'One Monster.', fnt('Poppins-ExtraBold.ttf', 78))
 gold_text(og, (64, 290), 'Three platforms.', fnt('Poppins-ExtraBold.ttf', 78))
 dr.text((66, 410), 'Sweeps.Monster  ·  MonsterSweeps  ·  MonsterPay', font=fnt('Poppins-Bold.ttf', 27), fill=(210, 184, 255))

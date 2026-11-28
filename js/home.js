@@ -131,7 +131,7 @@
     if (rv && /^https:\/\//i.test(ru || '')) rv.href = ru; else if (rv) rv.closest('.reviews').hidden = true;
     var dm = MS.get('officialDomains'), dl = $('#doms');
     if (dl && Array.isArray(dm) && dm.length) {
-      var role = { 'monsters.win': 'Main site', 'sweeps.monster': 'Game platforms', 'monsterspay.net': 'Payments', 'monstersweeps.net': 'Casino and predictions' };
+      var role = { 'monsters.win': 'Main site', 'sweeps.monster': 'Game platforms', 'monsterpay.net': 'Payments', 'monstersweeps.net': 'Casino and predictions' };
       dl.innerHTML = dm.map(function (x) { return '<li><b>' + esc(x) + '</b><span>' + esc(role[x] || '') + '</span></li>'; }).join('');
     }
     // state checker: needs at least one product with a state list

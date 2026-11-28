@@ -42,6 +42,18 @@
     root = root || d;
     [].forEach.call(root.querySelectorAll('[data-cfg]'), function (el) { var v = get(el.dataset.cfg); if (v !== undefined) el.textContent = Array.isArray(v) ? v.join(', ') : v; });
     [].forEach.call(root.querySelectorAll('[data-needs]'), function (el) { el.hidden = !el.dataset.needs.split(/\s+/).every(has); });
+    // MonsterSweeps (monstersweeps.net) is not live until products.casino.live is true: every link to it becomes a
+    // greyed "Opening soon" label (a link that shows the address itself becomes plain text). Safe default if the
+    // config cannot be loaded. The homepage card handles its own button ([data-launch-link]).
+    if (dig('products.casino.live') !== true) {
+      [].forEach.call(root.querySelectorAll('a[data-product="casino"],a[href^="https://monstersweeps.net"]'), function (a) {
+        if (a.hasAttribute('data-launch-link')) return;
+        var sp = d.createElement('span');
+        if (/monstersweeps\.net/i.test(a.textContent)) sp.textContent = a.textContent;
+        else { sp.className = (a.className ? a.className + ' ' : '') + 'is-soon'; sp.textContent = 'Opening soon'; }
+        a.replaceWith(sp);
+      });
+    }
     // every link to the play site gets the register/login URL from config plus UTM parameters
     // product links: Sweeps.Monster, the casino, MonsterPay and predictions each have their own URL in products{}.
     // A product with no URL yet shows "Link coming soon" instead of a guessed link.

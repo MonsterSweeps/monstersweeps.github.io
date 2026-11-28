@@ -32,7 +32,7 @@
       "live": false
     },
     "monsterpay": {
-      "url": "https://monsterspay.net/"
+      "url": "https://monsterpay.net/"
     },
     "predictions": {
       "enabled": true,
@@ -51,7 +51,7 @@
   "officialDomains": [
     "monsters.win",
     "sweeps.monster",
-    "monsterspay.net",
+    "monsterpay.net",
     "monstersweeps.net"
   ],
   "payouts": [],

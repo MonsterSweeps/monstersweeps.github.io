@@ -26,7 +26,7 @@
   var sheet = el('<div class="ms-sheet" id="ms-sheet" role="dialog" aria-modal="true" aria-label="Menu" hidden>' +
     '<div class="ms-scrim" data-close></div>' +
     '<div class="ms-panel">' +
-      '<div class="ms-head"><a class="ms-brand" href="/"><img src="/logo-80.webp" width="34" height="34" alt=""><span>Monster<b>Sweeps</b></span></a>' +
+      '<div class="ms-head"><a class="ms-brand" href="/"><img src="/logo-80.webp" width="34" height="34" alt=""><span>Monster<b>HQ</b></span></a>' +
       '<button class="ms-x" type="button" data-close aria-label="Close menu">&times;</button></div>' +
       '<nav aria-label="Site"><ul class="ms-list">' + items + '</ul></nav>' +
       '<p class="ms-safe"><b>21+</b> only &middot; <a href="/responsible-gaming.html">Play responsibly</a> &middot; Free help 24/7: <a href="tel:18006973738">1-800-MY-RESET</a></p>' +
