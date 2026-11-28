@@ -28,7 +28,8 @@
       "url": "https://sweeps.monster/"
     },
     "casino": {
-      "url": "https://monstersweeps.net/"
+      "url": "https://monstersweeps.net/",
+      "live": false
     },
     "monsterpay": {
       "url": "https://monsterspay.net/"

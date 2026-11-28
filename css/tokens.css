@@ -1,40 +1,47 @@
-/* MonsterSweeps design tokens: deep royal purple (Monster's coat) and coin gold (his crown).
-   Loaded first on every page; css/home.css and /site.css build on these. */
-@font-face{font-family:Adventor;src:url(/fonts/adventor-bold.woff2) format("woff2"),url(/fonts/adventor-bold.woff) format("woff");font-weight:700;font-display:swap}
+/* MonsterSweeps design tokens, "The King's Stage": royal velvet purple, stage gold, spotlight.
+   Loaded first on every page; css/home.css and /site.css build on these. Variable names are kept from the
+   previous system so every page picks up the new look; --lux, --goldGrad and --velvet are new. */
+@font-face{font-family:PoppinsW;src:url(/fonts/poppins-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:PoppinsW;src:url(/fonts/poppins-800.woff2) format("woff2");font-weight:800;font-display:swap}
+@font-face{font-family:LuckiestW;src:url(/fonts/luckiest-guy.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:InterW;src:url(/fonts/inter-400.woff2) format("woff2"),url(/fonts/inter-400.woff) format("woff");font-weight:400;font-display:swap}
 @font-face{font-family:InterW;src:url(/fonts/inter-600.woff2) format("woff2"),url(/fonts/inter-600.woff) format("woff");font-weight:600;font-display:swap}
 :root{
   color-scheme:dark;
-  /* royal purples, darkest to brightest */
-  --night:#12082a;--night2:#1a0c3a;--plum:#24104f;--royal:#2a1162;--royal2:#3a1a86;--violet:#6d33e6;--violet2:#8b5cf6;--lilac:#c9adff;
-  /* coin golds */
-  --gold:#ffc23d;--gold2:#ffe08a;--goldDeep:#b77a10;--goldInk:#2a1300;
-  /* Monster's eye: a small accent only (ticks, live dots) */
-  --eye:#3fd27a;
+  /* royal velvet, darkest to brightest */
+  --night:#12041f;--night2:#1b0633;--plum:#280846;--royal:#3a0f6e;--royal2:#4a1690;--violet:#6e24d2;--violet2:#8f4bf0;--lilac:#d2b8ff;
+  /* stage gold */
+  --gold:#ffc846;--gold2:#fff6aa;--goldDeep:#e8960f;--goldInk:#2a1300;
+  /* the King's eye: a small accent only (ticks, live dots) */
+  --eye:#47d17f;
   /* text */
-  --bone:#f7f2ff;--mute:#b9abd9;--mute2:#9a8cc0;
+  --bone:#fbf6ff;--mute:#c4b3e3;--mute2:#a795cc;
   /* lines and surfaces */
-  --line:rgba(201,173,255,.16);--line2:rgba(201,173,255,.28);--goldLine:rgba(255,194,61,.38);
-  --glass:linear-gradient(180deg,rgba(58,26,134,.42),rgba(36,16,79,.30));
-  --glassSolid:linear-gradient(180deg,#2c1466,#1f0d47);
-  /* coin button */
-  --coin:linear-gradient(180deg,#ffe08a 0%,#ffc23d 45%,#f0a21c 100%);
-  --coinShadow:0 1px 0 rgba(255,255,255,.65) inset,0 -3px 0 rgba(140,70,0,.38) inset,0 0 0 1px rgba(183,122,16,.55),0 14px 30px -12px rgba(255,177,31,.65);
-  --coinShadowHi:0 1px 0 rgba(255,255,255,.65) inset,0 -3px 0 rgba(140,70,0,.38) inset,0 0 0 1px rgba(183,122,16,.55),0 20px 38px -12px rgba(255,177,31,.8);
-  --cardShadow:0 1px 0 rgba(255,255,255,.06) inset,0 24px 50px -28px rgba(5,0,15,.85);
-  /* type */
-  --d:Adventor,"Avenir Next","Century Gothic",Futura,sans-serif;
+  --line:rgba(210,184,255,.14);--line2:rgba(210,184,255,.26);--goldLine:rgba(255,200,70,.28);--goldLine2:rgba(255,200,70,.55);
+  --glass:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.03));
+  --glassSolid:linear-gradient(180deg,#2a0b52,#1a0634);
+  --velvet:radial-gradient(ellipse at top,#4a1690 0%,#1b0633 60%,#0c0216 100%);
+  --goldGrad:linear-gradient(180deg,#fff6aa 0%,#ffd25a 42%,#e8960f 100%);
+  /* gold pill button */
+  --coin:linear-gradient(180deg,#fff6aa 0%,#ffd25a 40%,#f2a91c 78%,#e8960f 100%);
+  --coinShadow:0 1px 0 rgba(255,255,255,.7) inset,0 -3px 0 rgba(150,80,0,.32) inset,0 0 0 1px rgba(232,150,15,.6),0 14px 34px -12px rgba(255,190,40,.6);
+  --coinShadowHi:0 1px 0 rgba(255,255,255,.7) inset,0 -3px 0 rgba(150,80,0,.32) inset,0 0 0 1px rgba(232,150,15,.6),0 22px 44px -12px rgba(255,190,40,.85);
+  --cardShadow:0 1px 0 rgba(255,255,255,.07) inset,0 30px 60px -30px rgba(4,0,12,.9);
+  /* type: Poppins for headings, Luckiest Guy for the wordmark and rare showpieces, Inter for reading */
+  --d:PoppinsW,Poppins,"Avenir Next","Segoe UI",system-ui,sans-serif;
+  --lux:LuckiestW,"Luckiest Guy",PoppinsW,Impact,sans-serif;
   --b:InterW,Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --r-lg:28px;--r-md:18px;--r-sm:12px
+  --ease:cubic-bezier(.22,.8,.24,1);
+  --r-lg:24px;--r-md:18px;--r-sm:12px
 }
 /* body background propagates to the canvas, so the ::before backdrop below paints on top of it */
 body{background-color:var(--night);color:var(--bone)}
-/* the lair: royal glow overhead, a warm gold ember low left, deep plum floor */
+/* the stage: a spotlight of royal velvet overhead, a warm gold footlight low down, deep night floor */
 body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:
-  radial-gradient(1100px 720px at 78% -8%,rgba(109,51,230,.38),transparent 62%),
-  radial-gradient(900px 640px at 6% 96%,rgba(255,194,61,.09),transparent 60%),
-  radial-gradient(700px 500px at 50% 45%,rgba(58,26,134,.22),transparent 70%),
-  linear-gradient(180deg,#170a35,#110726 60%,#0d051e)}
+  radial-gradient(1200px 760px at 50% -14%,rgba(110,36,210,.42),transparent 64%),
+  radial-gradient(900px 600px at 8% 100%,rgba(255,200,70,.08),transparent 60%),
+  radial-gradient(900px 600px at 96% 70%,rgba(110,36,210,.16),transparent 62%),
+  linear-gradient(180deg,#1b0633,#12041f 55%,#0c0216)}
 ::selection{background:var(--gold);color:var(--goldInk)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 
@@ -44,10 +51,10 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 .ms-sheet{position:fixed;inset:0;z-index:400}
 .ms-scrim{position:absolute;inset:0;background:rgba(8,3,20,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .22s}
 .ms-panel{position:absolute;left:0;right:0;bottom:0;max-height:92dvh;overflow:auto;overscroll-behavior:contain;padding:14px 18px calc(18px + env(safe-area-inset-bottom));
-  background:linear-gradient(180deg,#24104f,#160a33);border-radius:26px 26px 0 0;box-shadow:0 -1px 0 var(--line2),0 -30px 60px -20px rgba(0,0,0,.7);transform:translateY(100%);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+  background:linear-gradient(180deg,#2a0b52,#14042a);border-radius:26px 26px 0 0;box-shadow:0 -1px 0 var(--line2),0 -30px 60px -20px rgba(0,0,0,.7);transform:translateY(100%);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
 .ms-sheet.on .ms-scrim{opacity:1}.ms-sheet.on .ms-panel{transform:none}
 .ms-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 6px}
-.ms-brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font:700 19px var(--d)}.ms-brand img{border-radius:50%;box-shadow:0 0 0 2px var(--gold)}.ms-brand b{color:var(--gold)}
+.ms-brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font:400 21px/1 var(--lux);letter-spacing:.02em}.ms-brand img{filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))}.ms-brand b{font-weight:400;color:var(--gold)}
 .ms-x{width:48px;height:48px;border-radius:14px;border:0;background:rgba(255,255,255,.06);color:#fff;font-size:28px;line-height:1;cursor:pointer}
 .ms-list{list-style:none;margin:6px 0 14px;padding:0}
 .ms-list a{display:flex;align-items:center;min-height:56px;padding:0 6px;font:600 18px var(--b);color:var(--bone);text-decoration:none;border-bottom:1px solid var(--line)}
@@ -61,7 +68,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 html.ms-lock,html.ms-lock body{overflow:hidden}
 @media (max-width:860px){
   .ms-bar{display:grid;grid-template-columns:1fr auto;gap:10px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:300;
-    padding:8px;border-radius:20px;background:rgba(22,10,50,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    padding:8px;border-radius:20px;background:rgba(24,6,46,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     box-shadow:inset 0 0 0 1px var(--line2),0 18px 40px -14px rgba(0,0,0,.8);transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s}
   .ms-bar.ms-off{transform:translateY(calc(100% + 24px));opacity:0}
   .ms-bar .ms-play{min-height:50px}
@@ -76,7 +83,7 @@ html.ms-lock,html.ms-lock body{overflow:hidden}
 /* ---------- welcome popup (js/popup.js) ---------- */
 .wp{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:16px}
 .wp-scrim{position:absolute;inset:0;background:rgba(8,3,20,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .22s}
-.wp-card{position:relative;width:min(760px,100%);max-height:calc(100dvh - 32px);overflow:auto;border-radius:22px;background:linear-gradient(180deg,#24104f,#160a33);
+.wp-card{position:relative;width:min(760px,100%);max-height:calc(100dvh - 32px);overflow:auto;border-radius:22px;background:linear-gradient(180deg,#2a0b52,#14042a);
   box-shadow:0 0 0 1px var(--goldLine),0 40px 80px -20px rgba(0,0,0,.8);opacity:0;transform:translateY(16px) scale(.98);transition:opacity .22s,transform .26s cubic-bezier(.2,.8,.2,1)}
 .wp.on .wp-scrim{opacity:1}.wp.on .wp-card{opacity:1;transform:none}
 .wp-img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:22px 22px 0 0}
@@ -104,3 +111,7 @@ html.wp-lock,html.wp-lock body{overflow:hidden}
 @media (max-width:520px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
 .pgrid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 @media (max-width:520px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- brand lockup, shared by every header and footer ---------- */
+.brand img,.ms-brand img{width:46px;height:46px;object-fit:contain}
+.ms-brand img{width:38px;height:38px}

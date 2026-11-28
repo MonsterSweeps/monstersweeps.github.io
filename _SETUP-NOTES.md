@@ -32,6 +32,18 @@ say "merge". GitHub Pages then publishes www.monsters.win within about a minute.
   Game images go in /img/games (square 1:1, at least 600 x 600).
 - Before each release, tools/bump-version.sh stamps the CSS/JS links so browsers fetch fresh files.
 
+## The King (mascot) and brand assets
+- The brand kit lives in `brand/king-kit/` (key art, transparent cutouts, fonts, the original logo and the redesign brief).
+- `python3 tools/king-assets.py` rebuilds every web asset from it: the hero stage art (`img/stage/`), the King cutouts and
+  turntable frames (`img/king/`), the crest logo and icons (`logo-*`, `favicon-*`, `apple-touch-icon.png`), the WOFF2 fonts
+  and the share image `og-image.jpg`. The art is only trimmed, scaled and mirrored, never redrawn.
+- Homepage: `index.html` + `css/home.css` + `js/home.js`. Shared colours, fonts and buttons: `css/tokens.css`.
+
+## MonsterSweeps launch switch
+monstersweeps.net is not live yet, so the homepage card shows "Opening soon" instead of a Play button.
+When it launches, set `"live": true` under `products.casino` in `data/site-config.json`: the card then shows
+"Live now" and the Play / Log in button. (casino.html and casino-vip.html still link straight to monstersweeps.net.)
+
 ## Platform pages
 - `sweeps.html` (Sweeps.Monster) and `casino.html` (MonsterSweeps) each show the daily streak, tier table, XP and VIP.
 - Tier numbers live in `data/tiers.json` (`sweepsmonster` and `casino`). The casino list is a copy of the Sweeps.Monster one until its own numbers are final.
